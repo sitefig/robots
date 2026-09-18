@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "description": "sus.bot: robots.txt audit. Rust engine compiled to WebAssembly for the browser and to a CLI for CI; static pages in 24 languages.",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "scripts": {
     "build": "npm run build:css && ./scripts/build-wasm.sh",
     "build:dev": "npm run build:css && ./scripts/build-wasm.sh debug",

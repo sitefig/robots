@@ -122,3 +122,10 @@ The project is built to run for free, with hard stops rather than bills:
 GitHub Pages serves the site from the `Deploy site` workflow (source: GitHub Actions), which builds the WASM, renders the pages and uploads `dist/` with the `CNAME` for sus.bot. The Cloudflare Worker in `worker/` fetches robots.txt on the page's behalf; keep `https://sus.bot` in `ALLOWED_ORIGINS` and the worker URL in `js/config.js`.
 
 Rule matching follows [RFC 9309](https://www.rfc-editor.org/rfc/rfc9309) as implemented by Google's open-source matcher. A free tool by [Sitefig](https://sitefig.eu).
+
+## Licence
+
+sus.bot is source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). You may use, copy and change it for any noncommercial purpose, including personal use, research, education, and use by charities and public bodies. Commercial use, including running the CLI or the GitHub Action in a company's CI, needs a separate licence from [Sitefig](https://sitefig.eu).
+
+The fonts in `fonts/` are Atkinson Hyperlegible Next and Mono under the SIL Open Font License (see `fonts/LICENSE.txt`). Dependencies keep their own licences.
+
