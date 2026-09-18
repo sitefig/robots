@@ -9,7 +9,10 @@ const code = (document.documentElement.lang || DEFAULT_LANG).toLowerCase().split
 const localeUrl = (c) => new URL(`../locales/${c}.json`, import.meta.url);
 
 async function fetchJson(url) {
-  const res = await fetch(url, { cache: 'force-cache' });
+  // 'no-cache' revalidates with the server (a 304 when unchanged). The old
+  // 'force-cache' reused a stale dictionary after a deploy, so new keys
+  // showed up as raw key names (ui.plan.free.name) for returning visitors.
+  const res = await fetch(url, { cache: 'no-cache' });
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
   return res.json();
 }
