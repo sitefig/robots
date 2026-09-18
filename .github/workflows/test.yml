@@ -1,0 +1,58 @@
+# Runs the Rust and JavaScript test suites on every push and pull request.
+
+name: Tests
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'data/**'          # daily tracking snapshots, committed by famous-100.yml
+  pull_request:
+
+# Cost guards: a superseded run is cancelled, and no job can run away.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --workspace --locked
+      - run: cargo build -p susbot-cli --release --locked
+      - run: ./target/release/susbot examples/kitchen-sink.robots.txt --site-url https://www.example.com/robots.txt --format json > /dev/null
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+  accessibility:
+    # Three engines against the generated pages and the rendered report:
+    # axe-core in Chrome (both themes), html-validate's WCAG preset, and
+    # pa11y's HTML_CodeSniffer. Needs the WASM bundle for the rendered state.
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: Install wasm-bindgen
+        run: |
+          set -eu
+          WBG=$(grep -oE 'wasm-bindgen = "[0-9.]+"' crates/wasm/Cargo.toml | grep -oE '[0-9.]+')
+          curl -sSL "https://github.com/rustwasm/wasm-bindgen/releases/download/${WBG}/wasm-bindgen-${WBG}-x86_64-unknown-linux-musl.tar.gz" | tar xz
+          sudo mv "wasm-bindgen-${WBG}-x86_64-unknown-linux-musl/wasm-bindgen" /usr/local/bin/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'   # the runner has Google Chrome
+      - run: npm run build:dev
+      - run: npm run a11y

@@ -1,0 +1,163 @@
+/* CUBE: Global. Element defaults on top of Tailwind's preflight. No classes. */
+
+:root {
+  color-scheme: light dark;
+}
+
+html {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  scroll-padding-top: 1rem;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  color: var(--color-ink);
+  background: var(--color-bg);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: var(--font-weight-bold);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--text-3xl);
+  line-height: var(--text-3xl--line-height);
+}
+
+h2 {
+  font-size: var(--text-xl);
+  line-height: var(--text-xl--line-height);
+}
+
+h3 {
+  font-size: var(--text-lg);
+  line-height: var(--text-lg--line-height);
+}
+
+p,
+li,
+dd,
+td,
+th {
+  text-wrap: pretty;
+}
+
+/* Links are underlined everywhere: colour alone never marks a link. */
+a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.94em;
+}
+
+code {
+  padding: 0.05em 0.3em;
+  border-radius: var(--radius-sm);
+  background: var(--color-raise);
+}
+
+pre code {
+  padding: 0;
+  background: none;
+}
+
+ul,
+ol {
+  padding-inline-start: 1.25em;
+}
+
+summary {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  font-size: var(--text-sm);
+}
+
+th,
+td {
+  padding: 0.625rem 0.875rem;
+  text-align: start;
+  vertical-align: top;
+  border-bottom: 1px solid var(--color-line);
+}
+
+th {
+  font-weight: var(--font-weight-bold);
+  background: var(--color-surface);
+  white-space: nowrap;
+}
+
+label {
+  display: block;
+  font-weight: var(--font-weight-bold);
+}
+
+/* Controls: at least 16px text (no zoom on iOS), 44px tall, and a border
+   that clears 3:1 against the page. */
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-control);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  font-size: var(--text-base);
+}
+
+input[type="text"],
+textarea {
+  font-family: var(--font-mono);
+}
+
+textarea {
+  min-height: 8rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+::placeholder {
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

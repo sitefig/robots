@@ -1,0 +1,135 @@
+/* CUBE: Exceptions. State through data attributes and ARIA state only. */
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* The one strong action per area uses the signal colour. */
+.button[data-variant="primary"] {
+  border-color: var(--color-signal-ink);
+  background: var(--color-signal);
+  color: var(--color-signal-ink);
+}
+
+.button[data-variant="primary"]:hover {
+  background: #ffe352;
+}
+
+.seg > button[aria-pressed="true"],
+.chip[aria-pressed="true"] {
+  background: var(--color-ink);
+  color: var(--color-bg);
+}
+
+.lang-menu__list a[aria-current="true"] {
+  font-weight: var(--font-weight-bold);
+  text-decoration-thickness: 3px;
+}
+
+.status[data-state="loading"] {
+  color: var(--color-muted);
+}
+
+.status[data-state="ok"] {
+  color: var(--color-ok);
+}
+
+.status[data-state="error"] {
+  color: var(--color-bad);
+  font-weight: var(--font-weight-bold);
+}
+
+.callout[data-state="ok"] {
+  border-color: var(--color-ok);
+  background: var(--color-ok-bg);
+}
+
+.callout[data-state="warning"] {
+  border-color: var(--color-warn);
+  background: var(--color-warn-bg);
+}
+
+.callout[data-state="error"] {
+  border-color: var(--color-bad);
+  background: var(--color-bad-bg);
+}
+
+.badge[data-state="ok"] {
+  background: var(--color-ok-bg);
+  color: var(--color-ok);
+}
+
+.badge[data-state="warning"],
+.badge[data-state="medium"] {
+  background: var(--color-warn-bg);
+  color: var(--color-warn);
+}
+
+.badge[data-state="error"],
+.badge[data-state="high"] {
+  background: var(--color-bad-bg);
+  color: var(--color-bad);
+}
+
+.badge[data-state="info"],
+.badge[data-state="low"] {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+}
+
+/* An empty card steps back with a dashed border, never with opacity, which
+   would drop its text under 4.5:1. */
+.card[data-empty="true"] {
+  border-style: dashed;
+  background: transparent;
+}
+
+.issue-list > li[data-level="error"] > .line-ref {
+  color: var(--color-bad);
+}
+
+.raw__line[data-level="error"] {
+  background: var(--color-bad-bg);
+}
+
+.raw__line[data-level="warning"] {
+  background: var(--color-warn-bg);
+}
+
+.raw__line[data-kind="comment"],
+.raw__line[data-kind="blank"] {
+  color: var(--color-muted);
+}
+
+.raw__line[data-kind="user-agent"] {
+  font-weight: var(--font-weight-bold);
+}
+
+.data-table tr[data-verdict="blocked"] > td:first-child {
+  color: var(--color-bad);
+}
+
+.data-table tr[data-hidden="true"] {
+  display: none;
+}
+
+.data-table td[data-diff="differs"] {
+  color: var(--color-bad);
+  font-weight: var(--font-weight-bold);
+}
+
+.plan[data-featured="true"] {
+  border: 2px solid var(--color-ink);
+}
+
+.diff-sample > [data-diff="removed"] {
+  color: var(--color-bad);
+}
+
+.diff-sample > [data-diff="added"] {
+  color: var(--color-ok);
+}

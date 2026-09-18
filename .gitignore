@@ -1,0 +1,11 @@
+node_modules/
+.wrangler/
+worker/node_modules/
+worker/.dev.vars
+.DS_Store
+*.log
+target/
+js/wasm/
+dist/
+tests/a11y/.snapshots/
+css/site.css

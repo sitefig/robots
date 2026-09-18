@@ -1,0 +1,28 @@
+{
+  "name": "robots-analyser",
+  "private": true,
+  "type": "module",
+  "description": "sus.bot: robots.txt audit. Rust engine compiled to WebAssembly for the browser and to a CLI for CI; static pages in 24 languages.",
+  "scripts": {
+    "build": "npm run build:css && ./scripts/build-wasm.sh",
+    "build:dev": "npm run build:css && ./scripts/build-wasm.sh debug",
+    "start": "python3 -m http.server 8888",
+    "test": "node --test tests/*.test.js",
+    "test:all": "cargo test --workspace && node --test tests/*.test.js",
+    "gen": "node tools/gen-pages.js",
+    "cli": "cargo run -q -p susbot-cli --release --",
+    "a11y": "node tests/a11y/run.mjs",
+    "a11y:axe": "node tests/a11y/axe.mjs",
+    "a11y:html": "node tests/a11y/html-validate.mjs",
+    "a11y:pa11y": "node tests/a11y/pa11y.mjs",
+    "build:css": "tailwindcss -i css/src/site.css -o css/site.css --minify",
+    "watch:css": "tailwindcss -i css/src/site.css -o css/site.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "axe-core": "^4.13.0",
+    "html-validate": "^8.29.0",
+    "pa11y": "^8.0.0",
+    "tailwindcss": "4.3.3"
+  }
+}
