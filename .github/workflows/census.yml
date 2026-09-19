@@ -5,7 +5,7 @@
 # Runs for a few hours at 64 parallel fetches; the job timeout is the guard.
 # The repository is public, so runner minutes are free.
 
-name: OpenRobots crawl
+name: sus.bot census
 
 on:
   schedule:
@@ -26,7 +26,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: open-robots-crawl
+  group: susbot-census
   cancel-in-progress: false
 
 jobs:
@@ -52,7 +52,7 @@ jobs:
           CONCURRENCY: ${{ github.event.inputs.concurrency || '64' }}
         run: |
           set -eu
-          TAG="open-robots-$(date -u +%Y)-H$(( ($(date -u +%-m) - 1) / 6 + 1 ))"
+          TAG="susbot-census-$(date -u +%Y)-H$(( ($(date -u +%-m) - 1) / 6 + 1 ))"
           echo "TAG=$TAG" >> "$GITHUB_ENV"
           ./target/release/susbot crawl --input top-1m.csv --limit "$LIMIT" --concurrency "$CONCURRENCY" --timeout 10 \
             --out "$TAG.jsonl.gz" --summary "$TAG.summary.json"
@@ -63,6 +63,6 @@ jobs:
         run: |
           set -eu
           gh release create "$TAG" "$TAG.jsonl.gz" "$TAG.summary.json" \
-            --title "OpenRobots dataset $TAG" \
+            --title "sus.bot census $TAG" \
             --notes "robots.txt audit of the top domains: one JSON Lines record per domain (status, rules, sitemaps, issues, security findings, platform, crawler verdicts). Produced by \`susbot crawl\` (https://sus.bot). Load with DuckDB: \`SELECT * FROM read_json_auto('$TAG.jsonl.gz')\`." \
             || gh release upload "$TAG" "$TAG.jsonl.gz" "$TAG.summary.json" --clobber

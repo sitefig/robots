@@ -40,12 +40,12 @@ susbot diff old.txt new.txt --domain example.com            # crawler flips, new
 susbot diff old.txt new.txt --format social --diff-url URL  # short text for a chat or social post
 susbot diff old.txt new.txt --fail-on-change                # CI gate: exit 1 when the files differ
 susbot track --config config/famous-100.json --data-dir data/famous-100 --summary-out out.md --webhook https://hooks.slack.com/...
-susbot crawl --input top-1m.csv --limit 100000 --concurrency 64 --out open-robots.jsonl.gz --summary summary.json
+susbot crawl --input top-1m.csv --limit 100000 --concurrency 64 --out susbot-census.jsonl.gz --summary summary.json
 ```
 
 `track` keeps one directory per domain (`robots.txt` and `meta.json`) so git history is the change log, writes a leaderboard `README.md` into the data directory, a Markdown digest, social drafts, and posts changed domains to a Slack or Discord incoming webhook (a per-site `webhook_url` in the list wins; `--webhook-high-impact-only` limits posts to crawler flips, new high-severity paths and new errors). `crawl` audits a domain list on a thread pool and writes gzip JSON Lines (one record per domain) that DuckDB or pandas read directly.
 
-Three workflows use them: `Track famous domains` runs daily and commits `data/famous-100`; `Monitor customers` runs every six hours against a private repository named in the `CUSTOMERS_REPO` secret, using the write deploy key in `CUSTOMERS_DEPLOY_KEY`; `OpenRobots crawl` runs twice a year and publishes the dataset as a GitHub Release.
+Three workflows use them: `Track famous domains` runs daily and commits `data/famous-100`; `Monitor customers` runs every six hours against a private repository named in the `CUSTOMERS_REPO` secret, using the write deploy key in `CUSTOMERS_DEPLOY_KEY`; `sus.bot census` runs twice a year and publishes the dataset as a GitHub Release.
 
 ## GitHub Action
 
