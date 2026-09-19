@@ -9,7 +9,7 @@ import { rootPath, sitePath } from './lib.mjs';
 
 export const PORTS = { site: 8877, worst: 8890, notFound: 8891, serverError: 8892, html: 8893, empty: 8894, gone: 8895 };
 export const WORST = readFileSync(join(rootPath, 'tests/a11y/fixtures/worst.robots.txt'), 'utf8');
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.wasm': 'application/wasm', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.toml': 'application/toml' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.wasm': 'application/wasm', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.toml': 'application/toml', '.svg': 'image/svg+xml', '.png': 'image/png', '.zip': 'application/zip', '.woff2': 'font/woff2' };
 
 function mock(port, handler) {
   return http.createServer((req, res) => {

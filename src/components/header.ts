@@ -16,6 +16,27 @@ export function BrandMark(): string {
   return '<svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false"><path d="M17 7 H8 V41 H17" stroke="currentColor" stroke-width="3.6" stroke-linecap="square"/><path d="M31 7 H40 V41 H31" stroke="currentColor" stroke-width="3.6" stroke-linecap="square"/><circle class="brand__eye" cx="24" cy="24" r="7.5" stroke-width="3.6"/></svg>';
 }
 
+/**
+ * The easter egg: right-clicking (or opening the context menu on) the header
+ * logo shows this popover with the logo files and a link to the press kit
+ * instead of the browser's menu. The same files are always reachable from
+ * the footer's press kit link, so nothing depends on finding it.
+ */
+function BrandMenu(ctx: PageContext): string {
+  const { e } = ctx.s;
+  const f = `${ctx.assets}press/files/`;
+  return `  <nav id="brand-menu" class="brand-menu" popover="manual" aria-labelledby="brand-menu-label">
+    <p class="brand-menu__label" id="brand-menu-label">${e('page.brandMenu.label')}</p>
+    <ul>
+      <li><a href="${f}lockup-horizontal/susbot-h-dark-bg.svg" download>${e('page.brandMenu.dark')}</a></li>
+      <li><a href="${f}lockup-horizontal/susbot-h-light-bg.svg" download>${e('page.brandMenu.light')}</a></li>
+      <li><a href="${f}mark/susbot-mark-dark-bg.svg" download>${e('page.brandMenu.icon')}</a></li>
+      <li><a href="${ctx.assets}press/">${e('page.brandMenu.press')}</a></li>
+    </ul>
+  </nav>
+`;
+}
+
 export function SiteHeader(ctx: PageContext): string {
   const { e } = ctx.s;
   const h = ctx.home;
@@ -40,5 +61,5 @@ export function SiteHeader(ctx: PageContext): string {
 ${langMenu(ctx.lang, ctx.path, ctx.active, ctx.alternates, ctx.s.text('page.langLabel'))}
     </div>
   </header>
-`;
+${BrandMenu(ctx)}`;
 }

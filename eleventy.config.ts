@@ -46,6 +46,7 @@ export default function (config: EleventyConfig) {
     'config/default.toml': 'default-config.toml',
     'src/site/favicon.svg': 'favicon.svg',
     'src/site/apple-touch-icon.png': 'apple-touch-icon.png',
+    'src/site/press/files': 'press/files',
     '.nojekyll': '.nojekyll',
     CNAME: 'CNAME',
   });

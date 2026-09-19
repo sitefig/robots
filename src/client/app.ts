@@ -23,6 +23,7 @@ import { renderRaw } from './components/raw.ts';
 import { initPricing } from './components/pricing.ts';
 import { readRecent, renderRecent, remember } from './components/recent.ts';
 import { initTheme, initLanguage } from './components/preferences.ts';
+import { initBrandMenu } from './components/brand-menu.ts';
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -172,6 +173,7 @@ function checkOrigin(origin: string): void {
 function init(): void {
   initTheme();
   initLanguage();
+  initBrandMenu();
   initPricing();
   fillLinks();
   try {

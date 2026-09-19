@@ -11,13 +11,20 @@ export const sitePath = process.env.A11Y_SITE ? `${process.env.A11Y_SITE.replace
 export const PORT = 8877;
 export const BASE = `http://127.0.0.1:${PORT}`;
 
-/** Every generated page: [{ code, file, urlPath }]. */
+/** Every built page (home pages and content pages): [{ code, file, urlPath }]. */
 export function pages() {
-  const out = [{ code: 'en', file: 'index.html', urlPath: '/' }];
-  for (const d of readdirSync(sitePath, { withFileTypes: true })) {
-    if (d.isDirectory() && /^[a-z]{2}$/.test(d.name) && existsSync(`${sitePath}${d.name}/index.html`)) out.push({ code: d.name, file: `${d.name}/index.html`, urlPath: `/${d.name}/` });
-  }
-  return out;
+  const out = [];
+  const walk = (dir) => {
+    for (const d of readdirSync(`${sitePath}${dir}`, { withFileTypes: true })) {
+      if (d.isDirectory()) walk(`${dir}${d.name}/`);
+      else if (d.name === 'index.html') {
+        const code = /^[a-z]{2}\//.test(dir) ? dir.slice(0, 2) : 'en';
+        out.push({ code, file: `${dir}index.html`, urlPath: `/${dir}` });
+      }
+    }
+  };
+  walk('');
+  return out.sort((a, b) => (a.file === 'index.html' ? -1 : b.file === 'index.html' ? 1 : a.file.localeCompare(b.file)));
 }
 
 export function requireWasm() {

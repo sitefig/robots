@@ -54,6 +54,8 @@ export function states(path) {
   return [
     { name: 'initial', url: url(), setup: async () => {} },
     { name: 'language-menu-open', url: url(), setup: async (page) => { await page.click('.lang-menu > summary'); } },
+    // The easter egg: the logo's context menu with the logo files and the press kit.
+    { name: 'brand-menu-open', url: url(), setup: async (page) => { await page.click('.site-header .brand', { button: 'right' }); await page.waitForSelector('#brand-menu:popover-open'); } },
     { name: 'theme-pressed', url: url(), setup: async (page) => { await page.click('[data-theme-choice="dark"]'); } },
     { name: 'paste-panel-open', url: url(), setup: async (page) => { await page.click('#paste-details > summary'); } },
     { name: 'paste-empty-error', url: url(), setup: async (page) => { await page.click('#paste-details > summary'); await page.click('#analyse-pasted'); await page.waitForSelector('#status[data-state="error"]'); } },

@@ -16,6 +16,7 @@ const ROOT = new URL('../', import.meta.url).pathname;
 const eleventy = new Eleventy(`${ROOT}src/site`, `${ROOT}_site`, { configPath: `${ROOT}eleventy.config.ts`, quietMode: true });
 const built = await eleventy.toJSON();
 const files = Object.fromEntries(built.map((p) => [p.outputPath.replace(/^.*?_site\//, ''), p.content]));
+const isHome = (rel) => rel === 'index.html' || /^[a-z]{2}\/index\.html$/.test(rel);
 const dicts = loadLocales();
 const active = activeLanguages(dicts);
 const figures = trackingFigures();
@@ -44,7 +45,7 @@ test('root page is English and carries the redirect; language pages do not redir
 
 test('every home page lists every language as hreflang alternate plus x-default', () => {
   for (const [rel, page] of Object.entries(files)) {
-    if (!rel.endsWith('.html')) continue;
+    if (!isHome(rel)) continue;
     for (const code of active) {
       const href = code === DEFAULT_LANG ? SITE_URL : `${SITE_URL}${code}/`;
       assert.ok(page.includes(`<link rel="alternate" hreflang="${code}" href="${href}">`), `${rel} lacks hreflang ${code}`);
@@ -64,8 +65,9 @@ test('pages are translated and contain no unresolved placeholders', () => {
 test('sitemap lists every home page with all its alternates', () => {
   const xml = files['sitemap.xml'];
   for (const code of active) assert.ok(xml.includes(`<loc>${code === DEFAULT_LANG ? SITE_URL : `${SITE_URL}${code}/`}</loc>`), code);
-  assert.equal((xml.match(/<url>/g) || []).length, active.length);
-  assert.equal((xml.match(/hreflang="x-default"/g) || []).length, active.length);
+  const pages = Object.keys(files).filter((rel) => rel.endsWith('index.html')).length;
+  assert.equal((xml.match(/<url>/g) || []).length, pages, 'one <url> per built page');
+  assert.ok(xml.includes(`<loc>${SITE_URL}press/</loc>`));
 });
 
 test('components escape dictionary text but keep page HTML raw', () => {
@@ -106,4 +108,17 @@ test('the sitemap loops over every page and groups translations', () => {
   const guide = xml.split('<url>').find((b) => b.includes(`<loc>${SITE_URL}guide/</loc>`));
   assert.equal((guide.match(/hreflang=/g) || []).length, 2, 'a page without translations lists itself and x-default');
   assert.ok(!xml.includes('draft') && !xml.includes('feed.xml'));
+});
+
+test('the press kit page links its files, and every page has the footer and the logo menu', () => {
+  const press = files['press/index.html'];
+  assert.ok(press, 'press/index.html is built');
+  for (const f of ['files/susbot-press-kit.zip', 'files/lockup-horizontal/susbot-h-dark-bg.svg', 'files/png/susbot-app-icon-512.png']) assert.ok(press.includes(`href="${f}"`), f);
+  for (const [rel, page] of Object.entries(files)) {
+    if (!rel.endsWith('.html')) continue;
+    assert.ok(page.includes('id="brand-menu"'), `${rel} has the logo menu`);
+    assert.ok(page.includes('class="footer-nav"'), `${rel} has the footer links`);
+  }
+  assert.ok(files['de/index.html'].includes(`>${dicts.de['page.footer.press']}</a>`), 'footer is translated');
+  assert.ok(files['de/index.html'].includes('href="../press/"'), 'German pages link the press kit');
 });

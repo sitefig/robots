@@ -133,3 +133,15 @@
 .diff-sample > [data-diff="added"] {
   color: var(--color-ok);
 }
+
+.logo-card__preview[data-ground="dark"] {
+  background: #121316;
+}
+
+.logo-card__preview[data-ground="light"] {
+  background: #f2f3f5;
+}
+
+.logo-card__preview[data-ground="mid"] {
+  background: #26282d;
+}
