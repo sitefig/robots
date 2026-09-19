@@ -3,6 +3,7 @@
 // builds of the site and compares the screenshots byte for byte.
 //
 //   node tests/a11y/pixels.mjs <baseline-site-dir> [candidate-site-dir]
+//   PIXELS_ONLY=copy-flash node tests/a11y/pixels.mjs …   (only matching states)
 //
 // The candidate defaults to _site/. Timings shown on the page (parse and
 // fetch durations) come from performance.now(), which is frozen so both runs
@@ -25,7 +26,9 @@ rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 const PHONE_STATES = new Set(['initial', 'pasted-worst', 'fetched-worst', 'example-kitchen-sink']);
-const runs = [];
+// PIXELS_ONLY=<regex> limits the run to matching state ids.
+const only = process.env.PIXELS_ONLY ? new RegExp(process.env.PIXELS_ONLY) : null;
+let runs = [];
 for (const [lang, path] of [['en', ''], ['de', 'de/']]) {
   for (const scheme of ['light', 'dark']) {
     for (const st of states(path)) {
@@ -34,6 +37,8 @@ for (const [lang, path] of [['en', ''], ['de', 'de/']]) {
     }
   }
 }
+
+if (only) runs = runs.filter((r) => only.test(r.id));
 
 async function capture(siteDir) {
   const servers = startServers(`${siteDir.replace(/\/$/, '')}/`);

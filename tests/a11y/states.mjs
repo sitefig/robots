@@ -26,6 +26,17 @@ async function paste(page) {
   await results(page);
 }
 
+/**
+ * Clicks a copy button and waits until its label shows the result ("Done",
+ * "Copied", "Failed", …), which arrives asynchronously after the clipboard
+ * call, instead of sleeping a fixed time.
+ */
+async function flash(page, selector) {
+  const before = await page.$eval(selector, (b) => b.textContent);
+  await page.click(selector);
+  await page.waitForFunction((sel, text) => document.querySelector(sel)?.textContent !== text, { timeout: 5000 }, selector, before);
+}
+
 /** Puts two sites in this browser's recent list before the page loads. */
 async function seedRecent(page) {
   await page.evaluateOnNewDocument((list) => {
@@ -53,10 +64,10 @@ export function states(path) {
     { name: 'tester-custom-blocked', url: url(), setup: async (page) => { await paste(page); await page.select('#tester-agent', 'custom'); await page.type('#tester-token', 'gptbot'); await page.$eval('#tester-path', (el) => { el.value = '/private/x'; el.dispatchEvent(new Event('input')); }); await page.waitForSelector('#tester .callout[data-state="error"]'); } },
     { name: 'tester-yandex-cleanparam', url: url(), setup: async (page) => { await paste(page); await page.select('#tester-agent', 'YandexBot'); await page.$eval('#tester-path', (el) => { el.value = '/articles/x?utm_source=a&id=1'; el.dispatchEvent(new Event('input')); }); } },
     { name: 'filter-ai-training', url: url(), setup: async (page) => { await paste(page); const chips = await page.$$('#agents .chip'); await chips[2].click(); await page.waitForSelector('#agents tr[data-hidden="true"]'); } },
-    { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await page.click('#export .button'); await new Promise((r) => setTimeout(r, 300)); } },
+    { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#export .button'); } },
     { name: 'export-more-open', url: url(), setup: async (page) => { await paste(page); await page.click('#export details > summary'); } },
     { name: 'pricing-annual', url: url(), setup: async (page) => { await page.click('#billing-cycle [data-cycle="annual"]'); await page.waitForSelector('#billing-cycle [data-cycle="annual"][aria-pressed="true"]'); } },
-    { name: 'raw-copy-flash', url: url(), setup: async (page) => { await paste(page); await page.click('#raw .button'); await new Promise((r) => setTimeout(r, 300)); } },
+    { name: 'raw-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#raw .button'); } },
     { name: 'fetched-worst', url: url(`?url=${origin(PORTS.worst)}`), setup: results },
     { name: 'fetched-worst-access-check', url: url(`?url=${origin(PORTS.worst)}`), setup: async (page) => { await results(page); await page.click('#access .button'); await page.waitForSelector('#access .button:not([disabled])', { timeout: 60000 }); } },
     { name: 'fetched-404', url: url(`?url=${origin(PORTS.notFound)}`), setup: async (page) => { await page.waitForSelector('#results:not([hidden])'); } },
