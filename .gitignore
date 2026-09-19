@@ -11,3 +11,10 @@ dist/
 tests/a11y/.snapshots/
 tests/a11y/.pixels/
 tests/lighthouse/.reports/
+.env
+.env.*
+__pycache__/
+.venv/
+.pytest_cache/
+crates/python/python/susbot/*.so
+crates/python/python/susbot/*.pyd

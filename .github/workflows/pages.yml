@@ -18,6 +18,9 @@ on:
       - 'action.yml'
       - 'worker/**'
       - 'crates/cli/**'
+      - 'crates/susbot/**'
+      - 'crates/python/**'
+      - '.github/workflows/release.yml'
       - '.github/workflows/test.yml'
       - '.github/workflows/deploy-worker.yml'
   workflow_dispatch:

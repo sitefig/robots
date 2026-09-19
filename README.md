@@ -21,7 +21,8 @@ The engine is one Rust crate, compiled to WebAssembly for the browser and to a n
 ## Command line
 
 ```
-cargo install --path crates/cli        # or cargo build -p susbot-cli --release
+cargo install susbot                  # from crates.io (same as susbot-cli)
+pip install susbot                    # from PyPI: the same command plus Python bindings
 susbot https://example.com             # summary with issues, security findings and recommended actions
 susbot https://example.com --format markdown --out audit.md
 susbot https://example.com --format json | jq .summary
@@ -30,6 +31,8 @@ susbot https://example.com --access-check   # refetch with every crawler's User-
 susbot --print-default-config > my-rules.toml
 susbot https://example.com --lang de --locale-dir locales
 ```
+
+In Python, `susbot.Analysis(text, site_url=...)` gives the report as a dict, `allowed(user_agent, path)`, the Markdown and HTML audits, the CSV tabs and `susbot.diff(old, new)`. See [`crates/python/README.md`](crates/python/README.md).
 
 Exit codes: 0, 1 when findings reach `--fail-on` (`error`, `warning`) or `--fail-on-security` (`high`, `medium`, `low`), 2 on fetch or config errors.
 
