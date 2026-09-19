@@ -3,3 +3,8 @@ Copyright 2020-2024 Braille Institute of America, Inc.
 (https://www.brailleinstitute.org/freefont/)
 Licensed under the SIL Open Font License, Version 1.1: https://openfontlicense.org
 The files here are the latin and latin-ext woff2 subsets served by Google Fonts.
+
+Space Grotesk (the wordmark only; SpaceGrotesk-700-wordmark.woff2 holds just
+the letters of "sus.bot"). Copyright 2020 The Space Grotesk Project Authors
+(https://github.com/floriankarsten/space-grotesk). Licensed under the SIL
+Open Font License, Version 1.1: https://openfontlicense.org

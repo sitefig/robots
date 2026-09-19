@@ -28,6 +28,7 @@ export function Document(ctx: PageContext, p: DocumentProps): string {
   ${analyticsTag()}<link rel="canonical" href="${absolute(ctx.path)}">
 ${hreflangLinks(ctx.alternates, ctx.active)}
   <link rel="icon" href="${a}favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="${a}apple-touch-icon.png">
   <link rel="preload" href="${a}fonts/AtkinsonHyperlegibleNext-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="${a}fonts/AtkinsonHyperlegibleNext-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="${a}css/site.css">

@@ -81,6 +81,8 @@
   --color-signal: #ffd60a;
   --color-signal-ink: #111418;
   --color-focus: light-dark(#111418, #ffd60a);
+  /* The logo's eye: yellow on dark, the ink colour on light. */
+  --color-brand-eye: light-dark(#111418, #ffd60a);
 
   --color-ok: light-dark(#0a6b37, #86e0aa);
   --color-ok-bg: light-dark(#e3f3ea, #12301f);
