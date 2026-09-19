@@ -48,8 +48,8 @@ jobs:
           git add data/famous-100
           if git diff --cached --quiet; then echo "no snapshot changes"; exit 0; fi
           CHANGED=$(tr '\n' ' ' < out/changed.txt)
-          git config user.name "susbot"
-          git config user.email "susbot@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "famous-100: $(date -u +%F) ${CHANGED:-seed}"
           git push
       - uses: actions/upload-artifact@v4
