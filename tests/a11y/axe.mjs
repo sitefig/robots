@@ -28,6 +28,19 @@ async function ensureBrowser() {
   console.log('  Chrome disconnected; relaunching');
   browser = await launch();
 }
+// Opening a tab right after closing the press page sometimes fails in CI
+// with "Target.createTarget: Session with given id not found" while Chrome
+// stays healthy; a short retry gets the tab.
+async function openPage(target) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await target.newPage();
+    } catch (err) {
+      if (attempt >= 3 || !browser.connected) throw err;
+      await new Promise((r) => setTimeout(r, 250 * attempt));
+    }
+  }
+}
 let violations = 0;
 let checked = 0;
 let failures = 0;
@@ -52,7 +65,7 @@ try {
     await ensureBrowser();
     let page;
     try {
-      page = await browser.newPage();
+      page = await openPage(browser);
       await installMocks(page);
       await page.goto(`${BASE}${p.urlPath}`, { waitUntil: 'networkidle0' });
       await audit(page, `static ${p.file}`);
@@ -72,7 +85,7 @@ try {
         let page;
         try {
           context = await browser.createBrowserContext();
-          page = await context.newPage();
+          page = await openPage(context);
         } catch (err) {
           failures++;
           console.log(`  ${lang} ${scheme} ${st.name}: could not open a page: ${err.message.split('\n')[0]}`);
