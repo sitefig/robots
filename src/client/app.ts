@@ -150,14 +150,18 @@ function fillLinks(): void {
 }
 
 /**
- * Starts downloading and compiling the engine once the page is idle, so the
- * first analysis rarely waits and page load does not pay for it.
+ * Starts downloading and compiling the engine on the visitor's first sign of
+ * intent (focus, pointer, key, touch): it loads while they type the address
+ * or while the robots.txt is fetched, so the first analysis rarely waits,
+ * and a visit without interaction never pays for the 1.6 MB compile.
  */
 function prefetchEngine(): void {
-  const start = () => { loadEngine().catch((err: unknown) => console.error(err)); };
-  const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 4000 }) : setTimeout(start, 1500));
-  if (document.readyState === 'complete') idle();
-  else addEventListener('load', idle, { once: true });
+  const events = ['focusin', 'pointerdown', 'keydown', 'touchstart'];
+  const start = () => {
+    events.forEach((e) => removeEventListener(e, start, true));
+    loadEngine().catch((err: unknown) => console.error(err));
+  };
+  events.forEach((e) => addEventListener(e, start, { capture: true, passive: true }));
 }
 
 function checkOrigin(origin: string): void {
