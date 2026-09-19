@@ -4,7 +4,7 @@
 // tests/a11y/.snapshots/; those are validated here as well when present.
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { HtmlValidate } from 'html-validate';
-import { pages, rootPath } from './lib.mjs';
+import { pages, rootPath, sitePath } from './lib.mjs';
 
 const validator = new HtmlValidate({
   extends: ['html-validate:recommended', 'html-validate:a11y', 'html-validate:document'],
@@ -28,7 +28,7 @@ const validator = new HtmlValidate({
 });
 
 const SNAPSHOTS = `${rootPath}tests/a11y/.snapshots/`;
-const targets = pages().map((p) => ({ file: p.file, path: `${rootPath}${p.file}` }));
+const targets = pages().map((p) => ({ file: p.file, path: `${sitePath}${p.file}` }));
 if (existsSync(SNAPSHOTS)) {
   for (const f of readdirSync(SNAPSHOTS).filter((f) => f.endsWith('.html')).sort()) targets.push({ file: `state ${f.slice(0, -5)}`, path: `${SNAPSHOTS}${f}` });
 }

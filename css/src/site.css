@@ -1,6 +1,6 @@
 /* sus.bot stylesheet: CUBE CSS on top of Tailwind.
 
-   Build: npm run build:css  ->  css/site.css (generated, not committed).
+   Build: npm run build:css  ->  _site/css/site.css (generated, not committed).
 
    Tailwind supplies two things: the design tokens (@theme below, with the
    default theme switched off so nothing exists that is not ours) and the
@@ -24,8 +24,12 @@
 @import "./blocks.css" layer(components);
 @import "./exceptions.css" layer(components);
 
-@source "../../tools/page.template.html";
-@source "../../js/app.js";
+@source "../../src/components";
+@source "../../src/site";
+@source "../../src/client";
+@source not "../../src/client/wasm";
+/* Words in the TypeScript that look like utilities but are not classes. */
+@source not inline("relative absolute contents");
 
 @theme {
   --*: initial;

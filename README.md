@@ -99,14 +99,15 @@ GitHub Pages cannot read `Accept-Language`, so the root page redirects once, cli
 
 ```
 cargo test --workspace     # engine tests
-npm test                   # page generator and locale tests
-npm run build              # WebAssembly bundle into js/wasm/ (needs wasm32 target and wasm-bindgen-cli)
-npm start                  # http://localhost:8888
-npm run gen                # regenerate the language pages after editing the template or a locale
+npm test                   # site build, translations and locale tests
+npm ci && npm run build    # WebAssembly engine, then the Eleventy site into _site/ (needs the wasm32 target and wasm-bindgen-cli)
+npm start                  # rebuild the site and serve _site/ on http://localhost:8888
+npm run i18n:sync          # after editing po/en.po: merge into every language, regenerate locales/*.json
 npm ci && npm run a11y     # accessibility: axe-core in Chrome, html-validate, pa11y (HTML_CodeSniffer), all pages and every UI state with the worst robots.txt ever
+npm run lighthouse         # Lighthouse against the live site; the deploy workflow runs it after every publish
 ```
 
-Layout: `crates/core` (engine), `crates/wasm` (browser bindings), `crates/cli`, `config/default.toml`, `locales/*.json`, `js/` (page), `css/` (CUBE CSS), `tools/` (page generator), `worker/` (Cloudflare proxy), `schema/report.schema.json`, `examples/kitchen-sink.robots.txt` (one file that triggers every check; open `?example=kitchen-sink`).
+Layout: `crates/core` (engine), `crates/wasm` (browser bindings), `crates/cli`, `config/default.toml`, `po/*.po` (translations; `locales/*.json` is generated from them), `src/site/` (Eleventy pages and Markdown), `src/components/` (TypeScript page components), `src/client/` (TypeScript browser code), `css/src/` (CUBE CSS on Tailwind), `tools/i18n.ts`, `worker/` (Cloudflare proxy), `schema/report.schema.json`, `examples/kitchen-sink.robots.txt` (one file that triggers every check; open `?example=kitchen-sink`).
 
 ## Costs and safeguards
 
@@ -119,7 +120,7 @@ The project is built to run for free, with hard stops rather than bills:
 
 ## Deploy
 
-GitHub Pages serves the site from the `Deploy site` workflow (source: GitHub Actions), which builds the WASM, renders the pages and uploads `dist/` with the `CNAME` for sus.bot. The Cloudflare Worker in `worker/` fetches robots.txt on the page's behalf; keep `https://sus.bot` in `ALLOWED_ORIGINS` and the worker URL in `js/config.js`.
+GitHub Pages serves the site from the `Deploy site` workflow (source: GitHub Actions), which builds the WASM and the Eleventy site and publishes `_site/`. The site is TypeScript: components in `src/components/`, pages in `src/site/`, browser code in `src/client/`. To add a page, put a Markdown file with `layout: page` and a `title` in its front matter under `src/site/` (a `de/` folder makes it German) and push; it gets the site header and footer, joins the sitemap and is published by the workflow. Translations are gettext files in `po/`. The Cloudflare Worker in `worker/` fetches robots.txt on the page's behalf; keep `https://sus.bot` in `ALLOWED_ORIGINS` and the worker URL in `src/client/config.ts`.
 
 Rule matching follows [RFC 9309](https://www.rfc-editor.org/rfc/rfc9309) as implemented by Google's open-source matcher. A free tool by [Sitefig](https://sitefig.eu).
 

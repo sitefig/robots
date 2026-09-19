@@ -1,0 +1,17 @@
+{
+  // The browser build: src/client/*.ts -> _site/js/*.js as native ES modules,
+  // one file per module (no bundler). Relative ".ts" imports are rewritten to
+  // ".js"; the WebAssembly glue in src/client/wasm is copied by Eleventy.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "rootDir": "src/client",
+    "outDir": "_site/js",
+    "types": [],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src/client/**/*.ts"],
+  "exclude": ["src/client/wasm"]
+}

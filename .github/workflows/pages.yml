@@ -1,6 +1,8 @@
-# Builds the WebAssembly engine, renders the language pages and deploys the
-# static site to GitHub Pages (sus.bot). Pages must be set to "GitHub Actions"
-# as its source. The repo holds no built artifacts.
+# Builds and publishes the site to GitHub Pages (sus.bot): the WebAssembly
+# engine, then Eleventy (home page in every language, every Markdown page
+# under src/site, sitemap.xml), Tailwind and the TypeScript client, all into
+# _site/. Pages must be set to "GitHub Actions" as its source. The repo holds
+# no built artifacts.
 
 name: Deploy site
 
@@ -49,29 +51,22 @@ jobs:
           sudo mv binaryen-version_119/bin/wasm-opt /usr/local/bin/
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
-      # Tailwind builds css/site.css; the headless browser the a11y checkers
-      # use is not needed here.
+      # The headless browser the a11y checkers use is not needed here.
       - run: npm ci
         env:
           PUPPETEER_SKIP_DOWNLOAD: '1'
-      - run: npm run build
-      - run: npm run gen
       - run: npm test
-      - name: Assemble the site
+      - run: npm run build
+      - run: npm run typecheck
+      - name: List the site
         run: |
-          set -eu
-          rm -rf dist && mkdir dist
-          cp -r index.html js fonts locales schema examples sitemap.xml .nojekyll dist/
-          mkdir dist/css && cp css/site.css dist/css/
-          for d in bg cs da de el es et fi fr ga hr hu it lt lv mt nl pl pt ro sk sl sv; do cp -r "$d" dist/; done
-          cp config/default.toml dist/default-config.toml
-          echo "sus.bot" > dist/CNAME
-          du -sh dist
+          find _site -name index.html | sort
+          du -sh _site
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: _site
 
   deploy:
     needs: build
@@ -80,6 +75,41 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  lighthouse:
+    # Lighthouse against the site just published (English and German home
+    # pages, mobile and desktop). Fails the run when accessibility, best
+    # practices or SEO drop under 100 or performance under 90; the reports
+    # are kept as an artifact.
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'   # the runner has Google Chrome
+      - name: Wait until the new version is served
+        run: |
+          for i in $(seq 1 30); do
+            curl -fsS "${{ needs.deploy.outputs.page_url }}?v=$RANDOM" -o /dev/null && break
+            sleep 10
+          done
+      - run: node tests/lighthouse/run.mjs
+        env:
+          LH_SITE: ${{ needs.deploy.outputs.page_url }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: tests/lighthouse/.reports/
+          if-no-files-found: ignore

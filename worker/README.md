@@ -12,7 +12,7 @@ npx wrangler deploy
 ```
 
 The deployed URL is `https://robots-proxy.sitefig.workers.dev`.
-Put that in `js/config.js` as `WORKER_URL`.
+Put that in `src/client/config.ts` as `WORKER_URL`.
 
 Edit `ALLOWED_ORIGINS` in `wrangler.toml` before deploying so it lists the GitHub Pages
 origin. Requests from any other Origin, or with no Origin header, get a 403.

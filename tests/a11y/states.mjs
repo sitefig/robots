@@ -2,7 +2,7 @@
 // name, a URL and a `setup(page)` that brings the page there. Used by the
 // axe checker (every state, both themes, English and German) and mirrored
 // for pa11y where its action language allows.
-import { WORKER_URL } from '../../js/config.js';
+import { WORKER_URL } from '../../src/client/config.ts';
 import { PORTS, WORST, mockProxy } from './server.mjs';
 
 export const BASE = `http://127.0.0.1:${PORTS.site}`;

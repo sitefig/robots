@@ -483,3 +483,57 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+
+/* ---- content pages (Markdown) */
+
+.prose {
+  max-width: var(--container-prose);
+}
+
+.prose > * + * {
+  margin-block-start: 1em;
+}
+
+.prose > :is(h2, h3) {
+  margin-block-start: 1.75em;
+}
+
+.prose > h1 + * {
+  margin-block-start: 1.25em;
+}
+
+.prose ul {
+  list-style: disc;
+}
+
+.prose ol {
+  list-style: decimal;
+}
+
+.prose li + li {
+  margin-block-start: 0.375em;
+}
+
+.prose blockquote {
+  padding-inline-start: 1rem;
+  border-inline-start: 0.25rem solid var(--color-line);
+  color: var(--color-muted);
+}
+
+.prose pre {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  overflow-x: auto;
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+}

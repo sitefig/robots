@@ -5,7 +5,7 @@
 import http from 'node:http';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
-import { rootPath } from './lib.mjs';
+import { rootPath, sitePath } from './lib.mjs';
 
 export const PORTS = { site: 8877, worst: 8890, notFound: 8891, serverError: 8892, html: 8893, empty: 8894, gone: 8895 };
 export const WORST = readFileSync(join(rootPath, 'tests/a11y/fixtures/worst.robots.txt'), 'utf8');
@@ -24,7 +24,8 @@ function mock(port, handler) {
   }).listen(port, '127.0.0.1');
 }
 
-export function startServers() {
+/** The site folder on PORTS.site plus the mock origins; `site` defaults to _site/. */
+export function startServers(site = sitePath) {
   const servers = [];
   servers.push(http.createServer((req, res) => {
     let p = decodeURIComponent(req.url.split('?')[0]);
@@ -33,8 +34,8 @@ export function startServers() {
       return res.end(WORST);
     }
     if (p.endsWith('/')) p += 'index.html';
-    const file = join(rootPath, p);
-    if (!file.startsWith(rootPath) || !existsSync(file) || statSync(file).isDirectory()) {
+    const file = join(site, p);
+    if (!file.startsWith(site) || !existsSync(file) || statSync(file).isDirectory()) {
       res.writeHead(404);
       return res.end('not found');
     }

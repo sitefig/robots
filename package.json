@@ -5,25 +5,36 @@
   "description": "sus.bot: robots.txt audit. Rust engine compiled to WebAssembly for the browser and to a CLI for CI; static pages in 24 languages.",
   "license": "PolyForm-Noncommercial-1.0.0",
   "scripts": {
-    "build": "npm run build:css && ./scripts/build-wasm.sh",
-    "build:dev": "npm run build:css && ./scripts/build-wasm.sh debug",
-    "start": "python3 -m http.server 8888",
-    "test": "node --test tests/*.test.js",
-    "test:all": "cargo test --workspace && node --test tests/*.test.js",
-    "gen": "node tools/gen-pages.js",
+    "build": "npm run build:wasm && npm run build:site",
+    "build:dev": "./scripts/build-wasm.sh debug && npm run build:site",
+    "build:wasm": "./scripts/build-wasm.sh",
+    "build:site": "eleventy --config=eleventy.config.ts --quiet && npm run build:css && npm run build:client",
+    "build:css": "tailwindcss -i css/src/site.css -o _site/css/site.css --minify",
+    "build:client": "tsc -p tsconfig.client.json",
+    "watch:css": "tailwindcss -i css/src/site.css -o _site/css/site.css --watch",
+    "dev": "eleventy --config=eleventy.config.ts --serve",
+    "start": "npm run build:site && python3 -m http.server 8888 --directory _site",
+    "typecheck": "tsc -p tsconfig.json",
+    "i18n": "node tools/i18n.ts build",
+    "i18n:sync": "node tools/i18n.ts sync",
+    "test": "node tools/i18n.ts check && node --test tests/*.test.js",
+    "test:all": "cargo test --workspace && npm run typecheck && npm test",
     "cli": "cargo run -q -p susbot-cli --release --",
     "a11y": "node tests/a11y/run.mjs",
     "a11y:axe": "node tests/a11y/axe.mjs",
     "a11y:html": "node tests/a11y/html-validate.mjs",
     "a11y:pa11y": "node tests/a11y/pa11y.mjs",
-    "build:css": "tailwindcss -i css/src/site.css -o css/site.css --minify",
-    "watch:css": "tailwindcss -i css/src/site.css -o css/site.css --watch"
+    "lighthouse": "node tests/lighthouse/run.mjs"
   },
   "devDependencies": {
+    "@11ty/eleventy": "3.1.6",
     "@tailwindcss/cli": "4.3.3",
     "axe-core": "^4.13.0",
+    "chrome-launcher": "1.2.1",
     "html-validate": "^8.29.0",
+    "lighthouse": "13.5.0",
     "pa11y": "^8.0.0",
-    "tailwindcss": "4.3.3"
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2"
   }
 }

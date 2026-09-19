@@ -5,7 +5,9 @@ worker/.dev.vars
 .DS_Store
 *.log
 target/
-js/wasm/
+src/client/wasm/
+_site/
 dist/
 tests/a11y/.snapshots/
-css/site.css
+tests/a11y/.pixels/
+tests/lighthouse/.reports/

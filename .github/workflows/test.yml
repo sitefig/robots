@@ -27,12 +27,16 @@ jobs:
       - run: ./target/release/susbot examples/kitchen-sink.robots.txt --site-url https://www.example.com/robots.txt --format json > /dev/null
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
+          cache: npm
+      - run: npm ci
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
       - run: npm test
   accessibility:
-    # Three engines against the generated pages and the rendered report:
-    # axe-core in Chrome (both themes), html-validate's WCAG preset, and
-    # pa11y's HTML_CodeSniffer. Needs the WASM bundle for the rendered state.
+    # Three engines against the built site in every UI state: axe-core in
+    # Chrome (both themes), html-validate's WCAG preset, and pa11y's
+    # HTML_CodeSniffer. Builds the WASM engine and the Eleventy site first.
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -49,10 +53,12 @@ jobs:
           sudo mv "wasm-bindgen-${WBG}-x86_64-unknown-linux-musl/wasm-bindgen" /usr/local/bin/
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
         env:
           PUPPETEER_SKIP_DOWNLOAD: 'true'   # the runner has Google Chrome
       - run: npm run build:dev
+      # Needs the engine's generated .d.ts from the build above.
+      - run: npm run typecheck
       - run: npm run a11y
