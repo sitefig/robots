@@ -19,7 +19,15 @@ rmSync(SNAPSHOTS, { recursive: true, force: true });
 mkdirSync(SNAPSHOTS, { recursive: true });
 const servers = startServers();
 await new Promise((r) => setTimeout(r, 300));
-const browser = await puppeteer.launch({ executablePath: await chromePath(), args: ['--no-sandbox', '--disable-gpu'] });
+const launch = async () => puppeteer.launch({ executablePath: await chromePath(), args: ['--no-sandbox', '--disable-gpu'] });
+let browser = await launch();
+// A crashed Chrome fails one page, is reported, and is replaced, instead of
+// ending the run with a bare protocol error that names no page.
+async function ensureBrowser() {
+  if (browser.connected) return;
+  console.log('  Chrome disconnected; relaunching');
+  browser = await launch();
+}
 let violations = 0;
 let checked = 0;
 let failures = 0;
@@ -41,19 +49,35 @@ async function audit(page, label, snapshot) {
 
 try {
   for (const p of pages()) {
-    const page = await browser.newPage();
-    await installMocks(page);
-    await page.goto(`${BASE}${p.urlPath}`, { waitUntil: 'networkidle0' });
-    await audit(page, `static ${p.file}`);
-    await page.close();
+    await ensureBrowser();
+    let page;
+    try {
+      page = await browser.newPage();
+      await installMocks(page);
+      await page.goto(`${BASE}${p.urlPath}`, { waitUntil: 'networkidle0' });
+      await audit(page, `static ${p.file}`);
+    } catch (err) {
+      failures++;
+      console.log(`  static ${p.file}: could not check the page: ${err.message.split('\n')[0]}`);
+    }
+    await page?.close().catch(() => {});
   }
   for (const [lang, path] of [['en', ''], ['de', 'de/']]) {
     for (const scheme of ['light', 'dark']) {
       for (const st of states(path)) {
         // A fresh context per state: the theme choice lives in localStorage
         // and would otherwise leak from one state into the next.
-        const context = await browser.createBrowserContext();
-        const page = await context.newPage();
+        await ensureBrowser();
+        let context;
+        let page;
+        try {
+          context = await browser.createBrowserContext();
+          page = await context.newPage();
+        } catch (err) {
+          failures++;
+          console.log(`  ${lang} ${scheme} ${st.name}: could not open a page: ${err.message.split('\n')[0]}`);
+          continue;
+        }
         await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: scheme }]);
         await installMocks(page);
         const label = `${lang} ${scheme} ${st.name}`;
@@ -66,12 +90,12 @@ try {
           failures++;
           console.log(`  ${label}: could not reach the state: ${err.message.split('\n')[0]}`);
         }
-        await context.close();
+        await context.close().catch(() => {});
       }
     }
   }
 } finally {
-  await browser.close();
+  await browser.close().catch(() => {});
   servers.close();
 }
 console.log(`axe-core (Chrome): ${checked} page states checked, ${violations} violation(s), ${failures} state(s) not reached`);
