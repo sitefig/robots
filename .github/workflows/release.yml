@@ -1,10 +1,16 @@
-# Builds the Python package (crates/python: bindings plus the susbot command)
-# and publishes it to PyPI as `susbot` when a version tag is pushed:
+# Builds and publishes the packages of a release when a version tag is pushed:
 #
 #   git tag v2.0.1 && git push origin v2.0.1
 #
-# PyPI trusts this workflow by name (trusted publishing: project susbot,
+# - PyPI `susbot` (crates/python: bindings plus the susbot command), wheels
+#   for Linux, macOS and Windows and the sdist.
+# - npm `susbot` (npm/susbot: the WebAssembly engine as a JavaScript API plus
+#   the susbot command) and one `susbot-<platform>-<arch>` package per native
+#   CLI binary, which the main package lists as optional dependencies.
+#
+# Both registries trust this workflow by name (trusted publishing for
 # repository sitefig/robots, workflow release.yml), so no token is stored.
+# Versions already on a registry are skipped, so a failed run can be re-run.
 # A manual run builds and tests everything but publishes nothing.
 # The crates.io release stays manual; see CLAUDE.md.
 
@@ -33,8 +39,9 @@ jobs:
         run: |
           set -eu
           tag="${GITHUB_REF_NAME#v}"
-          for f in Cargo.toml crates/python/Cargo.toml crates/susbot/Cargo.toml; do
-            v=$(grep -m1 -E '^version = "' "$f" | cut -d'"' -f2)
+          for f in Cargo.toml crates/python/Cargo.toml crates/susbot/Cargo.toml npm/susbot/package.json; do
+            v=$(grep -m1 -E '^ *"?version"? ?[=:] ?"' "$f" | cut -d'"' -f2)
+            [ "${f##*.}" = json ] && v=$(grep -m1 -E '^  "version": "' "$f" | cut -d'"' -f4)
             echo "$f: $v"
             [ "$v" = "$tag" ] || { echo "::error file=$f::version $v does not match tag v$tag"; exit 1; }
           done
@@ -115,3 +122,126 @@ jobs:
           merge-multiple: true
       - run: ls -l dist
       - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
+
+  cli:
+    # Native CLI binaries for the npm platform packages. Linux builds are
+    # static (musl), so one package per architecture runs on every distro.
+    needs: check-version
+    name: cli ${{ matrix.npm }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-musl, npm: linux-x64, test: true }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-musl, npm: linux-arm64, test: true }
+          - { os: macos-latest, target: aarch64-apple-darwin, npm: darwin-arm64, test: true }
+          - { os: macos-latest, target: x86_64-apple-darwin, npm: darwin-x64 }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc, npm: win32-x64, test: true }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - if: contains(matrix.target, 'musl')
+        run: sudo apt-get update -q && sudo apt-get install -yq musl-tools
+      - run: cargo build --release --locked -p susbot-cli --target ${{ matrix.target }}
+      - name: Name the binary after its npm package
+        shell: bash
+        run: |
+          set -eu
+          ext=""; [ "${{ runner.os }}" = Windows ] && ext=".exe"
+          mkdir -p bins
+          cp "target/${{ matrix.target }}/release/susbot$ext" "bins/susbot-${{ matrix.npm }}$ext"
+          if [ "${{ matrix.test }}" = true ]; then "bins/susbot-${{ matrix.npm }}$ext" --version; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cli-${{ matrix.npm }}
+          path: bins/*
+          if-no-files-found: error
+
+  npm-pack:
+    # The WebAssembly engine with the diff bindings, the package tests, then
+    # every package assembled and installed from its tarball as a user would.
+    needs: cli
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Install wasm-bindgen and wasm-opt
+        run: |
+          set -eu
+          WBG=$(grep -oE 'wasm-bindgen = "[0-9.]+"' crates/wasm/Cargo.toml | grep -oE '[0-9.]+')
+          curl -sSL "https://github.com/rustwasm/wasm-bindgen/releases/download/${WBG}/wasm-bindgen-${WBG}-x86_64-unknown-linux-musl.tar.gz" | tar xz
+          sudo mv "wasm-bindgen-${WBG}-x86_64-unknown-linux-musl/wasm-bindgen" /usr/local/bin/
+          curl -sSL https://github.com/WebAssembly/binaryen/releases/download/version_119/binaryen-version_119-x86_64-linux.tar.gz | tar xz
+          sudo mv binaryen-version_119/bin/wasm-opt /usr/local/bin/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cli-*
+          path: bins
+          merge-multiple: true
+      - run: chmod +x bins/* && ls -l bins
+      - run: ./scripts/build-npm-wasm.sh
+      - run: node --test npm/susbot/test/*.test.js
+        env:
+          SUSBOT_BINARY: ${{ github.workspace }}/bins/susbot-linux-x64
+      - run: node scripts/npm-pack.mjs bins npm-out
+      - name: Pack and install like a user
+        run: |
+          set -eu
+          mkdir -p tarballs try
+          for d in npm-out/*/; do (cd "$d" && npm pack -q --pack-destination "$GITHUB_WORKSPACE/tarballs"); done
+          ls -l tarballs
+          cd try
+          echo '{"name":"try","private":true,"type":"module"}' > package.json
+          npm install --no-audit --no-fund ../tarballs/susbot-linux-x64-*.tgz ../tarballs/susbot-[0-9]*.tgz
+          npx susbot --version
+          node -e "import('susbot').then((m) => { if (new m.Analysis('User-agent: GPTBot\nDisallow: /\n').allowed('GPTBot', '/')) process.exit(1); })"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-packages
+          path: npm-out
+          if-no-files-found: error
+
+  publish-npm:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: npm-pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      id-token: write   # trusted publishing and provenance
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm 11.5.1 or later.
+      - run: npm install -g npm@11 && npm --version
+      - uses: actions/download-artifact@v4
+        with:
+          name: npm-packages
+          path: npm-out
+      - name: Publish the platform packages, then susbot
+        run: |
+          set -eu
+          publish() {
+            name=$(node -p "require('./$1/package.json').name")
+            version=$(node -p "require('./$1/package.json').version")
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "$name@$version is already published"
+            else
+              (cd "$1" && chmod +x bin/* 2>/dev/null || true; npm publish --access public)
+            fi
+          }
+          for d in npm-out/susbot-*/; do publish "${d%/}"; done
+          publish npm-out/susbot

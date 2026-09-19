@@ -57,6 +57,31 @@ jobs:
           cd crates/python
           maturin develop --locked
           pytest -q tests
+  npm:
+    # The npm package (npm/susbot): the WebAssembly engine with the diff
+    # bindings, its JavaScript API and the command shim over a debug CLI.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: Install wasm-bindgen
+        run: |
+          set -eu
+          WBG=$(grep -oE 'wasm-bindgen = "[0-9.]+"' crates/wasm/Cargo.toml | grep -oE '[0-9.]+')
+          curl -sSL "https://github.com/rustwasm/wasm-bindgen/releases/download/${WBG}/wasm-bindgen-${WBG}-x86_64-unknown-linux-musl.tar.gz" | tar xz
+          sudo mv "wasm-bindgen-${WBG}-x86_64-unknown-linux-musl/wasm-bindgen" /usr/local/bin/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: ./scripts/build-npm-wasm.sh
+      - run: cargo build --locked -p susbot-cli
+      - run: node --test npm/susbot/test/*.test.js
+        env:
+          SUSBOT_BINARY: ${{ github.workspace }}/target/debug/susbot
   accessibility:
     # Three engines against the built site in every UI state: axe-core in
     # Chrome (both themes), html-validate's WCAG preset, and pa11y's

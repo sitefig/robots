@@ -18,3 +18,4 @@ __pycache__/
 .pytest_cache/
 crates/python/python/susbot/*.so
 crates/python/python/susbot/*.pyd
+npm/susbot/wasm/

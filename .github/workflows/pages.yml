@@ -21,6 +21,9 @@ on:
       - 'crates/susbot/**'
       - 'crates/python/**'
       - '.github/workflows/release.yml'
+      - 'npm/**'
+      - 'scripts/npm-pack.mjs'
+      - 'scripts/build-npm-wasm.sh'
       - '.github/workflows/test.yml'
       - '.github/workflows/deploy-worker.yml'
   workflow_dispatch:
