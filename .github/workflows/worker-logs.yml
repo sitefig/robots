@@ -89,24 +89,30 @@ jobs:
               console.log("Nothing came back. Either no request reached the worker in this window, or logging is off in wrangler.jsonc.");
               process.exit(0);
             }
-            // Cloudflare returns the worker request record and, separately,
-            // every console line the worker wrote. Ours are JSON objects.
-            const rows = events.map((e) => ({
-              when: e.timestamp ? new Date(e.timestamp).toISOString() : "",
-              level: e.source?.level ?? e.$metadata?.level ?? "",
-              message: e.source?.message ?? "",
-              outcome: e.$workers?.outcome ?? "",
-              status: e.$workers?.event?.response?.status ?? "",
-            }));
-            const ours = rows.filter((r) => r.message.trim().startsWith("{"));
-            console.log(`lines the worker wrote: ${ours.length}, request records: ${rows.length - ours.length}`);
+            // A line the worker wrote is JSON, and Cloudflare parses it into
+            // fields under source; a request record carries source.message.
+            const when = (e) => (e.timestamp ? new Date(e.timestamp).toISOString() : "");
+            const mine = events.filter((e) => e.source?.event);
+            const requests = events.filter((e) => !e.source?.event);
+            console.log(`lines the worker wrote: ${mine.length}, request records: ${requests.length}`);
             console.log();
-            for (const r of rows.slice(0, 25)) {
-              console.log(`${r.when}  ${String(r.level).padEnd(5)} ${String(r.outcome).padEnd(8)} ${String(r.status).padEnd(3)} ${r.message.slice(0, 150)}`);
+            console.log("What the worker did:");
+            for (const e of mine.slice(0, 25)) {
+              const s = e.source;
+              const bits = Object.entries(s)
+                .filter(([k]) => !["event", "truncated", "ua"].includes(k))
+                .map(([k, v]) => `${k}=${v}`)
+                .join(" ");
+              console.log(`  ${when(e)}  ${String(s.event).padEnd(13)} ${bits}`);
             }
-            if (ours.length === 0) {
-              console.log("\nNo line came from the worker itself. Here is an event that carried no message, in full:");
-              const blank = events.find((e) => !(e.source?.message ?? "").trim());
-              console.log(JSON.stringify(blank ?? events[0], null, 2).slice(0, 2500));
+            if (mine.length === 0) {
+              console.log("  nothing; either no request reached the deployed version, or the logging call is missing");
+            }
+            console.log();
+            console.log("Requests as Cloudflare saw them:");
+            for (const e of requests.slice(0, 15)) {
+              const status = e.$workers?.event?.response?.status ?? "";
+              const outcome = e.$workers?.outcome ?? "";
+              console.log(`  ${when(e)}  ${String(outcome).padEnd(8)} ${String(status).padEnd(3)} ${String(e.source?.message ?? "").slice(0, 120)}`);
             }
           '
