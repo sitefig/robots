@@ -1,6 +1,7 @@
 /* TEAM */
 
-  Built and run by: Sitefig
+  Built and run by: Len Dierickx
+  Company: Sitefig
   Site: https://sitefig.eu/
   Contact: https://sitefig.eu/
 
