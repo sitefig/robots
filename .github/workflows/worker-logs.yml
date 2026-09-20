@@ -105,6 +105,8 @@ jobs:
               console.log(`${r.when}  ${String(r.level).padEnd(5)} ${String(r.outcome).padEnd(8)} ${String(r.status).padEnd(3)} ${r.message.slice(0, 150)}`);
             }
             if (ours.length === 0) {
-              console.log("\nNo line written by the worker itself. Either nothing reached the deployed version, or the logging call was not deployed.");
+              console.log("\nNo line recognised as the worker's own. Here is an event that carried no message, in full:");
+              const blank = events.find((e) => !(e.source?.message ?? "").trim());
+              console.log(JSON.stringify(blank ?? events[0], null, 2).slice(0, 2500));
             }
           '
