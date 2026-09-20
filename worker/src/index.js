@@ -28,13 +28,19 @@ export default {
     if (!allowed) return json({ error: 'Origin not allowed' }, 403, cors);
     // Kill switch: set PAUSED=true in the Cloudflare dashboard to stop serving
     // without a deploy. The request still counts, but no subrequest is made.
-    if (String(env.PAUSED).toLowerCase() === 'true') return json({ error: 'Proxy paused by the operator' }, 503, { ...cors, 'Retry-After': '3600' });
+    if (String(env.PAUSED).toLowerCase() === 'true') {
+      log('paused', {});
+      return json({ error: 'Proxy paused by the operator' }, 503, { ...cors, 'Retry-After': '3600' });
+    }
 
     // Advertise which limiters are active, so a missing binding is visible from outside.
     cors['X-Proxy-Limits'] = [env.PER_IP && 'per-ip', env.GLOBAL && 'global'].filter(Boolean).join(',') || 'none';
 
     const limited = await rateLimited(request, env);
-    if (limited) return json({ error: limited.message }, 429, { ...cors, 'Retry-After': String(limited.retryAfter) });
+    if (limited) {
+      log('rate-limited', { retryAfter: limited.retryAfter });
+      return json({ error: limited.message }, 429, { ...cors, 'Retry-After': String(limited.retryAfter) });
+    }
 
     const target = new URL(request.url).searchParams.get('url');
     if (!target) return json({ error: 'Missing "url" parameter' }, 400, cors);
@@ -65,6 +71,7 @@ export default {
       try {
         res = await fetch(url, { headers, redirect: 'manual', cache: 'no-store', signal });
       } catch (err) {
+        log('unreachable', { host: hostOf(url), error: String(err.message).slice(0, 120) });
         return json({ error: `Could not reach ${url}: ${err.message}`, robotsUrl, redirects }, 502, cors);
       }
       const location = res.headers.get('location');
@@ -91,6 +98,15 @@ export default {
 
     const body = redirectLimit ? { text: '', bytes: 0, truncated: false } : await readCapped(res.body, MAX_BYTES);
 
+    log('fetched', {
+      host: hostOf(url),
+      status: res.status,
+      bytes: body.bytes,
+      truncated: body.truncated,
+      redirects: redirects.length,
+      ms: Date.now() - started,
+      ua: ua.slice(0, 60),
+    });
     return json(
       {
         robotsUrl,
@@ -114,7 +130,25 @@ export default {
 };
 
 /**
- * Rate limiting via the Workers rate-limit bindings declared in wrangler.toml.
+ * One line per request in Workers Logs (enabled in wrangler.jsonc). It says
+ * what was fetched and how it went; never the caller's address, and never
+ * the body, which can be hundreds of kilobytes.
+ */
+function log(event, fields) {
+  console.log(JSON.stringify({ event, ...fields }));
+}
+
+/** Host of a URL, for a log line that is readable at a glance. */
+function hostOf(url) {
+  try {
+    return new URL(url).host;
+  } catch {
+    return 'unparsed';
+  }
+}
+
+/**
+ * Rate limiting via the Workers rate-limit bindings declared in wrangler.jsonc.
  * Bindings are optional so `wrangler dev` without them still works.
  */
 async function rateLimited(request, env) {
