@@ -8,6 +8,7 @@
 // screens, so the number of groups is not limited.
 
 import { LINKS } from './site.ts';
+import { PRICING } from '../client/config.ts';
 
 export type Target = { home: string } | { site: string } | { url: string };
 
@@ -26,7 +27,8 @@ export const FOOTER: FooterGroup[] = [
     heading: 'page.footer.product',
     links: [
       { label: 'page.footer.check', to: { home: '#main' } },
-      { label: 'page.nav.pricing', to: { home: '#pricing' } },
+      // Only while the prices are published; see PRICING.show in src/client/config.ts.
+      ...(PRICING.show ? [{ label: 'page.nav.pricing', to: { home: '#pricing' } as Target }] : []),
       { label: 'page.nav.cli', to: { home: '#cli' } },
       { label: 'page.nav.extension', to: { home: '#extension' } },
     ],

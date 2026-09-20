@@ -8,6 +8,7 @@ import { Verdict } from './verdict.ts';
 import { Promo } from './promo.ts';
 import { Results } from './results.ts';
 import { Pricing } from './pricing.ts';
+import { PRICING } from '../../client/config.ts';
 import { More } from './more.ts';
 
 export function HomeBody(ctx: PageContext, blockRate: string): string {
@@ -20,7 +21,7 @@ ${Hero(ctx)}
 ${Verdict(ctx)}
 ${Promo(ctx)}
 ${Results(ctx, blockRate)}
-${Pricing(ctx)}
+${PRICING.show ? Pricing(ctx) : ''}
 ${More(ctx)}
   </main>
 

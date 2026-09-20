@@ -2,6 +2,7 @@
 
 import type { PageContext } from '../context.ts';
 import { LINKS } from '../../lib/site.ts';
+import { PRICING } from '../../client/config.ts';
 
 export function Promo(ctx: PageContext): string {
   const { e } = ctx.s;
@@ -10,7 +11,7 @@ export function Promo(ctx: PageContext): string {
         <h2 id="promo-heading">${e('page.promo.title')}</h2>
         <p class="max-w-prose">${e('page.promo.body')}</p>
         <div class="cluster pt-2">
-          <a class="button" data-variant="primary" href="#pricing">${e('page.promo.cta')}</a>
+          ${PRICING.show ? `<a class="button" data-variant="primary" href="#pricing">${e('page.promo.cta')}</a>` : ''}
           <a href="${LINKS.diffs}" rel="noopener">${e('page.promo.sample')}</a>
         </div>
       </div>

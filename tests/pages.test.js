@@ -92,7 +92,7 @@ test('the Markdown layout wraps content in the site frame, in the page language'
   assert.ok(html.includes('href="../../css/site.css"'));
   assert.ok(html.includes(`<link rel="alternate" hreflang="en" href="${SITE_URL}about/">`), 'links its English version');
   assert.ok(html.includes(`<link rel="alternate" hreflang="x-default" href="${SITE_URL}about/">`));
-  assert.ok(html.includes('<a href="../#pricing">'), 'section links go to the German home page');
+  assert.ok(html.includes('<a href="../#main">'), 'section links go to the German home page');
   assert.ok(html.includes('href="../../about/" hreflang="en"'), 'switcher goes to the English page');
   assert.ok(html.includes('href="../../fr/" hreflang="fr"'), 'switcher falls back to the French home page');
   assert.ok(html.includes(dicts.de['page.skip']), 'chrome in German');

@@ -4,6 +4,7 @@
 
 import type { PageContext } from '../context.ts';
 import { escapeHtml } from '../../lib/site.ts';
+import { PRICING } from '../../client/config.ts';
 
 function AiStatus(ctx: PageContext, blockRate: string): string {
   const { e } = ctx.s;
@@ -23,7 +24,7 @@ function AiStatus(ctx: PageContext, blockRate: string): string {
               <div><dt>${e('page.aiWatch.agents')}</dt><dd class="font-mono" data-fill="ai-agents">–</dd></div>
               <div><dt>${e('page.aiWatch.rate')}</dt><dd class="font-mono">${escapeHtml(blockRate)}</dd></div>
             </dl>
-            <a class="button w-full" href="#pricing">${e('page.aiWatch.cta')}</a>
+            ${PRICING.show ? `<a class="button w-full" href="#pricing">${e('page.aiWatch.cta')}</a>` : ''}
           </aside>
         </div>
       </section>
@@ -86,7 +87,7 @@ function Regression(ctx: PageContext): string {
           <h2 id="regression-heading">${e('page.regression.title')}</h2>
           <p>${e('page.regression.body')}</p>
         </div>
-        <a class="button" data-variant="primary" href="#pricing">${e('page.regression.cta')}</a>
+        ${PRICING.show ? `<a class="button" data-variant="primary" href="#pricing">${e('page.regression.cta')}</a>` : ''}
       </aside>
 `;
 }

@@ -2,7 +2,7 @@
 // name, a URL and a `setup(page)` that brings the page there. Used by the
 // axe checker (every state, both themes, English and German) and mirrored
 // for pa11y where its action language allows.
-import { WORKER_URL } from '../../src/client/config.ts';
+import { WORKER_URL, PRICING } from '../../src/client/config.ts';
 import { PORTS, WORST, mockProxy } from './server.mjs';
 
 export const BASE = `http://127.0.0.1:${PORTS.site}`;
@@ -68,7 +68,8 @@ export function states(path) {
     { name: 'filter-ai-training', url: url(), setup: async (page) => { await paste(page); const chips = await page.$$('#agents .chip'); await chips[2].click(); await page.waitForSelector('#agents tr[data-hidden="true"]'); } },
     { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#export .button'); } },
     { name: 'export-more-open', url: url(), setup: async (page) => { await paste(page); await page.click('#export details > summary'); } },
-    { name: 'pricing-annual', url: url(), setup: async (page) => { await page.click('#billing-cycle [data-cycle="annual"]'); await page.waitForSelector('#billing-cycle [data-cycle="annual"][aria-pressed="true"]'); } },
+    // Only while the prices are published (PRICING.show in src/client/config.ts).
+    ...(PRICING.show ? [{ name: 'pricing-annual', url: url(), setup: async (page) => { await page.click('#billing-cycle [data-cycle="annual"]'); await page.waitForSelector('#billing-cycle [data-cycle="annual"][aria-pressed="true"]'); } }] : []),
     { name: 'raw-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#raw .button'); } },
     { name: 'fetched-worst', url: url(`?url=${origin(PORTS.worst)}`), setup: results },
     { name: 'fetched-worst-access-check', url: url(`?url=${origin(PORTS.worst)}`), setup: async (page) => { await results(page); await page.click('#access .button'); await page.waitForSelector('#access .button:not([disabled])', { timeout: 60000 }); } },

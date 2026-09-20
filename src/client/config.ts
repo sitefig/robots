@@ -44,8 +44,12 @@ export interface Plan {
 // and checkout links live here. A plan with an empty `url` renders its call
 // to action as "coming soon" rather than a dead link. `show: false` keeps
 // only the free tier. Annual prices are per month, billed yearly.
+// show = false while the prices are being worked out: it takes the pricing
+// section off the home page and removes every link and button that pointed
+// at it (the header, the footer, and the two monitoring calls to action).
+// The plans below are kept as they are, so one flip brings them all back.
 export const PRICING: { show: boolean; currency: string; plans: Plan[] } = {
-  show: true,
+  show: false,
   currency: '£',
   plans: [
     { id: 'free', monthly: 0, annual: 0, url: null, featured: false },

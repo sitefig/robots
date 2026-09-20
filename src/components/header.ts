@@ -2,6 +2,7 @@
 
 import type { PageContext } from './context.ts';
 import { langMenu } from '../lib/site.ts';
+import { PRICING } from '../client/config.ts';
 
 /**
  * The sus.bot mark from the identity guide (claude.ai/design "sus.bot
@@ -50,7 +51,7 @@ export function SiteHeader(ctx: PageContext): string {
           <li><a href="${h}#cli">${e('page.nav.cli')}</a></li>
           <li><a href="${h}#gallery">${e('page.nav.gallery')}</a></li>
           <li><a href="${h}#extension">${e('page.nav.extension')}</a></li>
-          <li><a href="${h}#pricing">${e('page.nav.pricing')}</a></li>
+          ${PRICING.show ? `<li><a href="${h}#pricing">${e('page.nav.pricing')}</a></li>` : ''}
         </ul>
       </nav>
       <div class="seg" role="group" aria-label="${e('page.themeLabel')}" id="theme-switch">
