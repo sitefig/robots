@@ -89,12 +89,22 @@ jobs:
               console.log("Nothing came back. Either no request reached the worker in this window, or logging is off in wrangler.jsonc.");
               process.exit(0);
             }
-            for (const e of events.slice(0, 20)) {
-              const m = e.$metadata ?? {};
-              const when = e.timestamp ? new Date(e.timestamp).toISOString() : "";
-              const message = m.message ?? e.$workers?.event?.request?.url ?? "";
-              console.log(`${when}  ${m.service ?? ""}  ${m.level ?? ""}  ${String(message).slice(0, 160)}`);
+            // Cloudflare returns the worker request record and, separately,
+            // every console line the worker wrote. Ours are JSON objects.
+            const rows = events.map((e) => ({
+              when: e.timestamp ? new Date(e.timestamp).toISOString() : "",
+              level: e.source?.level ?? e.$metadata?.level ?? "",
+              message: e.source?.message ?? "",
+              outcome: e.$workers?.outcome ?? "",
+              status: e.$workers?.event?.response?.status ?? "",
+            }));
+            const ours = rows.filter((r) => r.message.trim().startsWith("{"));
+            console.log(`lines the worker wrote: ${ours.length}, request records: ${rows.length - ours.length}`);
+            console.log();
+            for (const r of rows.slice(0, 25)) {
+              console.log(`${r.when}  ${String(r.level).padEnd(5)} ${String(r.outcome).padEnd(8)} ${String(r.status).padEnd(3)} ${r.message.slice(0, 150)}`);
             }
-            console.log("\nFirst event in full, so the shape is on the record:");
-            console.log(JSON.stringify(events[0], null, 2).slice(0, 1500));
+            if (ours.length === 0) {
+              console.log("\nNo line written by the worker itself. Either nothing reached the deployed version, or the logging call was not deployed.");
+            }
           '
