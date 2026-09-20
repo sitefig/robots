@@ -14,7 +14,7 @@ npx wrangler deploy
 The deployed URL is `https://robots-proxy.sitefig.workers.dev`.
 Put that in `src/client/config.ts` as `WORKER_URL`.
 
-Edit `ALLOWED_ORIGINS` in `wrangler.toml` before deploying so it lists the GitHub Pages
+Edit `ALLOWED_ORIGINS` in `wrangler.jsonc` before deploying so it lists the GitHub Pages
 origin. Requests from any other Origin, or with no Origin header, get a 403.
 
 ## Run locally
@@ -58,7 +58,7 @@ overage billing. When the quota is used up Cloudflare returns errors until midni
 UTC; nothing is charged. Do not upgrade the account to Workers Paid unless you want
 to pay for traffic beyond that.
 
-Two rate limits (free bindings, configured in `wrangler.toml`) keep one client or a
+Two rate limits (free bindings, configured in `wrangler.jsonc`) keep one client or a
 burst from burning the daily quota:
 
 | Limit | Scope | Response |
@@ -70,7 +70,7 @@ The front end's "real access by user-agent" check sends about 31 requests at thr
 in flight, which fits under both. The response header `X-Proxy-Limits` lists the
 limiters that are active, so a missing binding is visible from outside.
 
-`PAUSED` in `wrangler.toml` (also editable in the dashboard under Settings > Variables,
+`PAUSED` in `wrangler.jsonc` (also editable in the dashboard under Settings > Variables,
 no deploy needed) is the kill switch: set to `true` the worker answers 503 to every
 request at once, the page tells the visitor to paste the file instead, and nothing is
 fetched. Use it if traffic ever looks abusive or if the account is on a paid plan and

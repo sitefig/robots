@@ -49,6 +49,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: worker
-          # The action's default Wrangler predates the [[ratelimits]] config key.
-          wranglerVersion: '4.132.0'
+          # The action's default Wrangler is older than the config this worker
+          # uses (rate limits, and observability in wrangler.jsonc).
+          wranglerVersion: '4.135.0'
           command: deploy
