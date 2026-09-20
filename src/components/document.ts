@@ -27,6 +27,7 @@ export function Document(ctx: PageContext, p: DocumentProps): string {
   <meta name="color-scheme" content="light dark">
   ${analyticsTag()}<link rel="canonical" href="${absolute(ctx.path)}">
 ${hreflangLinks(ctx.alternates, ctx.active)}
+  <link rel="author" href="${a}humans.txt">
   <link rel="icon" href="${a}favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="${a}apple-touch-icon.png">
   <link rel="preload" href="${a}fonts/AtkinsonHyperlegibleNext-400.woff2" as="font" type="font/woff2" crossorigin>

@@ -1,0 +1,39 @@
+/* TEAM */
+
+  Built and run by: Sitefig
+  Site: https://sitefig.eu/
+  Contact: https://sitefig.eu/
+
+/* SITE */
+
+  Name: sus.bot
+  What it does: reads a robots.txt and says what it means for search engines
+    and AI crawlers, what is wrong with it, and what it gives away
+  Last update: 2026/09/20
+  Languages: the 24 official languages of the European Union
+  Doctype: HTML5
+  Standards: RFC 9309, WCAG 2.2 AA, Schema.org
+  Licence: PolyForm Noncommercial 1.0.0
+  Source: https://github.com/sitefig/robots
+
+/* HOW IT IS MADE */
+
+  Engine: Rust, compiled twice, to WebAssembly for this page and to a
+    command-line tool for terminals and CI
+  Pages: Eleventy, written in TypeScript, no framework in the browser
+  Style: Tailwind as the utility layer over hand-written CUBE CSS
+  Type: Atkinson Hyperlegible Next, by the Braille Institute
+  Proxy: one Cloudflare Worker, because a browser may not set a User-Agent
+    and most sites do not send CORS headers on robots.txt
+  Hosting: GitHub Pages
+  Analysis runs in your browser. The file you check is not stored.
+
+/* THANKS */
+
+  The Braille Institute, for a typeface drawn to be read
+  Common Crawl, whose archive showed what robots.txt files really contain
+  Everyone who reported a crawler we had never heard of
+
+/* OUR CRAWLER */
+
+  If susbot turned up in your log: https://sus.bot/bot/

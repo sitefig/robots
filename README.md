@@ -1,6 +1,6 @@
 # sus.bot
 
-Free robots.txt audit: what the file means for search engines and AI crawlers, what is wrong with it, what it leaks, and what to do about it. Available at [sus.bot](https://sus.bot/) in all 24 official EU languages, as a command-line tool, and as a GitHub Action.
+A robots.txt audit: what the file means for search engines and AI crawlers, what is wrong with it, what it leaks, and what to do about it. Use it at [sus.bot](https://sus.bot/) in all 24 official EU languages, on the command line, or as a GitHub Action.
 
 The engine is one Rust crate, compiled to WebAssembly for the browser and to a native binary for CI, so every check behaves the same everywhere. Every rule it applies comes from a TOML file you can override.
 
@@ -107,7 +107,7 @@ The browser page always uses the default configuration; custom rules are for the
 
 ## Languages
 
-Every language has its own URL: `https://sus.bot/de/`, `/fr/`, `/nl/`, and so on for `bg cs da de el en es et fi fr ga hr hu it lt lv mt nl pl pt ro sk sl sv`. The root is English and the `x-default`; every page lists every other language as an `hreflang` alternate and in the language menu, and `sitemap.xml` lists them all. German, French, Dutch, Spanish and Italian are translated in full, including the analysis text and exports; the other languages have their page translated and show the analysis in English until their `locales/<code>.json` is completed. Corrections are welcome as pull requests.
+Every language has its own URL: `https://sus.bot/de/`, `/fr/`, `/nl/`, and so on for `bg cs da de el en es et fi fr ga hr hu it lt lv mt nl pl pt ro sk sl sv`. The root is English and the `x-default`; every page lists every other language as an `hreflang` alternate and in the language menu, and `sitemap.xml` lists them all. German, French, Dutch, Spanish and Italian are translated in full, including the analysis text and exports. The other languages have the interface in their own language and the analysis text in English. Corrections are welcome as pull requests.
 
 GitHub Pages cannot read `Accept-Language`, so the root page redirects once, client-side, to the browser's first EU language; picking a language in the menu or opening a language URL directly remembers the choice.
 
@@ -125,20 +125,11 @@ npm run lighthouse         # Lighthouse against the live site; the deploy workfl
 
 Layout: `crates/core` (engine), `crates/wasm` (browser bindings), `crates/cli`, `config/default.toml`, `po/*.po` (translations; `locales/*.json` is generated from them), `src/site/` (Eleventy pages and Markdown), `src/components/` (TypeScript page components), `src/client/` (TypeScript browser code), `css/src/` (CUBE CSS on Tailwind), `tools/i18n.ts`, `worker/` (Cloudflare proxy), `schema/report.schema.json`, `examples/kitchen-sink.robots.txt` (one file that triggers every check; open `?example=kitchen-sink`).
 
-## Costs and safeguards
-
-The project is built to run for free, with hard stops rather than bills:
-
-- **Cloudflare Worker** (the proxy): Workers Free plan, 100,000 requests a day, then errors until midnight UTC and never a charge. Per-IP (90/min) and global (40/10 s) rate limits keep one client or a burst from burning the quota. `PAUSED = "true"` in the dashboard switches the proxy off instantly; the page then asks visitors to paste the file. Do not move the account to Workers Paid; if you do, turn on the usage-based-billing notification.
-- **GitHub Actions**: the repository is public, so runner minutes are free. Every job has a `timeout-minutes`, superseded runs are cancelled, and the site only rebuilds when files that reach the site change. If the repository is ever made private, set the Actions spending limit to $0 in the billing settings (the default) so minutes stop instead of billing.
-- **GitHub Pages**: free, with a soft limit of 100 GB of bandwidth a month. The WASM engine is 1.6 MB, gzipped to about 640 KB in transit and cached for ten minutes by Pages, so a month's limit is roughly 150,000 first visits. Putting the domain behind Cloudflare's proxy (free plan) caches it at the edge and lifts that ceiling.
-- **The GitHub Action** (`action.yml`) and the CLI run on the user's own account and machine, and never call the worker.
-
 ## Deploy
 
 GitHub Pages serves the site from the `Deploy site` workflow (source: GitHub Actions), which builds the WASM and the Eleventy site and publishes `_site/`. The site is TypeScript: components in `src/components/`, pages in `src/site/`, browser code in `src/client/`. To add a page, put a Markdown file with `layout: page` and a `title` in its front matter under `src/site/` (a `de/` folder makes it German) and push; it gets the site header and footer, joins the sitemap and is published by the workflow. Translations are gettext files in `po/`. The Cloudflare Worker in `worker/` fetches robots.txt on the page's behalf; keep `https://sus.bot` in `ALLOWED_ORIGINS` and the worker URL in `src/client/config.ts`.
 
-Rule matching follows [RFC 9309](https://www.rfc-editor.org/rfc/rfc9309) as implemented by Google's open-source matcher. A free tool by [Sitefig](https://sitefig.eu).
+Rule matching follows [RFC 9309](https://www.rfc-editor.org/rfc/rfc9309) as implemented by Google's open-source matcher. Built by [Sitefig](https://sitefig.eu).
 
 ## Licence
 
