@@ -116,10 +116,17 @@ jobs:
     permissions:
       id-token: write   # trusted publishing
     steps:
+      # Only the Python artifacts: the CLI binaries of the npm packages share
+      # this run, and twine refuses anything that is not a wheel or an sdist.
       - uses: actions/download-artifact@v4
         with:
+          pattern: wheel-*
           path: dist
           merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: sdist
+          path: dist
       - run: ls -l dist
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
