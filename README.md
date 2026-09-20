@@ -33,6 +33,14 @@ susbot --print-default-config > my-rules.toml
 susbot https://example.com --lang de --locale-dir locales
 ```
 
+Published packages, all the same engine and the same `susbot` command:
+
+| Registry | Package | Contents |
+| --- | --- | --- |
+| crates.io | [susbot](https://crates.io/crates/susbot) | the command; [susbot-cli](https://crates.io/crates/susbot-cli) is the same crate under its long name and [susbot-core](https://crates.io/crates/susbot-core) is the engine as a Rust library |
+| PyPI | [susbot](https://pypi.org/project/susbot/) | the command and Python bindings (`susbot.Analysis`), wheels for Linux, macOS and Windows |
+| npm | [@sitefig/susbot](https://www.npmjs.com/package/@sitefig/susbot) | the command and the engine as WebAssembly for Node and browsers |
+
 In Python, `susbot.Analysis(text, site_url=...)` gives the report as a dict, `allowed(user_agent, path)`, the Markdown and HTML audits, the CSV tabs and `susbot.diff(old, new)`. See [`crates/python/README.md`](crates/python/README.md). The npm package offers the same API in JavaScript (`import { Analysis } from '@sitefig/susbot'`, Node and browsers); see [`npm/susbot/README.md`](npm/susbot/README.md).
 
 Exit codes: 0, 1 when findings reach `--fail-on` (`error`, `warning`) or `--fail-on-security` (`high`, `medium`, `low`), 2 on fetch or config errors.
