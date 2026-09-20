@@ -110,9 +110,18 @@ jobs:
             curl -fsS "${{ needs.deploy.outputs.page_url }}?v=$RANDOM" -o /dev/null && break
             sleep 10
           done
-      - run: node tests/lighthouse/run.mjs
+      - name: Lighthouse
         env:
-          LH_SITE: ${{ needs.deploy.outputs.page_url }}
+          PAGE_URL: ${{ needs.deploy.outputs.page_url }}
+        run: |
+          set -eu
+          # Pages reports a custom domain as http:// until HTTPS enforcement
+          # is switched on, and auditing the site over plain http fails the
+          # is-on-https check with best practices at 81. The site is
+          # https-only, so audit it as visitors reach it.
+          export LH_SITE="${PAGE_URL/#http:/https:}"
+          echo "auditing $LH_SITE"
+          node tests/lighthouse/run.mjs
       - if: always()
         uses: actions/upload-artifact@v4
         with:
