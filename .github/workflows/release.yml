@@ -204,9 +204,9 @@ jobs:
           ls -l tarballs
           cd try
           echo '{"name":"try","private":true,"type":"module"}' > package.json
-          npm install --no-audit --no-fund ../tarballs/susbot-linux-x64-*.tgz ../tarballs/susbot-[0-9]*.tgz
+          npm install --no-audit --no-fund ../tarballs/susbot-linux-x64-*.tgz ../tarballs/sitefig-susbot-*.tgz
           npx susbot --version
-          node -e "import('susbot').then((m) => { if (new m.Analysis('User-agent: GPTBot\nDisallow: /\n').allowed('GPTBot', '/')) process.exit(1); })"
+          node -e "import('@sitefig/susbot').then((m) => { if (new m.Analysis('User-agent: GPTBot\nDisallow: /\n').allowed('GPTBot', '/')) process.exit(1); })"
       - uses: actions/upload-artifact@v4
         with:
           name: npm-packages
@@ -231,7 +231,7 @@ jobs:
         with:
           name: npm-packages
           path: npm-out
-      - name: Publish the platform packages, then susbot
+      - name: Publish the platform packages, then @sitefig/susbot
         run: |
           set -eu
           publish() {
