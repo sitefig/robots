@@ -44,6 +44,7 @@ export default function (config: EleventyConfig) {
     'src/client/wasm/susbot_wasm.js': 'js/wasm/susbot_wasm.js',
     'src/client/wasm/susbot_wasm_bg.wasm': 'js/wasm/susbot_wasm_bg.wasm',
     'config/default.toml': 'default-config.toml',
+    'src/site/robots.txt': 'robots.txt',
     'src/site/favicon.svg': 'favicon.svg',
     'src/site/apple-touch-icon.png': 'apple-touch-icon.png',
     'src/site/press/files': 'press/files',

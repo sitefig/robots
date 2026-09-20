@@ -19,6 +19,7 @@ The engine is one Rust crate, compiled to WebAssembly for the browser and to a n
 - SEO trap warnings: the trailing-slash trap (`Disallow: /shop` also blocks `/shopping`), self-blocking `/robots.txt`, case-sensitivity notes, redundant, duplicated or always-overridden rules, and what the `*` group blocks for everyone: every query string, scripts and styles, images,
 - security notes: Disallow rules that advertise admin panels, staging sites, backups, config files, private APIs, user data, version files, installers and server internals; a path that belongs to the detected platform's stock file is kept but marked as a note, because every site on that platform publishes it,
 - reconnaissance: the CMS or platform (about fifty signatures), the tool that wrote the file (Yoast, Wix, Shopify, Joomla, Drupal, hosting panels and more), cloud buckets and CDNs with bucket names, staging and other hostnames, API gateways, Swagger and GraphQL endpoints, data feeds and partner portals, file types with risk ratings, and the emails, names, ticket IDs and dates left in comments,
+- a page for site owners at [sus.bot/bot](https://sus.bot/bot/): what the crawler fetches (only `/robots.txt`), why, and how to block it,
 - exports: a client audit in Markdown or HTML, four spreadsheet tabs as CSV/TSV, and a JSON report validating against `schema/report.schema.json`.
 
 ## Command line

@@ -1,0 +1,7 @@
+# sus.bot is a robots.txt checker; this is its own file.
+# What our crawler does, and how to block it: https://sus.bot/bot/
+
+User-agent: *
+Allow: /
+
+Sitemap: https://sus.bot/sitemap.xml

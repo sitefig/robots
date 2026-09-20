@@ -44,6 +44,7 @@ export const FOOTER: FooterGroup[] = [
     heading: 'page.footer.company',
     links: [
       { label: 'page.footer.press', to: { site: '/press/' } },
+      { label: 'page.footer.bot', to: { site: '/bot/' } },
       { label: 'page.footer.licence', to: { url: `${LINKS.repo}/blob/main/LICENSE.md` } },
       { label: 'Sitefig', to: { url: 'https://sitefig.eu/' } },
     ],

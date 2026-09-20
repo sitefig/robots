@@ -15,7 +15,7 @@ const FETCH_TIMEOUT_MS = 15000;
 // RFC 9309 §2.3.1.2: crawlers follow at least five redirects, then treat the
 // file as unavailable. Google treats that as a 404 (no restrictions).
 const MAX_REDIRECTS = 5;
-const DEFAULT_UA = 'Mozilla/5.0 (compatible; SitefigRobotsAnalyser/1.0; +https://sitefig.eu)';
+const DEFAULT_UA = 'Mozilla/5.0 (compatible; susbot-check/2.2; +https://sus.bot/bot/)';
 
 export default {
   async fetch(request, env) {
