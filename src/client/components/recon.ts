@@ -46,6 +46,26 @@ function stackCard(r: Recon): HTMLElement {
   );
 }
 
+/** The tool that wrote the file, from the comment it leaves behind. */
+function generatorsCard(r: Recon): HTMLElement {
+  const names = [...new Set(r.generators.map((g) => g.name))];
+  const headers = [t('ui.recon.th.generator'), t('ui.recon.th.comment')];
+  return reconCard(
+    t('ui.recon.generators'),
+    r.generators.length,
+    names.join(', '),
+    el('p', { class: 'text-sm' }, t('recon.generators.note')),
+    scrollable(t('ui.recon.generators'), el('table', { class: 'data-table' },
+      el('thead', {}, el('tr', {}, headers.map((h) => el('th', { scope: 'col' }, h)))),
+      el('tbody', {}, r.generators.map((g) =>
+        el('tr', {},
+          el('td', {}, g.name),
+          el('td', {}, el('code', {}, g.comment), ' ', lineLink(g.line)),
+        ))),
+    )),
+  );
+}
+
 function cloudCard(r: Recon): HTMLElement {
   const kinds = [...new Set(r.cloud.map((c) => c.kind))];
   const headers = ['provider', 'bucket', 'host', 'source'].map((k) => t(`ui.recon.th.${k}`));
@@ -162,11 +182,11 @@ function commentsCard(r: Recon): HTMLElement {
 
 export function renderRecon(): void {
   const r = current().report.recon;
-  const counts = [r.stack.detections.length, r.cloud.length, r.hosts.hosts.length + r.hosts.paths.length, r.api.length, r.data.feeds.length + r.data.portals.length + r.data.search.paths.length, r.extensions.length, r.comments.length];
+  const counts = [r.stack.detections.length, r.generators.length, r.cloud.length, r.hosts.hosts.length + r.hosts.paths.length, r.api.length, r.data.feeds.length + r.data.portals.length + r.data.search.paths.length, r.extensions.length, r.comments.length];
   const total = counts.reduce((a, b) => a + b, 0);
   replace(
     slot('recon'),
     el('p', { class: 'font-mono text-sm text-muted' }, total ? t('ui.recon.total', { n: total, categories: counts.filter(Boolean).length }) : t('ui.recon.quiet')),
-    el('div', { class: 'grid', 'data-min': 's' }, stackCard(r), cloudCard(r), hostsCard(r), apiCard(r), dataCard(r), extensionsCard(r), commentsCard(r)),
+    el('div', { class: 'grid', 'data-min': 's' }, stackCard(r), generatorsCard(r), cloudCard(r), hostsCard(r), apiCard(r), dataCard(r), extensionsCard(r), commentsCard(r)),
   );
 }

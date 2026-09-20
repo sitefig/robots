@@ -3,7 +3,7 @@
 
 export type Level = 'error' | 'warning' | 'info';
 export type Verdict = 'open' | 'partial' | 'blocked';
-export type Severity = 'high' | 'medium' | 'low';
+export type Severity = 'high' | 'medium' | 'low' | 'info';
 export type Confidence = 'high' | 'medium' | 'low';
 
 export interface Issue {
@@ -58,6 +58,7 @@ export interface Detection {
 
 export interface Recon {
   stack: { primary: { name: string; kind: string; confidence: Confidence } | null; detections: Detection[] };
+  generators: { name: string; url: string | null; line: number; comment: string }[];
   tech: string[];
   cloud: { provider: string; kind: string; host: string; bucket: string | null; line: number; source: string }[];
   hosts: {

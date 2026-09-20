@@ -8,14 +8,17 @@ The engine is one Rust crate, compiled to WebAssembly for the browser and to a n
 
 - a summary of what the file means for crawlers without their own group,
 - an AI scraping status card: one pill per AI training crawler (GPTBot, ClaudeBot, CCBot, Bytespider, Google-Extended, Diffbot, and more) and per AI search crawler, each marked Allowed, Restricted or Blocked,
-- a per-crawler table for search engines, AI training, AI search, social previewers and SEO tools,
+- a per-crawler table for search engines, AI training, AI search, advertising, social previewers, SEO tools, archives and scrapers, 134 crawlers in all,
 - a path tester that shows which rule matched and why,
 - a real access check (browser and CLI) that refetches the file with each crawler's genuine User-Agent and highlights servers that answer differently to bots,
-- lint warnings: rules before any User-agent, misspelt fields, unsupported directives, and so on,
+- lint warnings: rules before any User-agent, misspelt fields (found by edit distance, so `Disllow` and `Diasllow` are read as the rule they meant), unsupported directives, and so on,
+- what does not belong in the file at all: HTML markup, caching-plugin output, PHP warnings and stack traces, injected spam scripts, UTF-16 text, invisible characters and look-alike letters in directive names, and rules silently swallowed by a missing line break,
+- directives that are not RFC 9309 named for what they are: the AI-policy proposals (`LLM-Policy`, `TDM-Reservation`, `License`), Cloudflare's `Content-Signal` with its values checked, meta-robots values written as directives, and bare URLs meant as sitemaps,
+- how the file was served: 5xx and 429 (which Google reads as "block everything"), 401 and 403 (which crawlers read as "no restrictions"), a Content-Type other than text/plain, and an HTML page served at /robots.txt,
 - sitemap checks: http sitemaps on https sites, sitemaps on another domain, other-subdomain notes, duplicates,
-- SEO trap warnings: the trailing-slash trap (`Disallow: /shop` also blocks `/shopping`), self-blocking `/robots.txt`, case-sensitivity notes, redundant, duplicated or always-overridden rules,
-- security notes: Disallow rules that advertise admin panels, staging sites, backups, config files, private APIs or user data,
-- reconnaissance: the CMS or platform (about forty-five signatures), cloud buckets and CDNs with bucket names, staging and other hostnames, API gateways, Swagger and GraphQL endpoints, data feeds and partner portals, file types with risk ratings, and the emails, names, ticket IDs and dates left in comments,
+- SEO trap warnings: the trailing-slash trap (`Disallow: /shop` also blocks `/shopping`), self-blocking `/robots.txt`, case-sensitivity notes, redundant, duplicated or always-overridden rules, and what the `*` group blocks for everyone: every query string, scripts and styles, images,
+- security notes: Disallow rules that advertise admin panels, staging sites, backups, config files, private APIs, user data, version files, installers and server internals; a path that belongs to the detected platform's stock file is kept but marked as a note, because every site on that platform publishes it,
+- reconnaissance: the CMS or platform (about fifty signatures), the tool that wrote the file (Yoast, Wix, Shopify, Joomla, Drupal, hosting panels and more), cloud buckets and CDNs with bucket names, staging and other hostnames, API gateways, Swagger and GraphQL endpoints, data feeds and partner portals, file types with risk ratings, and the emails, names, ticket IDs and dates left in comments,
 - exports: a client audit in Markdown or HTML, four spreadsheet tabs as CSV/TSV, and a JSON report validating against `schema/report.schema.json`.
 
 ## Command line

@@ -6,7 +6,7 @@ import { el, tx, badge, replace, slot, capped } from '../dom.ts';
 import { current } from '../state.ts';
 import type { SecurityFinding, Severity } from '../types.ts';
 
-const SEVERITY_STATE: Record<Severity, string> = { high: 'error', medium: 'warning', low: 'info' };
+const SEVERITY_STATE: Record<Severity, string> = { high: 'error', medium: 'warning', low: 'info', info: 'info' };
 
 export function renderSecurity(): void {
   const container = slot('security');
@@ -21,7 +21,7 @@ export function renderSecurity(): void {
     );
     return;
   }
-  const bySeverity: Record<Severity, number> = { high: 0, medium: 0, low: 0 };
+  const bySeverity: Record<Severity, number> = { high: 0, medium: 0, low: 0, info: 0 };
   findings.forEach((f) => bySeverity[f.severity]++);
   const worst = findings[0];
   const category = (id: string) => r.securityCategories.find((c) => c.id === id);
