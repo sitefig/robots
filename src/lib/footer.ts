@@ -47,6 +47,8 @@ export const FOOTER: FooterGroup[] = [
     links: [
       { label: 'page.footer.press', to: { site: '/press/' } },
       { label: 'page.footer.bot', to: { site: '/bot/' } },
+      // The address is the label: it reads the same in every language.
+      { label: 'receipt@sus.bot', to: { url: 'mailto:receipt@sus.bot' } },
       { label: 'page.footer.licence', to: { url: `${LINKS.repo}/blob/main/LICENSE.md` } },
       { label: 'Sitefig', to: { url: 'https://sitefig.eu/' } },
     ],
