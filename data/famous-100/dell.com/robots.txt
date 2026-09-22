@@ -2,15 +2,8 @@ User-agent: *
 #launch entries
 Disallow: */shop/*/ar/*/appref=*
 Disallow: */sac/*/*/*/appref=*
-Disallow: */shop/dell-parts/partsbytype/*
-Disallow: */shop/dell-parts/ar/*/platform=*
-Disallow: */spd/*
-Disallow: */lp/
 Disallow: */shop/*/ar/*
-Disallow: */shop/partsbytype/*
-Disallow: */shop/pfydresults/*
 Disallow: */shop/*/apd/*
-Disallow: */shop/*/scr/*
 
 #Temporary launch entries
 Disallow: /csbapi/unified-communication/*
@@ -1273,4 +1266,4 @@ Sitemap: https://www.dell.com/index-video-xml-sitemap.xml.gz
 Sitemap: https://www.dell.com/index-downloads-dell-pdfs-sitemap.xml.gz
 Sitemap: https://www.dell.com/index-dt-sitemap.xml.gz
 
-# Last Modified on 2026 Sep 20th, am CST 9.35 am CST
+# Last Modified on 2026 Sep 21st, 7:30am CST
