@@ -51,7 +51,7 @@ jobs:
       - name: Install wasm-bindgen
         run: |
           set -eu
-          WBG=$(grep -oE 'wasm-bindgen = "[0-9.]+"' crates/wasm/Cargo.toml | grep -oE '[0-9.]+')
+          WBG=$(grep -oE 'wasm-bindgen = "[0-9.]+"' engine/crates/wasm/Cargo.toml | grep -oE '[0-9.]+')
           curl -sSL "https://github.com/rustwasm/wasm-bindgen/releases/download/${WBG}/wasm-bindgen-${WBG}-x86_64-unknown-linux-musl.tar.gz" | tar xz
           sudo mv "wasm-bindgen-${WBG}-x86_64-unknown-linux-musl/wasm-bindgen" /usr/local/bin/
       - uses: actions/setup-node@v4
