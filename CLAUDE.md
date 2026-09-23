@@ -13,6 +13,8 @@ The engine parses the file, matches it like Google's RFC 9309 implementation, ru
 - **Browser** (`engine/crates/wasm` → WebAssembly). The static site at `https://sus.bot/` (root: English; `/<code>/` for the other 23 EU languages) fetches a site's `/robots.txt` (directly, or through the Cloudflare Worker proxy in `worker/`), hands the text to the engine and renders the report. It can also refetch the file through the proxy with each crawler's real User-Agent to spot servers that treat bots differently.
 - **CLI** (`engine/crates/cli` → the `susbot` binary) for terminals, CI and the composite GitHub Action, all released from the engine repository.
 
+The paid app at app.sus.bot is a third repository, `robots_ecomm`: Supabase, Stripe, and the views built from JSON content. Nothing of it lives here.
+
 Everything the engine does is configurable from one TOML file (`engine/config/default.toml`), and every human-readable string comes from a locale dictionary (`engine/locales/<code>.json`).
 
 Planned later: record each fetched robots.txt in a database. The worker is the natural place for that (fire-and-forget via `ctx.waitUntil`). The front end must keep working without it.
@@ -127,15 +129,6 @@ Eleventy 3 builds `_site/` from `src/site/` with `eleventy.config.ts`; every tem
 The home page is a landing page and the tool in one: headline and intro on the left, the URL form on the right, the verdict card below both (shown only after an analysis, with quick exports), a monitoring banner, the report sections (AI status with an aside, crawler table, tester and access check, issues and security, a regression banner, recon with sitemaps, file contents), pricing, and cards for the CLI, the gallery and the extension. Long lists (issues, security findings) show the first few entries and the rest behind "Show all" (`capped()` in `dom.ts`).
 
 `tests/pages.test.js` builds the site in memory with Eleventy and checks languages, redirect, hreflang, the switcher, escaping, the Markdown layout and the sitemap. `node tests/a11y/pixels.mjs <old-site-dir>` screenshots every UI state of two builds and compares them byte for byte; the TypeScript rewrite was checked this way against the last hand-written build.
-
-## The app (`/app/`, built from JSON)
-
-The client app of the sitemap in the claude.ai design project "Sitemap for sus.bot app": signup, domain, competitors, plan, Stripe, first crawl, then a dashboard that already has findings. **Its content is JSON, not code.** Uploading a file changes what the app says; only a new kind of block needs a deploy.
-
-- `app/pages/*.json` — one file per page: `route`, `title`, `key`, `lead` and `blocks`. `app/nav.json` is the navigation and the shell (domain switcher, search, alerts, crawl pill). `app/data/*.json` is what the blocks fetch. `app/i18n/<lang>.po` is the translation, fetched over the network like everything else.
-- `src/site/app.11ty.ts` emits one shell per page file: head, skip link, `<sus-nav>`, the `h1` and the lead, and `<sus-page src="/app/pages/<slug>.json">`. The heading and the lead are in the HTML so the page reads and passes the accessibility gate before any fetch; the blocks arrive afterwards. `urlOf()` maps a route with a parameter (`/app/incidents/:id/`) to a static path (`/app/incidents/detail/`), which is reached as `?id=482`, because static hosting cannot answer the parameter form. The app sets `sitemap: false`: it is a private surface with its own chrome, so it is not in the public sitemap and the site-chrome test skips it.
-- `src/client/app/` — `po.ts` (a gettext reader for the browser), `i18n.ts` (`t(key, fallbackFromJson)`, so an untranslated language still reads), `blocks.ts` (one renderer per block type, using the site's own classes), `elements.ts` (`<sus-nav>` and `<sus-page>`, light DOM on purpose so the stylesheet, the focus ring and the checkers all work), `main.ts` (registers them).
-- **Adding a block type** means adding a renderer to `blocks.ts` and a class to `css/src/app.css`. `tests/app.test.js` fails when a page names a block type that has no renderer, a link that has no page, or an endpoint that has no file, which is what keeps uploaded JSON honest.
 
 ## Front end (`src/client/`)
 
