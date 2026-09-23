@@ -1,115 +1,113 @@
 # sus.bot
 
-A robots.txt audit: what the file means for search engines and AI crawlers, what is wrong with it, what it leaks, and what to do about it. Use it at [sus.bot](https://sus.bot/) in all 24 official EU languages, on the command line, or as a GitHub Action.
+**Every site on the web publishes, at `/robots.txt`, exactly which crawlers it lets in. Yours, and your competitors'.** sus.bot reads that file and says what it means: which AI companies are being fed for free, which search engines are being turned away by accident, and what the file gives away about the systems behind it.
 
-The engine is one Rust crate, compiled to WebAssembly for the browser and to a native binary for CI, so every check behaves the same everywhere. Every rule it applies comes from a TOML file you can override.
-
-## What you get
-
-- a summary of what the file means for crawlers without their own group,
-- an AI scraping status card: one pill per AI training crawler (GPTBot, ClaudeBot, CCBot, Bytespider, Google-Extended, Diffbot, and more) and per AI search crawler, each marked Allowed, Restricted or Blocked,
-- a per-crawler table for search engines, AI training, AI search, advertising, social previewers, SEO tools, archives and scrapers, 134 crawlers in all,
-- a path tester that shows which rule matched and why,
-- a real access check (browser and CLI) that refetches the file with each crawler's genuine User-Agent and highlights servers that answer differently to bots,
-- lint warnings: rules before any User-agent, misspelt fields (found by edit distance, so `Disllow` and `Diasllow` are read as the rule they meant), unsupported directives, and so on,
-- what does not belong in the file at all: HTML markup, caching-plugin output, PHP warnings and stack traces, injected spam scripts, UTF-16 text, invisible characters and look-alike letters in directive names, and rules silently swallowed by a missing line break,
-- directives that are not RFC 9309 named for what they are: the AI-policy proposals (`LLM-Policy`, `TDM-Reservation`, `License`), Cloudflare's `Content-Signal` with its values checked, meta-robots values written as directives, and bare URLs meant as sitemaps,
-- how the file was served: 5xx and 429 (which Google reads as "block everything"), 401 and 403 (which crawlers read as "no restrictions"), a Content-Type other than text/plain, and an HTML page served at /robots.txt,
-- sitemap checks: http sitemaps on https sites, sitemaps on another domain, other-subdomain notes, duplicates,
-- SEO trap warnings: the trailing-slash trap (`Disallow: /shop` also blocks `/shopping`), self-blocking `/robots.txt`, case-sensitivity notes, redundant, duplicated or always-overridden rules, and what the `*` group blocks for everyone: every query string, scripts and styles, images,
-- security notes: Disallow rules that advertise admin panels, staging sites, backups, config files, private APIs, user data, version files, installers and server internals; a path that belongs to the detected platform's stock file is kept but marked as a note, because every site on that platform publishes it,
-- reconnaissance: the CMS or platform (about fifty signatures), the tool that wrote the file (Yoast, Wix, Shopify, Joomla, Drupal, hosting panels and more), cloud buckets and CDNs with bucket names, staging and other hostnames, API gateways, Swagger and GraphQL endpoints, data feeds and partner portals, file types with risk ratings, and the emails, names, ticket IDs and dates left in comments,
-- a page for site owners at [sus.bot/bot](https://sus.bot/bot/): what the crawler fetches (only `/robots.txt`), why, and how to block it,
-- exports: a client audit in Markdown or HTML, four spreadsheet tabs as CSV/TSV, and a JSON report validating against `schema/report.schema.json`.
-
-## Command line
+**[Check a site now at sus.bot](https://sus.bot/)** — paste a domain, read the answer in a second. Nothing to install, nothing to sign up for, and the file never leaves your browser.
 
 ```
-cargo install susbot                  # from crates.io (same as susbot-cli)
-pip install susbot                    # from PyPI: the same command plus Python bindings
-npm install -g @sitefig/susbot        # from npm: the same command plus the WebAssembly engine for JavaScript
-susbot https://example.com             # summary with issues, security findings and recommended actions
-susbot https://example.com --format markdown --out audit.md
-susbot https://example.com --format json | jq .summary
-susbot robots.txt --site-url https://example.com --config my-rules.toml --fail-on warning
-susbot https://example.com --access-check   # refetch with every crawler's User-Agent
-susbot --print-default-config > my-rules.toml
-susbot https://example.com --lang de --locale-dir locales
+cargo install susbot && susbot https://a-competitor.example
 ```
 
-Published packages, all the same engine and the same `susbot` command:
+## What a business learns in one check
 
-| Registry | Package | Contents |
+- **Who is training on your content.** One line per AI crawler, marked Allowed, Restricted or Blocked: GPTBot, ClaudeBot, CCBot, Google-Extended, Applebot-Extended, Bytespider, meta-externalagent, Amazonbot and the rest of a list of 134. If you believe you blocked them, this is where you find out whether the rule does that.
+- **What your competitors allow.** Their file is public, so the same check works on any domain. Run it across a set of them and you see who lets the AI crawlers in, which SEO tools they pay for, what platform they run on, and what they changed last month.
+- **Where you are losing search traffic.** The trailing-slash trap, where `Disallow: /shop` also blocks `/shopping`. Blocking every URL with a query string, which removes your paginated and filtered pages. Blocking scripts, styles or images, which stops search engines rendering the page at all.
+- **What the file gives away.** Disallow lines are a map: admin panels, staging hosts, backups, cloud buckets with their names, internal APIs, and the emails, ticket numbers and dates left in comments. Attackers read robots.txt first; this shows you what they find.
+- **Whether your server treats bots differently from people.** The access check refetches the file as each crawler, with its real user agent, and flags servers that answer one thing to a browser and another to GPTBot.
+
+## What the market is doing, measured
+
+200 well-known domains are rechecked every day and the result is public. On 2026-09-23:
+
+| Crawler | Blocked | Restricted | Open |
+| --- | ---: | ---: | ---: |
+| CCBot | 17% | 115 | 47 |
+| Bytespider | 16% | 116 | 47 |
+| ClaudeBot | 15% | 115 | 50 |
+| Diffbot | 14% | 122 | 46 |
+| GPTBot | 11% | 121 | 52 |
+| Google-Extended | 11% | 125 | 49 |
+| OAI-SearchBot | 7% | 133 | 48 |
+
+Most sites have not decided: they sit in "Restricted", where a rule written for someone else happens to catch an AI crawler too. The [leaderboard](https://github.com/sitefig/robots-engine/tree/main/data/famous-100) updates daily and its git history is the change log, so you can see the day a competitor changed its mind.
+
+Twice a year the same engine reads the public web, most recently 36 million hosts that serve a robots.txt. Those measurements decide what this tool warns about: a mistake that appears on a quarter of all sites is a note, not a warning.
+
+## Watch it over time
+
+A robots.txt changes quietly, and one line can cut a site out of an AI index or out of Google. `susbot diff` says what changed in words rather than in characters: crawler verdicts that flipped, sensitive paths that appeared, issues that were introduced.
+
+```
+susbot diff old.txt new.txt --domain example.com            # what changed, crawler by crawler
+susbot diff old.txt new.txt --fail-on-change                # CI gate: fail when the file moves
+susbot track --config domains.json --data-dir data --webhook https://hooks.slack.com/...
+```
+
+`track` keeps one directory per domain, writes a leaderboard and a digest, and posts changes to Slack or Discord, either all of them or only the ones that matter. Point it at your own sites, at your clients', or at the market you sell into. [Sitefig](https://sitefig.eu) runs this as a service for companies that would rather be told than remember to look.
+
+## Ways to run it
+
+| Where | Install | Good for |
 | --- | --- | --- |
-| crates.io | [susbot](https://crates.io/crates/susbot) | the command; [susbot-cli](https://crates.io/crates/susbot-cli) is the same crate under its long name and [susbot-core](https://crates.io/crates/susbot-core) is the engine as a Rust library |
-| PyPI | [susbot](https://pypi.org/project/susbot/) | the command and Python bindings (`susbot.Analysis`), wheels for Linux, macOS and Windows |
-| npm | [@sitefig/susbot](https://www.npmjs.com/package/@sitefig/susbot) | the command and the engine as WebAssembly for Node and browsers |
-
-In Python, `susbot.Analysis(text, site_url=...)` gives the report as a dict, `allowed(user_agent, path)`, the Markdown and HTML audits, the CSV tabs and `susbot.diff(old, new)`. See the [Python package](https://github.com/sitefig/robots-engine/blob/main/crates/python/README.md). The npm package offers the same API in JavaScript (`import { Analysis } from '@sitefig/susbot'`, Node and browsers); see the [npm package](https://github.com/sitefig/robots-engine/blob/main/npm/susbot/README.md).
-
-Exit codes: 0, 1 when findings reach `--fail-on` (`error`, `warning`) or `--fail-on-security` (`high`, `medium`, `low`), 2 on fetch or config errors.
-
-### diff, track and crawl
+| Browser | [sus.bot](https://sus.bot/) | one site, right now, in 24 languages |
+| Command line | `cargo install susbot` | scripting, bulk checks, client reports |
+| Python | `pip install susbot` | notebooks and data pipelines |
+| Node and browsers | `npm install @sitefig/susbot` | your own dashboards and tools |
+| GitHub Action | `uses: sitefig/robots-engine@main` | a gate in CI, so a bad deploy cannot ship |
 
 ```
-susbot diff old.txt new.txt --domain example.com            # crawler flips, new sensitive paths, issues, sitemaps, text diff
-susbot diff old.txt new.txt --format social --diff-url URL  # short text for a chat or social post
-susbot diff old.txt new.txt --fail-on-change                # CI gate: exit 1 when the files differ
-susbot track --config config/famous-100.json --data-dir data/famous-100 --summary-out out.md --webhook https://hooks.slack.com/...
-susbot crawl --input top-1m.csv --limit 100000 --concurrency 64 --out susbot-census.jsonl.gz --summary summary.json
+susbot https://example.com                                     # summary, issues, security findings, actions
+susbot https://example.com --format markdown --out audit.md    # a client-ready audit
+susbot https://example.com --format json | jq .summary         # machine readable, against the published schema
+susbot https://example.com --access-check                      # refetch as every crawler
+susbot robots.txt --config my-rules.toml --fail-on warning
 ```
-
-`track` keeps one directory per domain (`robots.txt` and `meta.json`) so git history is the change log, writes a leaderboard `README.md` into the data directory, a Markdown digest, social drafts, and posts changed domains to a Slack or Discord incoming webhook (a per-site `webhook_url` in the list wins; `--webhook-high-impact-only` limits posts to crawler flips, new high-severity paths and new errors). `crawl` audits a domain list on a thread pool and writes gzip JSON Lines (one record per domain) that DuckDB or pandas read directly.
-
-Three workflows use them: `Track famous domains` runs daily and commits `data/famous-100`; `Monitor customers` runs every six hours against a private repository named in the `CUSTOMERS_REPO` secret, using the write deploy key in `CUSTOMERS_DEPLOY_KEY`; `sus.bot census` runs twice a year and publishes the dataset as a GitHub Release.
-
-## GitHub Action
 
 ```yaml
-- uses: sitefig/robots@main
+- uses: sitefig/robots-engine@main
   with:
     url: https://example.com
-    config: .github/robots-audit.toml   # optional
-    format: markdown                    # also lands in the job summary
+    format: markdown        # also lands in the job summary
     fail-on: warning
     fail-on-security: high
 ```
 
-The Action builds the CLI from this repository with a cached Rust toolchain and prints the report to the log.
+Exit codes: 0, 1 when findings reach `--fail-on` (`error`, `warning`) or `--fail-on-security` (`high`, `medium`, `low`), 2 on fetch or config errors. In Python, `susbot.Analysis(text, site_url=...)` gives the report as a dict, plus `allowed(user_agent, path)`, the Markdown and HTML audits, the CSV tabs and `susbot.diff(old, new)`; the [npm package](https://github.com/sitefig/robots-engine/blob/main/npm/susbot/README.md) offers the same in JavaScript.
 
-## Configuration
+## What it reports
 
-`config/default.toml` holds every rule: which checks run, the crawler list, security signatures and their severities, CMS fingerprints, cloud providers, API and data-feed patterns, file-extension risks, and comment detectors. A user file is merged on top (tables and scalars override, arrays replace). Examples:
+- rule matching as Google's RFC 9309 implementation does it, per crawler, with the rule that decided, and a tester for any URL,
+- lint findings: rules before any User-agent, misspelt directives read as what they meant, unsupported directives named for what they are, and what does not belong in the file at all, from HTML markup and caching-plugin output to stack traces, injected spam and UTF-16 text,
+- how the file was served: 5xx and 429, which Google reads as "block everything", 401 and 403, which crawlers read as "no restrictions", a content type other than text/plain, and an HTML page served at /robots.txt,
+- SEO traps, sitemap hygiene, and what the `*` group blocks for everyone,
+- security notes, with a platform's own boilerplate marked as such so the real findings stand out,
+- reconnaissance: the platform, the tool that wrote the file, cloud buckets, other hostnames, API endpoints, data feeds, file types, and the metadata left in comments,
+- exports: a client audit in Markdown or HTML, four spreadsheet tabs as CSV or TSV, and a JSON report that validates against [the published schema](https://sus.bot/schema/report.schema.json).
+
+Every check, crawler and signature lives in one TOML file, and a file of your own merges over it:
 
 ```toml
-[checks]
-security = false              # skip the sensitive-path scan
-
 [rules]
-disabled = ["seo.caseSensitive", "parser.noSitemap"]
+disabled = ["seo.caseSensitive"]
 [rules.levels]
 "seo.trailingSlash" = "info"
 
 [security]
-ignore = ['^/uploads/']        # never report these Disallow paths
+ignore = ['^/uploads/']
 
-[[security.signatures]]        # add your own (this replaces the default list; copy it to extend)
+[[security.signatures]]        # replaces the default list; copy it to extend
 category = "admin"
 severity = "high"
 reason = "Our back office"
 keywords = ["backoffice-v2"]
-
-[recon.cms]
-disabled = ["Blogger"]
 ```
 
-The browser page always uses the default configuration; custom rules are for the CLI and the GitHub Action.
+The browser always runs the defaults; custom rules are a command-line and Action feature.
 
 ## Languages
 
-Every language has its own URL: `https://sus.bot/de/`, `/fr/`, `/nl/`, and so on for `bg cs da de el en es et fi fr ga hr hu it lt lv mt nl pl pt ro sk sl sv`. The root is English and the `x-default`; every page lists every other language as an `hreflang` alternate and in the language menu, and `sitemap.xml` lists them all. German, French, Dutch, Spanish and Italian are translated in full, including the analysis text and exports. The other languages have the interface in their own language and the analysis text in English. Corrections are welcome as pull requests.
-
-GitHub Pages cannot read `Accept-Language`, so the root page redirects once, client-side, to the browser's first EU language; picking a language in the menu or opening a language URL directly remembers the choice.
+Every language has its own URL: `https://sus.bot/de/`, `/fr/`, `/nl/`, and so on for `bg cs da de el en es et fi fr ga hr hu it lt lv mt nl pl pt ro sk sl sv`. German, French, Dutch, Spanish and Italian are translated in full, including the analysis text and the exports; the others have the interface in their own language and the analysis in English. Corrections are welcome as pull requests.
 
 ## Repositories
 
@@ -124,24 +122,18 @@ git submodule update --remote engine     # move the site to a newer engine
 
 ```
 npm test                   # site build and browser i18n tests
-npm ci && npm run build    # WebAssembly engine, then the Eleventy site into _site/ (needs the wasm32 target and wasm-bindgen-cli)
-npm start                  # rebuild the site and serve _site/ on http://localhost:8888
-npm run i18n:sync          # after editing po/en.po: merge into every language, regenerate locales/*.json
-npm ci && npm run a11y     # accessibility: axe-core in Chrome, html-validate, pa11y (HTML_CodeSniffer), all pages and every UI state with the worst robots.txt ever
-npm run lighthouse         # Lighthouse against the live site; the deploy workflow runs it after every publish
+npm ci && npm run build    # the WebAssembly engine, then the Eleventy site into _site/
+npm start                  # rebuild and serve _site/ on http://localhost:8888
+npm run a11y               # axe-core, html-validate and pa11y over every page and UI state
+npm run lighthouse         # Lighthouse against the live site
 ```
 
-Layout: `engine/` (the submodule: engine, CLI, packages, translations, schema, configuration), `src/site/` (Eleventy pages and Markdown), `src/components/` (TypeScript page components), `src/client/` (TypeScript browser code), `css/src/` (CUBE CSS on Tailwind), `tools/i18n.ts`, `worker/` (Cloudflare proxy), `schema/report.schema.json`, `examples/kitchen-sink.robots.txt` (one file that triggers every check; open `?example=kitchen-sink`).
-
-## Deploy
-
-GitHub Pages serves the site from the `Deploy site` workflow (source: GitHub Actions), which builds the WASM and the Eleventy site and publishes `_site/`. The site is TypeScript: components in `src/components/`, pages in `src/site/`, browser code in `src/client/`. To add a page, put a Markdown file with `layout: page` and a `title` in its front matter under `src/site/` (a `de/` folder makes it German) and push; it gets the site header and footer, joins the sitemap and is published by the workflow. Translations are gettext files in `po/`. The Cloudflare Worker in `worker/` fetches robots.txt on the page's behalf; keep `https://sus.bot` in `ALLOWED_ORIGINS` and the worker URL in `src/client/config.ts`.
+The site is TypeScript: components in `src/components/`, pages in `src/site/`, browser code in `src/client/`, CUBE CSS on Tailwind in `css/`. To add a page, put a Markdown file with `layout: page` and a `title` in its front matter under `src/site/` and push; it gets the header and footer, joins the sitemap and is published by the `Deploy site` workflow. The Cloudflare Worker in `worker/` fetches robots.txt on the page's behalf, because a browser may not set a user agent and most sites send no CORS headers on that file.
 
 Rule matching follows [RFC 9309](https://www.rfc-editor.org/rfc/rfc9309) as implemented by Google's open-source matcher. Built by [Sitefig](https://sitefig.eu).
 
 ## Licence
 
-sus.bot is source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). You may use, copy and change it for any noncommercial purpose, including personal use, research, education, and use by charities and public bodies. Commercial use, including running the CLI or the GitHub Action in a company's CI, needs a separate licence from [Sitefig](https://sitefig.eu).
+sus.bot is source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE.md). You may use, copy and change it for any noncommercial purpose, including personal use, research, education, and use by charities and public bodies. Commercial use, including running the CLI or the GitHub Action in a company's CI, needs a licence from [Sitefig](https://sitefig.eu).
 
 The fonts in `fonts/` are Atkinson Hyperlegible Next and Mono under the SIL Open Font License (see `fonts/LICENSE.txt`). Dependencies keep their own licences.
-
