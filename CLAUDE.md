@@ -4,39 +4,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-sus.bot: a free robots.txt auditor. A Rust engine (`crates/core`) parses the file, matches it like Google's RFC 9309 implementation, runs lint checks, flags sensitive Disallow paths, and reports what the file gives away (platform, cloud buckets, other hosts, APIs, data feeds, file types, comment metadata). The same crate is compiled two ways:
+sus.bot: a robots.txt auditor. **This repository is the website.** The engine, the CLI, the GitHub Action and the Python and npm packages live in [sitefig/robots-engine](https://github.com/sitefig/robots-engine), which is carried here as a submodule at `engine/` (split out on 2026-09-23).
 
-- **Browser** (`crates/wasm` → WebAssembly). The static site at `https://sus.bot/` (root: English; `/<code>/` for the other 23 EU languages) fetches a site's `/robots.txt` (directly, or through the Cloudflare Worker proxy in `worker/`), hands the text to the engine and renders the report. It can also refetch the file through the proxy with each crawler's real User-Agent to spot servers that treat bots differently.
-- **CLI** (`crates/cli` → the `susbot` binary) for terminals, CI and the composite GitHub Action in `action.yml`.
-- **Python** (`crates/python` → the `susbot` package on PyPI): bindings plus the same CLI, via PyO3 and maturin.
-- **npm** (`npm/susbot` → the `@sitefig/susbot` package on npm): the WASM engine as a JavaScript API plus the native CLI from per-platform packages.
+What comes from the submodule: the analysis itself (built to WebAssembly from `engine/crates/wasm`), every dictionary (`engine/locales/`, generated from `engine/po/`, so page and interface copy is edited there too), the default configuration, the report schema, the kitchen-sink example and the tracking data the home page quotes. `git submodule update --remote engine` moves the site to a newer engine; the commit that moves the pointer is what ships it.
 
-Everything the engine does is configurable from one TOML file (`config/default.toml` is embedded; a user file merges on top), and every human-readable string comes from a locale dictionary (`locales/<code>.json`).
+The engine parses the file, matches it like Google's RFC 9309 implementation, runs lint checks, flags sensitive Disallow paths, and reports what the file gives away (platform, generator, cloud buckets, other hosts, APIs, data feeds, file types, comment metadata). It is compiled two ways:
+
+- **Browser** (`engine/crates/wasm` → WebAssembly). The static site at `https://sus.bot/` (root: English; `/<code>/` for the other 23 EU languages) fetches a site's `/robots.txt` (directly, or through the Cloudflare Worker proxy in `worker/`), hands the text to the engine and renders the report. It can also refetch the file through the proxy with each crawler's real User-Agent to spot servers that treat bots differently.
+- **CLI** (`engine/crates/cli` → the `susbot` binary) for terminals, CI and the composite GitHub Action, all released from the engine repository.
+
+Everything the engine does is configurable from one TOML file (`engine/config/default.toml`), and every human-readable string comes from a locale dictionary (`engine/locales/<code>.json`).
 
 Planned later: record each fetched robots.txt in a database. The worker is the natural place for that (fire-and-forget via `ctx.waitUntil`). The front end must keep working without it.
 
 ## Commands
 
 ```
-cargo test --workspace                 # engine tests (crates/core/tests, unit tests)
-npm test                               # locales up to date with po/, then the Node tests (Eleventy build, .po, locales, i18n)
+npm test                               # the Node tests: Eleventy build, pages, browser i18n
 npm run typecheck                      # tsc over src/, tools/ and the Eleventy config (needs the WASM .d.ts from a build)
-npm run test:all                       # cargo test, typecheck, npm test
+npm run test:all                       # typecheck and the site tests
 npm run build                          # build:wasm then build:site
 npm run build:dev                      # same, WASM without optimisation
-npm run build:wasm                     # scripts/build-wasm.sh: cargo (wasm32) + wasm-bindgen (+ .d.ts) + wasm-opt -> src/client/wasm/ (generated, gitignored)
+npm run build:wasm                     # engine/scripts/build-wasm.sh with OUT_DIR=src/client/wasm (generated, gitignored)
 npm run build:site                     # Eleventy -> _site/ (pages, sitemap, copied assets), then build:css and build:client
 npm run build:css                      # Tailwind: css/src/site.css -> _site/css/site.css; watch:css rebuilds on change
 npm run build:client                   # tsc -p tsconfig.client.json: src/client/*.ts -> _site/js/*.js
 npm start                              # build:site, then serve _site/ on :8888 (ES modules need an HTTP origin); build:wasm once first
 npm run dev                            # eleventy --serve (pages only; run build:css and build:client for the rest)
-npm run i18n                           # po/*.po -> locales/*.json and po/messages.pot (commit them)
-npm run i18n:sync                      # after editing po/en.po: add, drop or flag keys in every other .po, then i18n
-npm run cli -- <url|file> [flags]      # the CLI via cargo; or cargo build -p susbot-cli --release, then target/release/susbot
+npm run i18n                           # runs the engine's tooling in engine/ (commit there, then move the submodule)
+npm run i18n:sync                      # the same, after editing engine/po/en.po
+npm run cli -- <url|file> [flags]      # the CLI from the submodule
 npm run a11y                           # the three accessibility checkers against _site/ (needs npm ci, a Chrome, and a build); a11y:axe, a11y:html, a11y:pa11y run one
 node tests/a11y/pixels.mjs <old-site>  # screenshot every UI state of two builds and compare them byte for byte
 npm run lighthouse -- [url ...]        # Lighthouse (performance, accessibility, best practices, SEO; mobile and desktop); defaults to the live site
-cargo test -p susbot-core --test recon # one test file; --test-name-pattern is not needed, use `-- name`
 ```
 
 Toolchain: stable Rust with the `wasm32-unknown-unknown` target, `wasm-bindgen-cli` at the exact version pinned in `crates/wasm/Cargo.toml`, optionally `wasm-opt` (binaryen), Node 24 (it runs the TypeScript site, tools and tests directly by stripping types, so only erasable TypeScript is allowed: no enums, namespaces or parameter properties).

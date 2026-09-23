@@ -1,4 +1,6 @@
-# Runs the Rust and JavaScript test suites on every push and pull request.
+# Runs the website's test suites on every push and pull request: the page
+# generator and the browser i18n, then the three accessibility checkers.
+# The engine, the CLI and the packages are tested in sitefig/robots-engine.
 
 name: Tests
 
@@ -15,16 +17,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  site:
+    # The page generator and the browser i18n. Fast, and it fails before the
+    # accessibility job spends five minutes building.
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - run: cargo test --workspace --locked
-      - run: cargo build -p susbot-cli --release --locked
-      - run: ./target/release/susbot examples/kitchen-sink.robots.txt --site-url https://www.example.com/robots.txt --format json > /dev/null
+        with:
+          submodules: true   # engine/: the dictionaries the pages are built from
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -33,55 +34,6 @@ jobs:
         env:
           PUPPETEER_SKIP_DOWNLOAD: 'true'
       - run: npm test
-      # The thin `susbot` crate (its own workspace) still builds and runs.
-      - run: cargo run --locked --manifest-path crates/susbot/Cargo.toml -- --version
-  python:
-    # The Python package (crates/python): bindings and the susbot command,
-    # built with maturin into a virtualenv and tested with pytest.
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: crates/python
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: |
-          set -eu
-          python -m venv .venv
-          . .venv/bin/activate
-          pip install "maturin>=1.9,<2" pytest
-          cd crates/python
-          maturin develop --locked
-          pytest -q tests
-  npm:
-    # The npm package (npm/susbot): the WebAssembly engine with the diff
-    # bindings, its JavaScript API and the command shim over a debug CLI.
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: wasm32-unknown-unknown
-      - uses: Swatinem/rust-cache@v2
-      - name: Install wasm-bindgen
-        run: |
-          set -eu
-          WBG=$(grep -oE 'wasm-bindgen = "[0-9.]+"' crates/wasm/Cargo.toml | grep -oE '[0-9.]+')
-          curl -sSL "https://github.com/rustwasm/wasm-bindgen/releases/download/${WBG}/wasm-bindgen-${WBG}-x86_64-unknown-linux-musl.tar.gz" | tar xz
-          sudo mv "wasm-bindgen-${WBG}-x86_64-unknown-linux-musl/wasm-bindgen" /usr/local/bin/
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - run: ./scripts/build-npm-wasm.sh
-      - run: cargo build --locked -p susbot-cli
-      - run: node --test npm/susbot/test/*.test.js
-        env:
-          SUSBOT_BINARY: ${{ github.workspace }}/target/debug/susbot
   accessibility:
     # Three engines against the built site in every UI state: axe-core in
     # Chrome (both themes), html-validate's WCAG preset, and pa11y's
@@ -90,6 +42,8 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true   # engine/: the analysis, the dictionaries and the schema
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown

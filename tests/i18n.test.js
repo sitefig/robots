@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { t, setLocale, setEnglish, getLocale, formatNumber, LANGUAGES, DEFAULT_LANG } from '../src/client/i18n.ts';
 
-const en = JSON.parse(readFileSync(new URL('../locales/en.json', import.meta.url), 'utf8'));
+const en = JSON.parse(readFileSync(new URL('../engine/locales/en.json', import.meta.url), 'utf8'));
 setEnglish(en);
 
 after(() => setLocale());
@@ -61,4 +61,10 @@ test('language list covers the 24 official EU languages', () => {
   for (const code of ['bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'ga', 'hr', 'hu', 'it', 'lt', 'lv', 'mt', 'nl', 'pl', 'pt', 'ro', 'sk', 'sl', 'sv']) {
     assert.ok(code in LANGUAGES, code);
   }
+});
+
+test('the language table matches the engine, which owns the translations', async () => {
+  const engine = await import('../engine/tools/languages.ts');
+  assert.deepEqual(engine.LANGUAGES, LANGUAGES, 'src/client/i18n.ts and engine/tools/languages.ts disagree');
+  assert.equal(engine.DEFAULT_LANG, DEFAULT_LANG);
 });

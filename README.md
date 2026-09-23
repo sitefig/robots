@@ -45,7 +45,7 @@ Published packages, all the same engine and the same `susbot` command:
 | PyPI | [susbot](https://pypi.org/project/susbot/) | the command and Python bindings (`susbot.Analysis`), wheels for Linux, macOS and Windows |
 | npm | [@sitefig/susbot](https://www.npmjs.com/package/@sitefig/susbot) | the command and the engine as WebAssembly for Node and browsers |
 
-In Python, `susbot.Analysis(text, site_url=...)` gives the report as a dict, `allowed(user_agent, path)`, the Markdown and HTML audits, the CSV tabs and `susbot.diff(old, new)`. See [`crates/python/README.md`](crates/python/README.md). The npm package offers the same API in JavaScript (`import { Analysis } from '@sitefig/susbot'`, Node and browsers); see [`npm/susbot/README.md`](npm/susbot/README.md).
+In Python, `susbot.Analysis(text, site_url=...)` gives the report as a dict, `allowed(user_agent, path)`, the Markdown and HTML audits, the CSV tabs and `susbot.diff(old, new)`. See the [Python package](https://github.com/sitefig/robots-engine/blob/main/crates/python/README.md). The npm package offers the same API in JavaScript (`import { Analysis } from '@sitefig/susbot'`, Node and browsers); see the [npm package](https://github.com/sitefig/robots-engine/blob/main/npm/susbot/README.md).
 
 Exit codes: 0, 1 when findings reach `--fail-on` (`error`, `warning`) or `--fail-on-security` (`high`, `medium`, `low`), 2 on fetch or config errors.
 
@@ -111,11 +111,19 @@ Every language has its own URL: `https://sus.bot/de/`, `/fr/`, `/nl/`, and so on
 
 GitHub Pages cannot read `Accept-Language`, so the root page redirects once, client-side, to the browser's first EU language; picking a language in the menu or opening a language URL directly remembers the choice.
 
+## Repositories
+
+This repository is the website. The engine, the CLI, the GitHub Action and the Python and npm packages live in [sitefig/robots-engine](https://github.com/sitefig/robots-engine) and are carried here as a submodule at `engine/`, which is where the analysis, the dictionaries, the report schema and the default configuration come from.
+
+```
+git clone --recurse-submodules https://github.com/sitefig/robots.git
+git submodule update --remote engine     # move the site to a newer engine
+```
+
 ## Development
 
 ```
-cargo test --workspace     # engine tests
-npm test                   # site build, translations and locale tests
+npm test                   # site build and browser i18n tests
 npm ci && npm run build    # WebAssembly engine, then the Eleventy site into _site/ (needs the wasm32 target and wasm-bindgen-cli)
 npm start                  # rebuild the site and serve _site/ on http://localhost:8888
 npm run i18n:sync          # after editing po/en.po: merge into every language, regenerate locales/*.json
@@ -123,7 +131,7 @@ npm ci && npm run a11y     # accessibility: axe-core in Chrome, html-validate, p
 npm run lighthouse         # Lighthouse against the live site; the deploy workflow runs it after every publish
 ```
 
-Layout: `crates/core` (engine), `crates/wasm` (browser bindings), `crates/cli`, `config/default.toml`, `po/*.po` (translations; `locales/*.json` is generated from them), `src/site/` (Eleventy pages and Markdown), `src/components/` (TypeScript page components), `src/client/` (TypeScript browser code), `css/src/` (CUBE CSS on Tailwind), `tools/i18n.ts`, `worker/` (Cloudflare proxy), `schema/report.schema.json`, `examples/kitchen-sink.robots.txt` (one file that triggers every check; open `?example=kitchen-sink`).
+Layout: `engine/` (the submodule: engine, CLI, packages, translations, schema, configuration), `src/site/` (Eleventy pages and Markdown), `src/components/` (TypeScript page components), `src/client/` (TypeScript browser code), `css/src/` (CUBE CSS on Tailwind), `tools/i18n.ts`, `worker/` (Cloudflare proxy), `schema/report.schema.json`, `examples/kitchen-sink.robots.txt` (one file that triggers every check; open `?example=kitchen-sink`).
 
 ## Deploy
 

@@ -11,21 +11,13 @@ on:
     branches: [main]
     # Files that never reach the site do not trigger a build.
     paths-ignore:
-      - 'data/**'
       - 'README.md'
       - 'CLAUDE.md'
-      - 'LICENSE'
-      - 'action.yml'
+      - 'LICENSE.md'
       - 'worker/**'
-      - 'crates/cli/**'
-      - 'crates/susbot/**'
-      - 'crates/python/**'
-      - '.github/workflows/release.yml'
-      - 'npm/**'
-      - 'scripts/npm-pack.mjs'
-      - 'scripts/build-npm-wasm.sh'
       - '.github/workflows/test.yml'
       - '.github/workflows/deploy-worker.yml'
+      - '.github/workflows/worker-logs.yml'
   workflow_dispatch:
 
 permissions:
@@ -43,6 +35,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true   # engine/: the analysis, the dictionaries and the schema
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
@@ -50,7 +44,7 @@ jobs:
       - name: Install wasm-bindgen and wasm-opt
         run: |
           set -eu
-          WBG=$(grep -oE 'wasm-bindgen = "[0-9.]+"' crates/wasm/Cargo.toml | grep -oE '[0-9.]+')
+          WBG=$(grep -oE 'wasm-bindgen = "[0-9.]+"' engine/crates/wasm/Cargo.toml | grep -oE '[0-9.]+')
           curl -sSL "https://github.com/rustwasm/wasm-bindgen/releases/download/${WBG}/wasm-bindgen-${WBG}-x86_64-unknown-linux-musl.tar.gz" | tar xz
           sudo mv "wasm-bindgen-${WBG}-x86_64-unknown-linux-musl/wasm-bindgen" /usr/local/bin/
           curl -sSL https://github.com/WebAssembly/binaryen/releases/download/version_119/binaryen-version_119-x86_64-linux.tar.gz | tar xz
@@ -97,6 +91,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true   # engine/: the analysis, the dictionaries and the schema
       - uses: actions/setup-node@v4
         with:
           node-version: 24

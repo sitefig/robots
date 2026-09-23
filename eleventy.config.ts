@@ -38,12 +38,12 @@ export default function (config: EleventyConfig) {
 
   config.addPassthroughCopy({
     fonts: 'fonts',
-    locales: 'locales',
-    schema: 'schema',
-    examples: 'examples',
+    'engine/locales': 'locales',
+    'engine/schema': 'schema',
+    'engine/examples': 'examples',
     'src/client/wasm/susbot_wasm.js': 'js/wasm/susbot_wasm.js',
     'src/client/wasm/susbot_wasm_bg.wasm': 'js/wasm/susbot_wasm_bg.wasm',
-    'config/default.toml': 'default-config.toml',
+    'engine/config/default.toml': 'default-config.toml',
     'src/site/robots.txt': 'robots.txt',
     'src/site/ads.txt': 'ads.txt',
     'src/site/humans.txt': 'humans.txt',
@@ -55,7 +55,7 @@ export default function (config: EleventyConfig) {
   });
   config.addWatchTarget('src/components/');
   config.addWatchTarget('src/lib/');
-  config.addWatchTarget('locales/');
+  config.addWatchTarget('engine/locales/');
 
   return {
     dir: { input: 'src/site', includes: '_includes', output: '_site' },

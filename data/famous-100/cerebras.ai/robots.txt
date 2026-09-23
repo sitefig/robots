@@ -1,5 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /studio
-
-Sitemap: https://www.cerebras.ai/sitemap.xml

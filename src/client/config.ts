@@ -27,8 +27,8 @@ export function proxyConfigured(): boolean {
 // Public places the page links to. `extension` is empty until one exists.
 export const LINKS = {
   repo: 'https://github.com/sitefig/robots',
-  gallery: 'https://github.com/sitefig/robots/tree/main/data/famous-100',
-  diffs: 'https://github.com/sitefig/robots/commits/main/data/famous-100',
+  gallery: 'https://github.com/sitefig/robots-engine/tree/main/data/famous-100',
+  diffs: 'https://github.com/sitefig/robots-engine/commits/main/data/famous-100',
   extension: '',
 };
 

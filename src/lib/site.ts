@@ -7,7 +7,10 @@ import { LANGUAGES, DEFAULT_LANG, type Dictionary, type Value } from '../client/
 import { SITE_URL, LINKS, ANALYTICS_ID } from '../client/config.ts';
 
 const ROOT = new URL('../../', import.meta.url);
-const readJson = (rel: string): unknown => JSON.parse(readFileSync(new URL(rel, ROOT), 'utf8'));
+// The engine repository, carried as a submodule: dictionaries, the default
+// configuration, the report schema, the example file and the tracking data.
+const ENGINE = new URL('engine/', ROOT);
+const readEngineJson = (rel: string): unknown => JSON.parse(readFileSync(new URL(rel, ENGINE), 'utf8'));
 
 export { LANGUAGES, DEFAULT_LANG, SITE_URL, LINKS };
 
@@ -18,7 +21,7 @@ export function loadLocales(): Record<string, Dictionary> {
   const dicts: Record<string, Dictionary> = {};
   for (const code of Object.keys(LANGUAGES)) {
     try {
-      dicts[code] = readJson(`locales/${code}.json`) as Dictionary;
+      dicts[code] = readEngineJson(`locales/${code}.json`) as Dictionary;
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
       dicts[code] = {};
@@ -37,10 +40,10 @@ export const escapeHtml = (s: string): string => String(s).replace(/&/g, '&amp;'
 
 /** Figures from the tracking data, so the copy states real numbers. */
 export function trackingFigures(): { tracked: number; gptbotBlocked: number | null } {
-  const tracked = (readJson('config/famous-100.json') as unknown[]).length;
+  const tracked = (readEngineJson('config/famous-100.json') as unknown[]).length;
   let gptbotBlocked: number | null = null;
   try {
-    const board = readFileSync(new URL('data/famous-100/README.md', ROOT), 'utf8');
+    const board = readFileSync(new URL('data/famous-100/README.md', ENGINE), 'utf8');
     const m = board.match(/^\| GPTBot \| \d+ \((\d+)%\)/m);
     if (m) gptbotBlocked = Number(m[1]);
   } catch {
