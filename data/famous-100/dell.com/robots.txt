@@ -46,7 +46,7 @@ Disallow: *pr_rd_page=*
 Disallow: *bvstate=
 
 #Support
-Disallow: /support/en-gb
+
 Disallow: /support/kbdoc/*/000287599
 Disallow: /support/incidents-online/*/contactus/product/
 Disallow: /support/ips/
@@ -1266,4 +1266,4 @@ Sitemap: https://www.dell.com/index-video-xml-sitemap.xml.gz
 Sitemap: https://www.dell.com/index-downloads-dell-pdfs-sitemap.xml.gz
 Sitemap: https://www.dell.com/index-dt-sitemap.xml.gz
 
-# Last Modified on 2026 Sep 21st, 7:30am CST
+# Last Modified on 2026 Sep 22nd, 6am CST
