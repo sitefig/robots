@@ -10,7 +10,7 @@ export function More(ctx: PageContext): string {
         <h2 id="cli-heading">${e('page.cli.title')}</h2>
         <p>${e('page.cli.body')}</p>
         <pre class="cmd">susbot audit https://example.com --fail-on warning</pre>
-        <p><a href="${LINKS.repo}#readme" rel="noopener">${e('page.cli.link')}</a></p>
+        <p><a href="${LINKS.engine}#readme" rel="noopener">${e('page.cli.link')}</a></p>
       </section>
       <section class="panel flow" data-space="xs" id="gallery" aria-labelledby="gallery-heading">
         <h2 id="gallery-heading">${e('page.gallery.title')}</h2>

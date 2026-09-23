@@ -27,6 +27,8 @@ export function proxyConfigured(): boolean {
 // Public places the page links to. `extension` is empty until one exists.
 export const LINKS = {
   repo: 'https://github.com/sitefig/robots',
+  // The engine, the CLI, the Action and the packages, split out on 2026-09-23.
+  engine: 'https://github.com/sitefig/robots-engine',
   gallery: 'https://github.com/sitefig/robots-engine/tree/main/data/famous-100',
   diffs: 'https://github.com/sitefig/robots-engine/commits/main/data/famous-100',
   extension: '',
