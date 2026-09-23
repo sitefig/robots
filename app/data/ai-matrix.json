@@ -1,0 +1,44 @@
+{
+  "bots": [
+    {
+      "name": "GPTBot",
+      "operator": "OpenAI",
+      "status": "allowed"
+    },
+    {
+      "name": "ClaudeBot",
+      "operator": "Anthropic",
+      "status": "blocked"
+    },
+    {
+      "name": "Google-Extended",
+      "operator": "Google",
+      "status": "partial"
+    },
+    {
+      "name": "CCBot",
+      "operator": "Common Crawl",
+      "status": "blocked"
+    },
+    {
+      "name": "PerplexityBot",
+      "operator": "Perplexity",
+      "status": "allowed"
+    },
+    {
+      "name": "Bytespider",
+      "operator": "ByteDance",
+      "status": "blocked"
+    },
+    {
+      "name": "meta-externalagent",
+      "operator": "Meta",
+      "status": "partial"
+    },
+    {
+      "name": "Amazonbot",
+      "operator": "Amazon",
+      "status": "allowed"
+    }
+  ]
+}

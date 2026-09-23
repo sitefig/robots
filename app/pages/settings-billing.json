@@ -1,0 +1,55 @@
+{
+  "route": "/app/settings/billing/",
+  "title": "Billing",
+  "key": "page.settingsBilling",
+  "lead": "Your plan, what it allows, and every invoice.",
+  "blocks": [
+    {
+      "type": "summary",
+      "key": "block.plan",
+      "endpoint": "/app/data/plan.json",
+      "fields": [
+        {
+          "key": "field.plan",
+          "label": "Plan"
+        },
+        {
+          "key": "field.domains",
+          "label": "Domains"
+        },
+        {
+          "key": "field.competitors",
+          "label": "Competitors"
+        },
+        {
+          "key": "field.frequency",
+          "label": "Crawl frequency"
+        },
+        {
+          "key": "field.channels",
+          "label": "Alert channels"
+        },
+        {
+          "key": "field.renews",
+          "label": "Renews"
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "key": "block.billingActions",
+      "items": [
+        {
+          "key": "action.portal",
+          "text": "Open the billing portal",
+          "variant": "primary",
+          "note": "Payment method, invoices and cancellation are handled by Stripe"
+        },
+        {
+          "key": "action.changePlan",
+          "text": "Change plan"
+        }
+      ]
+    }
+  ]
+}

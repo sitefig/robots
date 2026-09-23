@@ -1,0 +1,69 @@
+{
+  "route": "/app/settings/integrations/",
+  "title": "Integrations",
+  "key": "page.settingsIntegrations",
+  "lead": "Connect the analytics you already have, and every incident gets a number next to it.",
+  "blocks": [
+    {
+      "type": "steps",
+      "key": "block.googleFlow",
+      "title": "Connect analytics",
+      "numbered": true,
+      "items": [
+        {
+          "key": "int.pick",
+          "title": "Pick a source",
+          "text": "Search Console, GA4, Plausible, Matomo or Adobe with an API key."
+        },
+        {
+          "key": "int.oauth",
+          "title": "Sign in",
+          "text": "Read-only access. If you decline, nothing else changes."
+        },
+        {
+          "key": "int.property",
+          "title": "Choose the property",
+          "text": "We match it to your domain. Search Console also proves ownership."
+        },
+        {
+          "key": "int.backfill",
+          "title": "Backfill 16 months",
+          "text": "Runs in the background; we tell you when it is done."
+        },
+        {
+          "key": "int.live",
+          "title": "The data lights up",
+          "text": "Traffic under the timeline, impact on each incident, crawl stats, and a suggested peak season."
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "block.connected",
+      "title": "Connected",
+      "endpoint": "/app/data/integrations.json",
+      "columns": [
+        {
+          "key": "col.source",
+          "label": "Source"
+        },
+        {
+          "key": "col.property",
+          "label": "Property"
+        },
+        {
+          "key": "col.status",
+          "label": "Status"
+        },
+        {
+          "key": "col.lastSync",
+          "label": "Last sync"
+        }
+      ],
+      "empty": {
+        "key": "empty.integrations",
+        "text": "Nothing connected yet, so the timeline has no traffic under it."
+      }
+    }
+  ]
+}

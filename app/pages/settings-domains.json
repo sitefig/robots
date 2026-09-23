@@ -1,0 +1,65 @@
+{
+  "route": "/app/settings/domains/",
+  "title": "Domains",
+  "key": "page.settingsDomains",
+  "lead": "The domains we watch for you, and the competitors we watch beside them.",
+  "blocks": [
+    {
+      "type": "table",
+      "key": "block.domainList",
+      "endpoint": "/app/data/domains.json",
+      "columns": [
+        {
+          "key": "col.domain",
+          "label": "Domain"
+        },
+        {
+          "key": "col.verified",
+          "label": "Ownership"
+        },
+        {
+          "key": "col.competitors",
+          "label": "Competitors"
+        },
+        {
+          "key": "col.plan",
+          "label": "Crawl frequency"
+        }
+      ]
+    },
+    {
+      "type": "steps",
+      "key": "block.verify",
+      "title": "Verifying a domain",
+      "lead": "Optional to start with, required before we show traffic data.",
+      "items": [
+        {
+          "key": "verify.dns",
+          "title": "DNS TXT record",
+          "text": "Add the record we give you at the apex."
+        },
+        {
+          "key": "verify.meta",
+          "title": "Meta tag",
+          "text": "Drop one tag in the home page head."
+        },
+        {
+          "key": "verify.gsc",
+          "title": "Search Console",
+          "text": "Connecting Search Console verifies ownership for you."
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "key": "block.domainActions",
+      "items": [
+        {
+          "key": "action.addDomain",
+          "text": "Add a domain",
+          "variant": "primary"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "route": "/app/settings/",
+  "title": "Settings",
+  "key": "page.settings",
+  "lead": "Everything that decides what we watch, how often, and who hears about it.",
+  "blocks": [
+    {
+      "type": "cards",
+      "key": "block.settingsIndex",
+      "items": [
+        {
+          "key": "set.domains",
+          "title": "Domains",
+          "text": "Add a domain, verify it, choose competitors.",
+          "href": "/app/settings/domains/"
+        },
+        {
+          "key": "set.alerts",
+          "title": "Alerting",
+          "text": "Where alerts go, what triggers them, and when they may wake you.",
+          "href": "/app/settings/alerts/",
+          "priority": true
+        },
+        {
+          "key": "set.integrations",
+          "title": "Integrations",
+          "text": "Search Console, GA4 and the others.",
+          "href": "/app/settings/integrations/"
+        },
+        {
+          "key": "set.crawl",
+          "title": "Crawl speed and schedule",
+          "text": "How often we look, how hard, and when not to.",
+          "href": "/app/settings/crawl/"
+        },
+        {
+          "key": "set.seasonality",
+          "title": "Seasonality and sensitivity",
+          "text": "Be stricter in the weeks that pay for the year.",
+          "href": "/app/settings/seasonality/"
+        },
+        {
+          "key": "set.team",
+          "title": "Team and roles",
+          "text": "Who can see this, who can change it.",
+          "href": "/app/settings/team/"
+        },
+        {
+          "key": "set.billing",
+          "title": "Billing",
+          "text": "Plan, invoices and payment method.",
+          "href": "/app/settings/billing/"
+        }
+      ]
+    }
+  ]
+}

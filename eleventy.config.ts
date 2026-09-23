@@ -44,6 +44,12 @@ export default function (config: EleventyConfig) {
     'src/client/wasm/susbot_wasm.js': 'js/wasm/susbot_wasm.js',
     'src/client/wasm/susbot_wasm_bg.wasm': 'js/wasm/susbot_wasm_bg.wasm',
     'engine/config/default.toml': 'default-config.toml',
+    // The app's content: pages, sample data and translation catalogues are
+    // fetched by the browser, so they are served as they are.
+    'app/pages': 'app/pages',
+    'app/data': 'app/data',
+    'app/i18n': 'app/i18n',
+    'app/nav.json': 'app/nav.json',
     'src/site/robots.txt': 'robots.txt',
     'src/site/ads.txt': 'ads.txt',
     'src/site/humans.txt': 'humans.txt',
@@ -56,6 +62,7 @@ export default function (config: EleventyConfig) {
   config.addWatchTarget('src/components/');
   config.addWatchTarget('src/lib/');
   config.addWatchTarget('engine/locales/');
+  config.addWatchTarget('app/');
 
   return {
     dir: { input: 'src/site', includes: '_includes', output: '_site' },

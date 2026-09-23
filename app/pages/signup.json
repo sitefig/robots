@@ -1,0 +1,71 @@
+{
+  "route": "/app/signup/",
+  "title": "Sign up",
+  "key": "page.signup",
+  "lead": "Two minutes from here to a dashboard that already found something.",
+  "blocks": [
+    {
+      "type": "progress",
+      "key": "block.onboardProgress",
+      "current": 0,
+      "items": [
+        {
+          "key": "onboard.signup",
+          "text": "Sign up",
+          "href": "/app/signup/"
+        },
+        {
+          "key": "onboard.domain",
+          "text": "Your domain",
+          "href": "/app/onboard/domain/"
+        },
+        {
+          "key": "onboard.competitors",
+          "text": "Competitors",
+          "href": "/app/onboard/competitors/"
+        },
+        {
+          "key": "onboard.plan",
+          "text": "Plan",
+          "href": "/app/onboard/plan/"
+        },
+        {
+          "key": "onboard.crawling",
+          "text": "First crawl",
+          "href": "/app/onboard/crawling/"
+        }
+      ]
+    },
+    {
+      "type": "form",
+      "key": "block.signupForm",
+      "fields": [
+        {
+          "key": "field.email",
+          "label": "Email",
+          "type": "email"
+        },
+        {
+          "key": "field.password",
+          "label": "Password",
+          "type": "password",
+          "note": "Or use Google instead"
+        }
+      ],
+      "submit": {
+        "key": "action.createAccount",
+        "text": "Create account"
+      },
+      "alternate": {
+        "key": "action.google",
+        "text": "Continue with Google"
+      }
+    },
+    {
+      "type": "note",
+      "key": "block.verify",
+      "text": "We send a code to that address and check it on the next screen, so a typo costs seconds rather than a lost account."
+    }
+  ],
+  "chrome": "onboarding"
+}

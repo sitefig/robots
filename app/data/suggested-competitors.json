@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "title": "competitor.example",
+      "meta": "Named in your sitemap's outbound links",
+      "selected": true
+    },
+    {
+      "title": "rival.example",
+      "meta": "Same category, similar size",
+      "selected": true
+    },
+    {
+      "title": "upstart.example",
+      "meta": "Rising in your search results",
+      "selected": false
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "route": "/app/incidents/:id/",
+  "title": "Incident",
+  "key": "page.incidentDetail",
+  "lead": "What changed, who it affects, and what it cost.",
+  "blocks": [
+    {
+      "type": "summary",
+      "key": "block.incidentSummary",
+      "endpoint": "/app/data/incident.json",
+      "fields": [
+        {
+          "key": "field.what",
+          "label": "What changed"
+        },
+        {
+          "key": "field.bots",
+          "label": "Affected bots"
+        },
+        {
+          "key": "field.paths",
+          "label": "Affected paths"
+        },
+        {
+          "key": "field.impact",
+          "label": "Traffic impact",
+          "source": "Search Console and GA4"
+        },
+        {
+          "key": "field.since",
+          "label": "First seen"
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "key": "block.incidentActions",
+      "items": [
+        {
+          "key": "action.assign",
+          "text": "Assign"
+        },
+        {
+          "key": "action.snooze",
+          "text": "Snooze"
+        },
+        {
+          "key": "action.resolve",
+          "text": "Resolve",
+          "variant": "primary"
+        },
+        {
+          "key": "action.intended",
+          "text": "Mark as intended",
+          "note": "Teaches the alert rules to stay quiet next time"
+        }
+      ]
+    },
+    {
+      "type": "links",
+      "key": "block.incidentLinks",
+      "items": [
+        {
+          "key": "link.diff",
+          "text": "See the version diff",
+          "href": "/app/versions/"
+        },
+        {
+          "key": "link.fix",
+          "text": "Fix it in the builder",
+          "href": "/app/builder/"
+        },
+        {
+          "key": "link.rules",
+          "text": "Alert rules",
+          "href": "/app/settings/alerts/"
+        }
+      ]
+    },
+    {
+      "type": "log",
+      "key": "block.activity",
+      "title": "Activity",
+      "endpoint": "/app/data/incident-activity.json"
+    }
+  ]
+}

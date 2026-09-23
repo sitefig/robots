@@ -1,0 +1,80 @@
+{
+  "route": "/app/ai-competitors/",
+  "title": "AI and competitors",
+  "key": "page.aiCompetitors",
+  "lead": "Who you let in, and who your competitors let in.",
+  "blocks": [
+    {
+      "type": "matrix",
+      "key": "block.botMatrix",
+      "title": "AI bot access",
+      "endpoint": "/app/data/ai-matrix.json",
+      "legend": [
+        {
+          "key": "legend.allowed",
+          "text": "Allowed",
+          "state": "error"
+        },
+        {
+          "key": "legend.partial",
+          "text": "Partly blocked",
+          "state": "warning"
+        },
+        {
+          "key": "legend.blocked",
+          "text": "Blocked",
+          "state": "ok"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "key": "block.comparison",
+      "title": "You against each competitor",
+      "endpoint": "/app/data/competitors.json",
+      "columns": [
+        {
+          "key": "col.domain",
+          "label": "Domain"
+        },
+        {
+          "key": "col.gptbot",
+          "label": "GPTBot"
+        },
+        {
+          "key": "col.claudebot",
+          "label": "ClaudeBot"
+        },
+        {
+          "key": "col.googleExtended",
+          "label": "Google-Extended"
+        },
+        {
+          "key": "col.ccbot",
+          "label": "CCBot"
+        },
+        {
+          "key": "col.changed",
+          "label": "Last change"
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "key": "block.competitorActions",
+      "items": [
+        {
+          "key": "action.addCompetitor",
+          "text": "Add a competitor",
+          "variant": "primary",
+          "note": "How many you may track depends on your plan"
+        },
+        {
+          "key": "action.upgrade",
+          "text": "Upgrade",
+          "href": "/app/settings/billing/"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "route": "/app/overview/",
+  "title": "Dashboard",
+  "key": "page.overview",
+  "lead": "What changed since the last crawl, what is broken now, and what is worth doing next.",
+  "blocks": [
+    {
+      "type": "stats",
+      "items": [
+        {
+          "key": "stat.health",
+          "label": "Health score",
+          "value": "78",
+          "unit": "/100",
+          "delta": "+6 since last crawl",
+          "state": "ok"
+        },
+        {
+          "key": "stat.openIncidents",
+          "label": "Open incidents",
+          "value": "3",
+          "delta": "1 critical",
+          "state": "error"
+        },
+        {
+          "key": "stat.aiBlocked",
+          "label": "AI training crawlers blocked",
+          "value": "7",
+          "unit": "/33",
+          "state": "info"
+        },
+        {
+          "key": "stat.lastCrawl",
+          "label": "Last crawl",
+          "value": "12 min ago",
+          "delta": "next in 2h",
+          "state": "info"
+        }
+      ]
+    },
+    {
+      "type": "timeline",
+      "key": "block.timeline",
+      "title": "Timeline",
+      "lead": "Every marker is a door: open the incident, the diff, the competitor or the fix.",
+      "filters": [
+        {
+          "key": "filter.incidents",
+          "text": "Incidents"
+        },
+        {
+          "key": "filter.opportunities",
+          "text": "Opportunities"
+        },
+        {
+          "key": "filter.changes",
+          "text": "robots.txt changes"
+        },
+        {
+          "key": "filter.competitors",
+          "text": "Competitor moves"
+        },
+        {
+          "key": "filter.traffic",
+          "text": "Traffic"
+        }
+      ],
+      "ranges": [
+        "7d",
+        "30d",
+        "90d",
+        "12m"
+      ],
+      "endpoint": "/app/data/timeline.json",
+      "empty": {
+        "key": "empty.traffic",
+        "text": "Connect Search Console or GA4 to see traffic against these events.",
+        "href": "/app/settings/integrations/",
+        "cta": "Connect analytics"
+      }
+    },
+    {
+      "type": "list",
+      "key": "block.openIncidents",
+      "title": "Open incidents",
+      "href": "/app/incidents/",
+      "more": "All incidents",
+      "endpoint": "/app/data/incidents.json",
+      "limit": 5,
+      "empty": {
+        "key": "empty.incidents",
+        "text": "Nothing is broken right now."
+      }
+    },
+    {
+      "type": "list",
+      "key": "block.opportunities",
+      "title": "Opportunities",
+      "lead": "Not broken, but worth doing.",
+      "items": [
+        {
+          "key": "opp.sitemap",
+          "title": "No Sitemap line",
+          "meta": "Search engines find new pages later than they could",
+          "severity": "medium",
+          "href": "/app/builder/"
+        },
+        {
+          "key": "opp.crawlBudget",
+          "title": "Crawl budget waste",
+          "meta": "Faceted URLs are crawled but never indexed",
+          "severity": "low",
+          "href": "/app/builder/"
+        }
+      ]
+    },
+    {
+      "type": "matrix",
+      "key": "block.aiAccess",
+      "title": "AI bot access",
+      "href": "/app/ai-competitors/",
+      "more": "Compare with competitors",
+      "endpoint": "/app/data/ai-matrix.json"
+    },
+    {
+      "type": "checklist",
+      "key": "block.checklist",
+      "title": "Finish setting up",
+      "firstRunOnly": true,
+      "items": [
+        {
+          "key": "check.alerts",
+          "text": "Choose where alerts go",
+          "href": "/app/settings/alerts/",
+          "priority": true
+        },
+        {
+          "key": "check.google",
+          "text": "Connect Search Console or GA4",
+          "href": "/app/settings/integrations/"
+        },
+        {
+          "key": "check.schedule",
+          "text": "Set the crawl schedule",
+          "href": "/app/settings/crawl/"
+        },
+        {
+          "key": "check.seasonality",
+          "text": "Tell us your peak season",
+          "href": "/app/settings/seasonality/"
+        }
+      ]
+    }
+  ]
+}

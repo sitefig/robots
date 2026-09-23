@@ -1,0 +1,38 @@
+{
+  "route": "/app/signin/",
+  "title": "Sign in",
+  "key": "page.signin",
+  "lead": "Welcome back.",
+  "blocks": [
+    {
+      "type": "form",
+      "key": "block.signinForm",
+      "fields": [
+        {
+          "key": "field.email",
+          "label": "Email",
+          "type": "email"
+        },
+        {
+          "key": "field.password",
+          "label": "Password",
+          "type": "password"
+        }
+      ],
+      "submit": {
+        "key": "action.signIn",
+        "text": "Sign in"
+      },
+      "alternate": {
+        "key": "action.google",
+        "text": "Continue with Google"
+      }
+    },
+    {
+      "type": "note",
+      "key": "block.magicLink",
+      "text": "The link in an alert email signs you in and opens the incident it is about."
+    }
+  ],
+  "chrome": "onboarding"
+}

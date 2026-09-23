@@ -1,0 +1,70 @@
+{
+  "route": "/app/onboard/crawling/",
+  "title": "First crawl",
+  "key": "page.onboardCrawling",
+  "lead": "We are reading your file and your competitors now. This takes about ten minutes.",
+  "blocks": [
+    {
+      "type": "progress",
+      "key": "block.onboardProgress",
+      "current": 4,
+      "items": [
+        {
+          "key": "onboard.signup",
+          "text": "Sign up",
+          "href": "/app/signup/"
+        },
+        {
+          "key": "onboard.domain",
+          "text": "Your domain",
+          "href": "/app/onboard/domain/"
+        },
+        {
+          "key": "onboard.competitors",
+          "text": "Competitors",
+          "href": "/app/onboard/competitors/"
+        },
+        {
+          "key": "onboard.plan",
+          "text": "Plan",
+          "href": "/app/onboard/plan/"
+        },
+        {
+          "key": "onboard.crawling",
+          "text": "First crawl",
+          "href": "/app/onboard/crawling/"
+        }
+      ]
+    },
+    {
+      "type": "status",
+      "key": "block.crawlProgress",
+      "endpoint": "/app/data/crawl-status.json",
+      "text": "You can close this tab. We email you when the findings are ready, and the link drops you straight into the dashboard."
+    },
+    {
+      "type": "checklist",
+      "key": "block.waitChecklist",
+      "title": "While you wait",
+      "items": [
+        {
+          "key": "check.alerts",
+          "text": "Choose where alerts go",
+          "href": "/app/settings/alerts/",
+          "priority": true
+        },
+        {
+          "key": "check.google",
+          "text": "Connect Search Console or GA4",
+          "href": "/app/settings/integrations/"
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "key": "block.crawlFails",
+      "text": "If your robots.txt answers 5xx or blocks us, that is itself a finding: the dashboard opens with it, and tells you how to let us in."
+    }
+  ],
+  "chrome": "onboarding"
+}

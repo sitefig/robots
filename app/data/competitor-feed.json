@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "title": "Blocked GPTBot",
+      "meta": "Added to the AI group",
+      "when": "5 days ago",
+      "severity": "info"
+    },
+    {
+      "title": "Blocked CCBot and Bytespider",
+      "meta": "Same edit",
+      "when": "5 days ago",
+      "severity": "info"
+    },
+    {
+      "title": "Removed a staging Disallow",
+      "meta": "staging.competitor.example is no longer named",
+      "when": "6 weeks ago",
+      "severity": "info"
+    }
+  ]
+}

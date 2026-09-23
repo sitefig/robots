@@ -1,0 +1,17 @@
+{
+  "current": "example.com",
+  "items": [
+    {
+      "domain": "example.com",
+      "verified": "DNS TXT",
+      "competitors": 4,
+      "frequency": "Hourly"
+    },
+    {
+      "domain": "shop.example.com",
+      "verified": "Search Console",
+      "competitors": 2,
+      "frequency": "Every 6 hours"
+    }
+  ]
+}

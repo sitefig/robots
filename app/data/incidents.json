@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": "482",
+      "title": "Disallow: / added for all crawlers",
+      "meta": "Every crawler, whole site, since 09:14",
+      "severity": "critical",
+      "status": "open",
+      "href": "/app/incidents/482/"
+    },
+    {
+      "id": "481",
+      "title": "GPTBot went from blocked to allowed",
+      "meta": "An edit to the * group removed the block",
+      "severity": "high",
+      "status": "open",
+      "href": "/app/incidents/481/"
+    },
+    {
+      "id": "479",
+      "title": "Sitemap line removed",
+      "meta": "Search engines find new pages later",
+      "severity": "medium",
+      "status": "open",
+      "href": "/app/incidents/479/"
+    },
+    {
+      "id": "477",
+      "title": "robots.txt answered 503 for 40 minutes",
+      "meta": "Google reads that as block everything",
+      "severity": "high",
+      "status": "resolved",
+      "href": "/app/incidents/477/"
+    },
+    {
+      "id": "474",
+      "title": "/checkout disallowed",
+      "meta": "Intended, marked by Len on 18 Sep",
+      "severity": "low",
+      "status": "intended",
+      "href": "/app/incidents/474/"
+    }
+  ]
+}

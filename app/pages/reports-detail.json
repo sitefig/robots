@@ -1,0 +1,64 @@
+{
+  "route": "/app/reports/:id/",
+  "title": "Report",
+  "key": "page.reportDetail",
+  "lead": "Incidents, changes, AI access, competitor moves and traffic for the period.",
+  "blocks": [
+    {
+      "type": "summary",
+      "key": "block.reportSummary",
+      "endpoint": "/app/data/report.json",
+      "fields": [
+        {
+          "key": "field.incidents",
+          "label": "Incidents"
+        },
+        {
+          "key": "field.changes",
+          "label": "robots.txt changes"
+        },
+        {
+          "key": "field.aiAccess",
+          "label": "AI access"
+        },
+        {
+          "key": "field.competitors",
+          "label": "Competitor moves"
+        },
+        {
+          "key": "field.traffic",
+          "label": "Traffic"
+        }
+      ]
+    },
+    {
+      "type": "timeline",
+      "key": "block.reportTimeline",
+      "endpoint": "/app/data/timeline.json",
+      "ranges": [
+        "30d",
+        "90d"
+      ]
+    },
+    {
+      "type": "actions",
+      "key": "block.reportExport",
+      "items": [
+        {
+          "key": "action.pdf",
+          "text": "Export as PDF",
+          "variant": "primary"
+        },
+        {
+          "key": "action.csv",
+          "text": "Export as CSV"
+        },
+        {
+          "key": "action.share",
+          "text": "Create a public link",
+          "note": "Anyone with the link can read this report"
+        }
+      ]
+    }
+  ]
+}

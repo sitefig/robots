@@ -1,0 +1,96 @@
+{
+  "route": "/app/builder/",
+  "title": "Robots.txt builder",
+  "key": "page.builder",
+  "lead": "Write the file with the rules in front of you, test it, then ship it without setting off your own alerts.",
+  "blocks": [
+    {
+      "type": "editor",
+      "key": "block.ruleEditor",
+      "title": "Rules",
+      "modes": [
+        {
+          "key": "mode.visual",
+          "text": "Groups per user agent"
+        },
+        {
+          "key": "mode.raw",
+          "text": "Raw text"
+        }
+      ],
+      "endpoint": "/app/data/rules.json"
+    },
+    {
+      "type": "cards",
+      "key": "block.templates",
+      "title": "Start from a template",
+      "items": [
+        {
+          "key": "tpl.blockTraining",
+          "title": "Block AI training",
+          "text": "Keep search engines, refuse the training crawlers."
+        },
+        {
+          "key": "tpl.allowSearch",
+          "title": "Allow AI search",
+          "text": "Let the answer engines cite you, refuse bulk training."
+        },
+        {
+          "key": "tpl.ecommerce",
+          "title": "E-commerce",
+          "text": "Keep carts, filters and search pages out of the index."
+        },
+        {
+          "key": "tpl.staging",
+          "title": "Staging",
+          "text": "Refuse everything, and say so in one line."
+        }
+      ]
+    },
+    {
+      "type": "tester",
+      "key": "block.tester",
+      "title": "Test a URL",
+      "fields": [
+        {
+          "key": "field.url",
+          "label": "URL",
+          "placeholder": "/checkout?step=2"
+        },
+        {
+          "key": "field.userAgent",
+          "label": "User agent",
+          "placeholder": "GPTBot"
+        }
+      ],
+      "result": {
+        "key": "result.allowed",
+        "text": "Allowed or blocked, and the rule that decided"
+      }
+    },
+    {
+      "type": "actions",
+      "key": "block.builderActions",
+      "items": [
+        {
+          "key": "action.validate",
+          "text": "Validate and diff against live",
+          "variant": "primary"
+        },
+        {
+          "key": "action.copy",
+          "text": "Copy"
+        },
+        {
+          "key": "action.download",
+          "text": "Download"
+        },
+        {
+          "key": "action.expected",
+          "text": "Mark as an expected change",
+          "note": "So the next crawl does not open an incident for your own deploy"
+        }
+      ]
+    }
+  ]
+}

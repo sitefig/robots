@@ -1,0 +1,54 @@
+# The app's own strings. English is in the content JSON as a fallback, so
+# this file only has to exist for the languages that are translated; the app
+# fetches <lang>.po at runtime, which means adding a language is one upload.
+msgid ""
+msgstr ""
+"Project-Id-Version: sus.bot app\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "nav.label"
+msgid "Sections"
+msgstr "Sections"
+
+msgctxt "nav.account"
+msgid "Account"
+msgstr "Account"
+
+msgctxt "page.unavailable"
+msgid "This page could not be loaded. Try again in a moment."
+msgstr "This page could not be loaded. Try again in a moment."
+
+msgctxt "filters.label"
+msgid "Filters"
+msgstr "Filters"
+
+msgctxt "filter.label"
+msgid "Filter the timeline"
+msgstr "Filter the timeline"
+
+msgctxt "filter.any"
+msgid "Any"
+msgstr "Any"
+
+msgctxt "actions.label"
+msgid "Actions"
+msgstr "Actions"
+
+msgctxt "action.open"
+msgid "Open"
+msgstr "Open"
+
+msgctxt "action.test"
+msgid "Test"
+msgstr "Test"
+
+msgctxt "action.choosePlan"
+msgid "Choose"
+msgstr "Choose"
+
+msgctxt "editor.mode"
+msgid "Editor mode"
+msgstr "Editor mode"

@@ -1,0 +1,38 @@
+{
+  "range": "30d",
+  "markers": [
+    {
+      "date": "2026-09-23",
+      "kind": "incident",
+      "severity": "critical",
+      "title": "Disallow: / added",
+      "href": "/app/incidents/482/"
+    },
+    {
+      "date": "2026-09-21",
+      "kind": "change",
+      "title": "robots.txt changed, 3 lines",
+      "href": "/app/versions/"
+    },
+    {
+      "date": "2026-09-18",
+      "kind": "competitor",
+      "title": "competitor.example blocked GPTBot",
+      "href": "/app/ai-competitors/competitor.example/"
+    },
+    {
+      "date": "2026-09-14",
+      "kind": "opportunity",
+      "title": "Sitemap line missing",
+      "href": "/app/builder/"
+    },
+    {
+      "date": "2026-09-09",
+      "kind": "incident",
+      "severity": "high",
+      "title": "503 for 40 minutes",
+      "href": "/app/incidents/477/"
+    }
+  ],
+  "traffic": []
+}

@@ -65,8 +65,10 @@ test('pages are translated and contain no unresolved placeholders', () => {
 test('sitemap lists every home page with all its alternates', () => {
   const xml = files['sitemap.xml'];
   for (const code of active) assert.ok(xml.includes(`<loc>${code === DEFAULT_LANG ? SITE_URL : `${SITE_URL}${code}/`}</loc>`), code);
-  const pages = Object.keys(files).filter((rel) => rel.endsWith('index.html')).length;
-  assert.equal((xml.match(/<url>/g) || []).length, pages, 'one <url> per built page');
+  // Public pages only: the app at /app/ has sitemap: false.
+  const pages = Object.keys(files).filter((rel) => rel.endsWith('index.html') && !rel.startsWith('app/')).length;
+  assert.equal((xml.match(/<url>/g) || []).length, pages, 'one <url> per built public page');
+  assert.ok(!xml.includes(`${SITE_URL}app/`), 'the app is not in the public sitemap');
   assert.ok(xml.includes(`<loc>${SITE_URL}press/</loc>`));
 });
 
@@ -115,7 +117,8 @@ test('the press kit page links its files, and every page has the footer and the 
   assert.ok(press, 'press/index.html is built');
   for (const f of ['files/susbot-press-kit.zip', 'files/lockup-horizontal/susbot-h-dark-bg.svg', 'files/png/susbot-app-icon-512.png']) assert.ok(press.includes(`href="${f}"`), f);
   for (const [rel, page] of Object.entries(files)) {
-    if (!rel.endsWith('.html')) continue;
+    // The app at /app/ is a separate surface with its own shell.
+    if (!rel.endsWith('.html') || rel.startsWith('app/')) continue;
     assert.ok(page.includes('id="brand-menu"'), `${rel} has the logo menu`);
     assert.ok(page.includes('class="footer-nav"'), `${rel} has the footer links`);
   }

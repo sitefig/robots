@@ -1,0 +1,40 @@
+{
+  "route": "/app/versions/:a...:b/",
+  "title": "Version diff",
+  "key": "page.versionDiff",
+  "lead": "Side by side, with what each change does to each crawler.",
+  "blocks": [
+    {
+      "type": "diff",
+      "key": "block.diff",
+      "endpoint": "/app/data/version-diff.json"
+    },
+    {
+      "type": "list",
+      "key": "block.perBot",
+      "title": "Effect per bot",
+      "endpoint": "/app/data/version-diff-bots.json"
+    },
+    {
+      "type": "actions",
+      "key": "block.versionActions",
+      "items": [
+        {
+          "key": "action.annotate",
+          "text": "Add a note",
+          "note": "Who changed it and why, such as deploy #482"
+        },
+        {
+          "key": "action.restore",
+          "text": "Open in builder",
+          "href": "/app/builder/",
+          "variant": "primary"
+        },
+        {
+          "key": "action.download",
+          "text": "Download this version"
+        }
+      ]
+    }
+  ]
+}

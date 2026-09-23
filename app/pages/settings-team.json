@@ -1,0 +1,42 @@
+{
+  "route": "/app/settings/team/",
+  "title": "Team and roles",
+  "key": "page.settingsTeam",
+  "lead": "Who can see this account, and who can change it.",
+  "blocks": [
+    {
+      "type": "table",
+      "key": "block.team",
+      "endpoint": "/app/data/team.json",
+      "columns": [
+        {
+          "key": "col.person",
+          "label": "Person"
+        },
+        {
+          "key": "col.role",
+          "label": "Role"
+        },
+        {
+          "key": "col.domains",
+          "label": "Domains"
+        },
+        {
+          "key": "col.alerts",
+          "label": "Gets alerts"
+        }
+      ]
+    },
+    {
+      "type": "actions",
+      "key": "block.teamActions",
+      "items": [
+        {
+          "key": "action.invite",
+          "text": "Invite someone",
+          "variant": "primary"
+        }
+      ]
+    }
+  ]
+}

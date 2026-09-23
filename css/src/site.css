@@ -22,6 +22,7 @@
 @import "./global.css" layer(base);
 @import "./composition.css" layer(components);
 @import "./blocks.css" layer(components);
+@import "./app.css" layer(components);
 @import "./exceptions.css" layer(components);
 
 @source "../../src/components";

@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "period": "September 2026",
+      "domain": "example.com",
+      "incidents": 4,
+      "sent": "3 recipients",
+      "href": "/app/reports/2026-09/"
+    },
+    {
+      "period": "August 2026",
+      "domain": "example.com",
+      "incidents": 1,
+      "sent": "3 recipients",
+      "href": "/app/reports/2026-08/"
+    }
+  ]
+}

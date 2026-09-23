@@ -1,0 +1,40 @@
+{
+  "route": "/app/settings/seasonality/",
+  "title": "Seasonality and sensitivity",
+  "key": "page.settingsSeasonality",
+  "lead": "A mistake in the last week of November costs more than the same mistake in June.",
+  "blocks": [
+    {
+      "type": "steps",
+      "key": "block.seasonSetup",
+      "numbered": true,
+      "items": [
+        {
+          "key": "season.auto",
+          "title": "Detect the peaks",
+          "text": "From your Search Console or GA4 history, if it is connected."
+        },
+        {
+          "key": "season.manual",
+          "title": "Or set them by hand",
+          "text": "Black Friday, the holidays, a launch, the sales."
+        },
+        {
+          "key": "season.sensitivity",
+          "title": "Sensitivity per period",
+          "text": "Low, normal or high, as a default with exceptions."
+        },
+        {
+          "key": "season.preview",
+          "title": "See what it would have done",
+          "text": "Last November this setting would have sent four more alerts, and crawled twice as often."
+        },
+        {
+          "key": "season.applied",
+          "title": "Applied",
+          "text": "It feeds the alert thresholds, the crawl frequency, and the bands on the timeline."
+        }
+      ]
+    }
+  ]
+}

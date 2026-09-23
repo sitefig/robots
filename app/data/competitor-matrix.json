@@ -1,0 +1,25 @@
+{
+  "domain": "competitor.example",
+  "bots": [
+    {
+      "name": "GPTBot",
+      "operator": "OpenAI",
+      "status": "blocked"
+    },
+    {
+      "name": "ClaudeBot",
+      "operator": "Anthropic",
+      "status": "blocked"
+    },
+    {
+      "name": "Google-Extended",
+      "operator": "Google",
+      "status": "blocked"
+    },
+    {
+      "name": "CCBot",
+      "operator": "Common Crawl",
+      "status": "blocked"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "route": "/app/incidents/",
+  "title": "Incidents",
+  "key": "page.incidents",
+  "lead": "Everything that changed for the worse, newest first.",
+  "blocks": [
+    {
+      "type": "filters",
+      "key": "block.incidentFilters",
+      "items": [
+        {
+          "key": "filter.severity",
+          "text": "Severity",
+          "options": [
+            "Critical",
+            "High",
+            "Medium",
+            "Low"
+          ]
+        },
+        {
+          "key": "filter.status",
+          "text": "Status",
+          "options": [
+            "Open",
+            "Snoozed",
+            "Resolved",
+            "Intended"
+          ]
+        },
+        {
+          "key": "filter.type",
+          "text": "Type",
+          "options": [
+            "robots.txt changed",
+            "Path disallowed",
+            "Blocks everything",
+            "AI access changed",
+            "Sitemap removed",
+            "Fetch failed"
+          ]
+        },
+        {
+          "key": "filter.bot",
+          "text": "Bot",
+          "options": [
+            "Googlebot",
+            "GPTBot",
+            "ClaudeBot",
+            "Bingbot",
+            "PerplexityBot"
+          ]
+        },
+        {
+          "key": "filter.date",
+          "text": "Date",
+          "options": [
+            "7d",
+            "30d",
+            "90d",
+            "12m"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "key": "block.incidentList",
+      "endpoint": "/app/data/incidents.json",
+      "empty": {
+        "key": "empty.incidents",
+        "text": "No incidents match these filters."
+      }
+    }
+  ]
+}

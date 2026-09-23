@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "id": "watch",
+      "name": "Watch",
+      "blurb": "One domain, daily crawl, email alerts.",
+      "features": [
+        "1 domain",
+        "2 competitors",
+        "Daily crawl",
+        "Email alerts"
+      ]
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "blurb": "Hourly crawls and the channels your team already reads.",
+      "features": [
+        "10 domains",
+        "10 competitors",
+        "Hourly crawl",
+        "Email, Slack, SMS",
+        "Monthly reports"
+      ],
+      "featured": true
+    },
+    {
+      "id": "agency",
+      "name": "Agency",
+      "blurb": "Client reporting and a crawl every quarter of an hour.",
+      "features": [
+        "50 domains",
+        "Unlimited competitors",
+        "15 minute crawl",
+        "Every channel",
+        "White-label reports"
+      ]
+    }
+  ]
+}

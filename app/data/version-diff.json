@@ -1,0 +1,22 @@
+{
+  "a": "21 Sep, 14:02",
+  "b": "23 Sep, 09:14",
+  "lines": [
+    {
+      "kind": "context",
+      "text": "User-agent: *"
+    },
+    {
+      "kind": "added",
+      "text": "Disallow: /"
+    },
+    {
+      "kind": "removed",
+      "text": "Disallow: /admin/"
+    },
+    {
+      "kind": "context",
+      "text": "Sitemap: https://example.com/sitemap.xml"
+    }
+  ]
+}
