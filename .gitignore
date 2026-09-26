@@ -19,3 +19,6 @@ __pycache__/
 crates/python/python/susbot/*.so
 crates/python/python/susbot/*.pyd
 npm/susbot/wasm/
+
+# Claude Code session data, worktrees and local settings
+.claude/

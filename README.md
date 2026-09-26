@@ -113,6 +113,8 @@ Every language has its own URL: `https://sus.bot/de/`, `/fr/`, `/nl/`, and so on
 
 This repository is the website. The engine, the CLI, the GitHub Action and the Python and npm packages live in [sitefig/robots-engine](https://github.com/sitefig/robots-engine) and are carried here as a submodule at `engine/`, which is where the analysis, the dictionaries, the report schema and the default configuration come from.
 
+The Cloudflare Worker that fetches robots.txt for the page is not here either: it is deployed from a private repository, because it is hosting rather than a tool, and it is the one piece of the hosted service that is not free. You do not need it. The command line tool fetches the file itself, and this site falls back to a direct fetch, then to pasting the file in, when the proxy is unavailable.
+
 ```
 git clone --recurse-submodules https://github.com/sitefig/robots.git
 git submodule update --remote engine     # move the site to a newer engine
@@ -128,7 +130,7 @@ npm run a11y               # axe-core, html-validate and pa11y over every page a
 npm run lighthouse         # Lighthouse against the live site
 ```
 
-The site is TypeScript: components in `src/components/`, pages in `src/site/`, browser code in `src/client/`, CUBE CSS on Tailwind in `css/`. To add a page, put a Markdown file with `layout: page` and a `title` in its front matter under `src/site/` and push; it gets the header and footer, joins the sitemap and is published by the `Deploy site` workflow. The Cloudflare Worker in `worker/` fetches robots.txt on the page's behalf, because a browser may not set a user agent and most sites send no CORS headers on that file.
+The site is TypeScript: components in `src/components/`, pages in `src/site/`, browser code in `src/client/`, CUBE CSS on Tailwind in `css/`. To add a page, put a Markdown file with `layout: page` and a `title` in its front matter under `src/site/` and push; it gets the header and footer, joins the sitemap and is published by the `Deploy site` workflow. A Cloudflare Worker fetches robots.txt on the page's behalf, because a browser may not set a user agent and most sites send no CORS headers on that file. It is deployed from a private repository, so nothing here needs to change when it does; `WORKER_URL` in `src/client/config.ts` is the only link between them, and the site falls back to a direct fetch and to pasting the file when the proxy is unavailable.
 
 Rule matching follows [RFC 9309](https://www.rfc-editor.org/rfc/rfc9309) as implemented by Google's open-source matcher. Built by [Sitefig](https://sitefig.eu).
 

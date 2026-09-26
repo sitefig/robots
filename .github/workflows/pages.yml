@@ -14,10 +14,7 @@ on:
       - 'README.md'
       - 'CLAUDE.md'
       - 'LICENSE.md'
-      - 'worker/**'
       - '.github/workflows/test.yml'
-      - '.github/workflows/deploy-worker.yml'
-      - '.github/workflows/worker-logs.yml'
   workflow_dispatch:
 
 permissions:

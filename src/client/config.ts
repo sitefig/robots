@@ -1,6 +1,7 @@
 // Runtime configuration. This is the only file that needs editing to deploy.
 
-// URL of the deployed Cloudflare Worker (see worker/). Leave the placeholder
+// URL of the deployed Cloudflare Worker (sitefig/robots-worker, private).
+// Leave the placeholder
 // and the site still works for sites that send CORS headers, plus paste mode.
 export const WORKER_URL = 'https://robots-proxy.sitefig.workers.dev';
 
