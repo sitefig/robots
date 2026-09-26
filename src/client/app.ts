@@ -24,6 +24,8 @@ import { initPricing } from './components/pricing.ts';
 import { readRecent, renderRecent, remember } from './components/recent.ts';
 import { initTheme, initLanguage } from './components/preferences.ts';
 import { initBrandMenu } from './components/brand-menu.ts';
+import { initSales, renderSales } from './components/sales.ts';
+import { trackCheck, type CheckSource, type CheckTrigger } from './track.ts';
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -39,7 +41,7 @@ function engineOptions(): Options {
 }
 
 /** Run the engine on the current text with the page locale. */
-function analyse(): void {
+function analyse(source: CheckSource, trigger: CheckTrigger): void {
   if (state.analysis) state.analysis.free();
   const started = performance.now();
   state.analysis = new Analysis(state.text, engineOptions());
@@ -47,6 +49,7 @@ function analyse(): void {
   state.text = state.analysis.report.raw;
   state.parseMs = ms;
   render();
+  trackCheck(state.analysis.report, source, trigger);
 }
 
 function render(): void {
@@ -63,9 +66,10 @@ function render(): void {
   renderRecon();
   renderSitemaps();
   renderRaw();
+  renderSales();
 }
 
-async function analyseUrl(input: string): Promise<void> {
+async function analyseUrl(input: string, trigger: CheckTrigger = 'user'): Promise<void> {
   const button = $<HTMLButtonElement>('#fetch-button');
   button.disabled = true;
   try {
@@ -96,7 +100,7 @@ async function analyseUrl(input: string): Promise<void> {
     state.text = result.text;
     state.siteUrl = result.finalUrl;
     history.replaceState(null, '', `?${new URLSearchParams({ url: input })}`);
-    analyse();
+    analyse(result.source === 'proxy' ? 'proxy' : 'direct', trigger);
     remember(new URL(result.robotsUrl).origin);
     const via = result.source === 'proxy' ? t('ui.via.proxy') : t('ui.via.direct');
     setStatus('ok', t('ui.status.fetched', { via, status: result.status, size: formatBytes(result.bytes), ms: formatMs(result.durationMs) }));
@@ -110,14 +114,14 @@ async function analyseUrl(input: string): Promise<void> {
   }
 }
 
-async function analysePasted(text: string, siteUrl: string | null = null): Promise<void> {
+async function analysePasted(text: string, siteUrl: string | null = null, trigger: CheckTrigger = 'user'): Promise<void> {
   await loadEngine();
   state.input = '';
   state.fetch = null;
   state.text = text;
   state.siteUrl = siteUrl;
   try {
-    analyse();
+    analyse(siteUrl ? 'example' : 'paste', trigger);
   } catch (err) {
     setStatus('error', t('ui.status.unexpected', { message: message(err) }));
     return;
@@ -127,7 +131,7 @@ async function analysePasted(text: string, siteUrl: string | null = null): Promi
 
 const EXAMPLES: Record<string, { file: string; siteUrl: string }> = { 'kitchen-sink': { file: EXAMPLE_URL, siteUrl: 'https://www.example.com/robots.txt' } };
 
-async function loadExample(name: string): Promise<void> {
+async function loadExample(name: string, trigger: CheckTrigger = 'user'): Promise<void> {
   const ex = EXAMPLES[name];
   if (!ex) return;
   setStatus('loading', t('ui.status.loadingExample'));
@@ -137,7 +141,7 @@ async function loadExample(name: string): Promise<void> {
     const text = await res.text();
     $<HTMLTextAreaElement>('#pasted-text').value = text;
     $<HTMLDetailsElement>('#paste-details').open = true;
-    await analysePasted(text, ex.siteUrl);
+    await analysePasted(text, ex.siteUrl, trigger);
     history.replaceState(null, '', `?${new URLSearchParams({ example: name })}`);
   } catch (err) {
     setStatus('error', t('ui.status.exampleFailed', { message: message(err) }));
@@ -165,9 +169,9 @@ function prefetchEngine(): void {
   events.forEach((e) => addEventListener(e, start, { capture: true, passive: true }));
 }
 
-function checkOrigin(origin: string): void {
+function checkOrigin(origin: string, trigger: CheckTrigger = 'user'): void {
   $<HTMLInputElement>('#site-url').value = origin;
-  analyseUrl(origin);
+  analyseUrl(origin, trigger);
 }
 
 function init(): void {
@@ -175,6 +179,7 @@ function init(): void {
   initLanguage();
   initBrandMenu();
   initPricing();
+  initSales();
   fillLinks();
   try {
     // The page used to keep a visitor-supplied TOML under this key; the
@@ -203,11 +208,11 @@ function init(): void {
   const example = params.get('example');
   if (url) {
     $<HTMLInputElement>('#site-url').value = url;
-    analyseUrl(url);
+    analyseUrl(url, 'load');
   } else if (example) {
-    loadExample(example);
+    loadExample(example, 'load');
   } else if (readRecent().length) {
-    checkOrigin(readRecent()[0]);
+    checkOrigin(readRecent()[0], 'load');
   } else {
     prefetchEngine();
   }

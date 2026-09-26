@@ -6,6 +6,7 @@ import { el, badge, replace, slot, scrollable, formatBytes, formatMs } from '../
 import { proxyConfigured, ACCESS_CHECK_CONCURRENCY } from '../config.ts';
 import { fetchViaProxy, type FetchError, type FetchResult } from '../fetcher.ts';
 import { state, current } from '../state.ts';
+import { trackAccessCheck } from '../track.ts';
 
 export function renderAccess(): void {
   const container = slot('access');
@@ -32,6 +33,7 @@ async function runAccessCheck(button: HTMLButtonElement, container: HTMLElement)
   const robotsUrl = state.fetch?.robotsUrl ?? '';
   const crawlers = current().crawlers;
   const targets: Target[] = [{ name: t('ui.access.baseline'), ua: crawlers.browser_ua }, ...crawlers.list.filter((a) => a.ua)];
+  trackAccessCheck(targets.length);
   const rows = new Map<string, HTMLElement>();
   const tbody = el('tbody');
   for (const target of targets) {

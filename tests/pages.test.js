@@ -5,7 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import Eleventy from '@11ty/eleventy';
-import { loadLocales, activeLanguages, trackingFigures } from '../src/lib/site.ts';
+import { loadLocales, activeLanguages, trackingFigures, analyticsTag } from '../src/lib/site.ts';
 import { render as renderHome } from '../src/site/index.11ty.ts';
 import { render as renderLayout } from '../src/site/_includes/page.11ty.ts';
 import { render as renderSitemap } from '../src/site/sitemap.11ty.ts';
@@ -68,6 +68,24 @@ test('sitemap lists every home page with all its alternates', () => {
   const pages = Object.keys(files).filter((rel) => rel.endsWith('index.html')).length;
   assert.equal((xml.match(/<url>/g) || []).length, pages, 'one <url> per built page');
   assert.ok(xml.includes(`<loc>${SITE_URL}press/</loc>`));
+});
+
+test('nothing is sold before there is a report', () => {
+  for (const [rel, page] of Object.entries(files)) {
+    if (!isHome(rel)) continue;
+    const section = page.slice(page.indexOf('<section id="keep-watching"'));
+    assert.match(section.slice(0, 200), /<section id="keep-watching"[^>]* hidden>/, `${rel} shows the offer before a check`);
+    for (const offer of ['free', 'self', 'watch']) {
+      assert.ok(section.includes(`data-offer="${offer}"`), `${rel} lacks the ${offer} offer`);
+    }
+  }
+});
+
+test('the analytics tag never receives the address that was checked', () => {
+  const tag = analyticsTag();
+  if (!tag) return; // no measurement ID configured
+  assert.ok(tag.includes("gtag('set', { page_location: location.origin + location.pathname })"), 'the query string must be stripped before any hit');
+  assert.ok(tag.indexOf("gtag('set'") < tag.indexOf("gtag('config'"), 'stripping has to happen before the page view');
 });
 
 test('components escape dictionary text but keep page HTML raw', () => {

@@ -5,8 +5,12 @@ import { t } from '../i18n.ts';
 import { el, tx, replace, slot, $, type Child } from '../dom.ts';
 import { state, current } from '../state.ts';
 import { SCHEMA_URL } from '../paths.ts';
+import { trackExport } from '../track.ts';
 
 function downloadFile(name: string, content: string, type: string): void {
+  // Every export on the page goes through here, so this is the one place that
+  // has to count them. The format is the extension, which is all GA4 needs.
+  trackExport(name.slice(name.lastIndexOf('.') + 1));
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const a = el('a', { href: url, download: name });

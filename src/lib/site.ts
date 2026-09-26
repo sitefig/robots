@@ -173,6 +173,12 @@ export function redirectScript(active: string[]): string {
  * shorter than that with no interaction is not counted. On the root page the
  * language redirect runs first and sets window.susRedirect, so a visitor who
  * is sent on to their language page is counted once, on that page.
+ *
+ * `page_location` is set to the origin and path only, before anything is sent.
+ * The page puts the address being checked in the query string (`?url=`), and
+ * that is the visitor's business: without this, every domain anyone checked
+ * would arrive in the analytics property as a page path. `gtag` is put on
+ * window so src/client/track.ts can reach it from a module.
  */
 export function analyticsTag(): string {
   if (!ANALYTICS_ID) return '';
@@ -182,8 +188,10 @@ export function analyticsTag(): string {
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
     if (!window.susRedirect) {
       gtag('js', new Date());
+      gtag('set', { page_location: location.origin + location.pathname });
       gtag('config', ${id});
       (function () {
         var done = false;
