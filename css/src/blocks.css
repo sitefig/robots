@@ -689,3 +689,24 @@
   padding-inline-start: 1rem;
   border-inline-start: 0.375rem solid var(--color-signal);
 }
+
+/* The check at the top of the home page. It is the reason a visitor came, so
+   the field is large enough to be the first thing the eye lands on, and the
+   panel spans the page rather than sharing the row with copy. */
+.hero-check {
+  border-width: 2px;
+}
+
+.hero-check input[type="text"] {
+  font-size: var(--text-lg);
+  padding-block: calc(var(--spacing) * 3);
+}
+
+.hero-check button[type="submit"] {
+  font-size: var(--text-lg);
+  padding-inline: calc(var(--spacing) * 6);
+}
+
+@media (min-width: 48rem) {
+  .hero-check .cluster > input[type="text"] { flex: 1 1 28rem; }
+}

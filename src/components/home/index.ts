@@ -5,7 +5,7 @@ import { SiteHeader } from '../header.ts';
 import { SiteFooter } from '../footer.ts';
 import { Hero } from './hero.ts';
 import { Verdict } from './verdict.ts';
-import { Promo } from './promo.ts';
+import { Sales } from './sales.ts';
 import { Results } from './results.ts';
 import { Pricing } from './pricing.ts';
 import { PRICING } from '../../client/config.ts';
@@ -19,8 +19,8 @@ export function HomeBody(ctx: PageContext, blockRate: string): string {
 
 ${Hero(ctx)}
 ${Verdict(ctx)}
-${Promo(ctx)}
 ${Results(ctx, blockRate)}
+${Sales(ctx)}
 ${PRICING.show ? Pricing(ctx) : ''}
 ${More(ctx)}
   </main>
