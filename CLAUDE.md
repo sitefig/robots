@@ -4,20 +4,59 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-sus.bot: a robots.txt auditor. **This repository is the website.** The engine, the CLI, the GitHub Action and the Python and npm packages live in [sitefig/robots-engine](https://github.com/sitefig/robots-engine), which is carried here as a submodule at `engine/` (split out on 2026-09-23).
+**This repository is sus.bot: the website, and the free tool that is also the sales pitch.** A visitor
+arrives with a domain, gets the whole report in their browser in a second, and pays nothing: no account,
+no install, no limit, one site at a time. That free check is the product on this side, and what it sells
+is the paid app, which watches a robots.txt over time instead of looking at it once.
 
-What comes from the submodule: the analysis itself (built to WebAssembly from `engine/crates/wasm`), every dictionary (`engine/locales/`, generated from `engine/po/`, so page and interface copy is edited there too), the default configuration, the report schema, the kitchen-sink example and the tracking data the home page quotes. `git submodule update --remote engine` moves the site to a newer engine; the commit that moves the pointer is what ships it.
+Four repositories, and the split matters:
 
-The engine parses the file, matches it like Google's RFC 9309 implementation, runs lint checks, flags sensitive Disallow paths, and reports what the file gives away (platform, generator, cloud buckets, other hosts, APIs, data feeds, file types, comment metadata). It is compiled two ways:
+| Repository | What it is | Public |
+| --- | --- | --- |
+| `sitefig/robots` (this one) | The website: the free one-off check, the sales copy, the tracking | yes |
+| [`sitefig/robots-engine`](https://github.com/sitefig/robots-engine) | The analysis: the Rust engine, the CLI, the GitHub Action, the Python and npm packages. Carried here as a submodule at `engine/` | yes |
+| `sitefig/app.sitefig.net` | The paid app a visitor signs up for: accounts, dashboards, alerts, billing | no |
+| `sitefig/robots-worker` | The Cloudflare Worker that fetches robots.txt for the page | no |
 
-- **Browser** (`engine/crates/wasm` → WebAssembly). The static site at `https://sus.bot/` (root: English; `/<code>/` for the other 23 EU languages) fetches a site's `/robots.txt` (directly, or through the Cloudflare Worker proxy, which lives in the private repository `sitefig/robots-worker`), hands the text to the engine and renders the report. It can also refetch the file through the proxy with each crawler's real User-Agent to spot servers that treat bots differently.
-- **CLI** (`engine/crates/cli` → the `susbot` binary) for terminals, CI and the composite GitHub Action, all released from the engine repository.
+**Nothing about how the analysis works lives here.** The parser, the RFC 9309 matcher, the checks, the
+security signatures, the recon modules, the report schema, the configuration format, the CLI and every
+release to crates.io, PyPI and npm are the engine repository's, and its own CLAUDE.md documents them.
+Work on a check or a crawler list happens there, and reaches this site when the submodule pointer moves.
 
-The paid app at app.sus.bot is a third repository, `robots_ecomm`: Supabase, Stripe, and the views built from JSON content. Nothing of it lives here.
+What this repository takes from the submodule: the analysis compiled to WebAssembly (`engine/crates/wasm`,
+built by `npm run build:wasm`), every dictionary (`engine/locales/`, generated from `engine/po/`, so page
+and interface copy is edited there too), the default configuration, the report schema, the kitchen-sink
+example and the tracking figures the home page quotes. `git submodule update --remote engine` moves the
+site to a newer engine; the commit that moves the pointer is what ships it.
 
-Everything the engine does is configurable from one TOML file (`engine/config/default.toml`), and every human-readable string comes from a locale dictionary (`engine/locales/<code>.json`).
+The page always runs the engine's default configuration. There is deliberately no way for a visitor to
+supply their own rules: no panel, no `?config=`. Custom rules are a command line and GitHub Action
+feature, which is one of the reasons to install those.
 
-Planned later: record each fetched robots.txt in a database. The worker is the natural place for that (fire-and-forget via `ctx.waitUntil`). The front end must keep working without it.
+## What the page sells, and where
+
+The order on the home page is the argument, and it is not negotiable without a reason:
+
+1. **The check is the hero.** A bordered field, large type, nothing above it but the headline. A visitor
+   who came to test a file can do it without reading anything.
+2. **The verdict, then the report.** Everything the engine found, free and complete. No teaser, no
+   "upgrade to see the rest": a report that withholds something is worth less than one that does not,
+   and the withheld part is what would have earned trust.
+3. **Then the offer** (`src/components/home/sales.ts`, `#keep-watching`): a free forever account, doing
+   it yourself with the CLI, or having us watch the market. The section is built `hidden` and
+   `src/client/components/sales.ts` shows it after an analysis, leading with the sentence that report
+   earned (`sales.after.errors`, `.training`, `.warnings`, `.clean`; `leadKey()`, covered by
+   `tests/sales.test.js`). **Nothing is sold above the report.**
+
+`PRICING.show` in `src/client/config.ts` is false while the prices are being worked out, which removes
+the pricing section and every link that pointed at it. The free account link carries the checked origin
+as `?site=`, which the app does not read yet.
+
+`src/client/track.ts` measures the funnel and nothing else: `check` (the verdict, the AI training
+verdict, issue counts, the platform, and a `trigger` saying whether a person asked or the page
+re-checked on load), `offer_click`, `export`, `access_check`. **No event carries the address that was
+checked**, and `page_location` is stripped of its query string before the first hit, because `?url=`
+would otherwise put every domain anyone looked at into the analytics property as a page path.
 
 ## Commands
 
@@ -35,26 +74,25 @@ npm start                              # build:site, then serve _site/ on :8888 
 npm run dev                            # eleventy --serve (pages only; run build:css and build:client for the rest)
 npm run i18n                           # runs the engine's tooling in engine/ (commit there, then move the submodule)
 npm run i18n:sync                      # the same, after editing engine/po/en.po
-npm run cli -- <url|file> [flags]      # the CLI from the submodule
+npm run cli -- <url|file> [flags]      # the submodule's CLI, for checking the engine behaves as the page shows
 npm run a11y                           # the three accessibility checkers against _site/ (needs npm ci, a Chrome, and a build); a11y:axe, a11y:html, a11y:pa11y run one
 node tests/a11y/pixels.mjs <old-site>  # screenshot every UI state of two builds and compare them byte for byte
 npm run lighthouse -- [url ...]        # Lighthouse (performance, accessibility, best practices, SEO; mobile and desktop); defaults to the live site
 ```
 
-Toolchain: stable Rust with the `wasm32-unknown-unknown` target, `wasm-bindgen-cli` at the exact version pinned in `crates/wasm/Cargo.toml`, optionally `wasm-opt` (binaryen), Node 24 (it runs the TypeScript site, tools and tests directly by stripping types, so only erasable TypeScript is allowed: no enums, namespaces or parameter properties).
+Toolchain: Node 24, which runs the TypeScript site, tools and tests directly by stripping types, so **only erasable TypeScript is allowed** here: no enums, namespaces or parameter properties. Building the WebAssembly also needs stable Rust with the `wasm32-unknown-unknown` target and `wasm-bindgen-cli` at the version pinned in `engine/crates/wasm/Cargo.toml`, plus `wasm-opt` (binaryen) if you want it optimised; nothing else in this repository needs Rust, and `npm test` does not.
 
 Worker: **not in this repository.** The proxy is `sitefig/robots-worker`, which is private, and it deploys itself from there (`npm run deploy`, or its own `deploy.yml` on a push to its `main`). Nothing here builds or deploys it, and the only link between the two is `WORKER_URL` in `src/client/config.ts`. Its `ALLOWED_ORIGINS` must list this site's origin, so a new origin means a change there, not here.
 
-Hosting: `.github/workflows/pages.yml` runs the tests, builds the WASM and the site (`npm run build`), type-checks, publishes `_site/` with `actions/deploy-pages`, then runs Lighthouse against the published English and German home pages (job `lighthouse`: accessibility, best practices and SEO must be 100 and performance at least 90, on mobile and desktop; reports are kept as an artifact). Each URL is fetched once before it is audited and a score under its threshold is measured again, because the first page of a run meets a cold CDN edge and loses 10 to 15 performance points for it (measurable: reverse the two URLs and the dip moves with the order); the Pages source must be "GitHub Actions". A new Markdown page is published by pushing it. `.github/workflows/test.yml` runs `cargo test`, builds the CLI and runs `npm test`; its accessibility job builds everything, type-checks and runs `npm run a11y`. The repo holds no built artifacts: pages, CSS and JS exist only in `_site/`.
+Hosting: `.github/workflows/pages.yml` runs the tests, builds the WASM and the site (`npm run build`), type-checks, publishes `_site/` with `actions/deploy-pages`, then runs Lighthouse against the published English and German home pages (job `lighthouse`: accessibility, best practices and SEO must be 100 and performance at least 90, on mobile and desktop; reports are kept as an artifact). Each URL is fetched once before it is audited and a score under its threshold is measured again, because the first page of a run meets a cold CDN edge and loses 10 to 15 performance points for it (measurable: reverse the two URLs and the dip moves with the order); the Pages source must be "GitHub Actions". A new Markdown page is published by pushing it. `.github/workflows/test.yml` has two jobs: `site` (`npm test`, the page generator and the browser i18n, fast so it fails before the slow one starts) and `accessibility` (builds the WASM and the site, type-checks, `npm run a11y`). Nothing here runs `cargo test`: the engine's own repository does that, and a submodule bump that broke the analysis would be caught there. The repo holds no built artifacts: pages, CSS and JS exist only in `_site/`.
 
 Only `src/client/config.ts` needs editing for deployment (`WORKER_URL`; `SITE_URL` for the absolute hreflang/canonical/sitemap URLs). `ANALYTICS_ID` is the Google Analytics 4 measurement ID; the site build writes the Google tag into every page's `<head>` when it is set and leaves it out when empty. The page view is queued at once, but gtag.js itself loads on the first interaction or 8 s after load, so it stays out of page load (visits shorter than that with no interaction are not counted). The root page's language redirect sets `window.susRedirect` first so a redirected visit is counted once, on the language page; the accessibility checkers block the tag's hosts. **`page_location` is set to the origin and path before anything is sent**, because the address being checked is in the query string (`?url=`) and no analytics property should hold a list of the domains visitors looked at; `tests/pages.test.js` fails if that `gtag('set', …)` stops coming before the `config` call. The tag also puts `gtag` on `window` so `src/client/track.ts` can reach it from a module. It also holds `LINKS` (repository, gallery, change history, extension) and `PRICING` (currency, per-plan monthly and annual prices, checkout `url`, `featured`, and `show`). **`show` is false at the moment, while the prices are being worked out:** that takes the pricing section off the home page and removes every link and button that pointed at it, in the header, the footer, the promo block and the two monitoring calls to action, and drops the `pricing-annual` accessibility state. The plans stay in the file, so one flip brings all of it back. Plan words live in the locale under `ui.plan.<id>.*` (`name`, `tag`, `blurb`, `f1`…`f6`, `cta`); a plan with an empty `url` shows a disabled "coming soon" button, never a dead link. The worker's `ALLOWED_ORIGINS` (in `wrangler.jsonc` of `sitefig/robots-worker`) must list the site origin (origin only, so language sub-paths need nothing).
 
 ## Hard constraints
 
-- **The engine is the only implementation.** No analysis logic in the front end: `src/client/` fetches, renders and translates page chrome. A check or signature that exists in one place exists for the browser, the CLI and the Action alike.
-- **Everything is configurable through `config/default.toml`.** New checks, crawlers, signatures and labels go into the config schema (`crates/core/src/config.rs`) and the default file, not into code constants. Regexes in the config use `fancy-regex` syntax (`(?i)` for case-insensitivity, lookaround allowed).
-- **No analysis I/O in the core.** `susbot-core` never fetches; the CLI and the browser pass in `FetchInfo` and get fetch-level findings back.
-- **Everything runs in the browser** except the proxy fetch. Keep the WASM bundle lean (size is checked by eye in `scripts/build-wasm.sh` output; the current bundle is about 1.6 MB before gzip).
+- **No analysis logic in this repository.** `src/client/` fetches, renders and translates page chrome; every finding, label and number comes out of the engine. A check that exists for the browser exists for the CLI and the Action too, because it is the same crate. If something needs a new check, a new crawler or a different wording of a finding, that is a change in `engine/`, committed there, and shipped here by moving the submodule pointer.
+- **Everything runs in the browser** except the proxy fetch. Keep the WASM bundle lean (the build prints its size; it is about 1.6 MB before gzip).
+- **The free check stays free and whole.** No sign-up wall, no rate limit, no part of the report held back for a paid plan. What is paid is watching a file over time, not seeing it once.
 - **CUBE CSS with Tailwind as the utility layer**, see below. No CSS-in-JS, no inline `style` attributes, no component classes from Tailwind (`@apply` is not used).
 - **No runtime npm dependencies**; the browser loads plain ES modules compiled from TypeScript, one file per module. The npm packages are `devDependencies`: Eleventy (`@11ty/eleventy`), TypeScript (`typescript`), Tailwind (`tailwindcss`, `@tailwindcss/cli`), all pinned, and the accessibility checkers (`axe-core`, `html-validate`, `pa11y`, and `puppeteer` through pa11y).
 - **Plain copy.** Page and UI text is written as plain sentences: no slogans, no three-part lists for rhythm, no middle-dot separators, arrows or em dashes, no "quietly", "seamless", "in one pass" style phrasing, sentence case. Numbers shown on the page come from the engine or the tracking data, never from copy. The product is called sus.bot.
@@ -66,54 +104,59 @@ Only `src/client/config.ts` needs editing for deployment (`WORKER_URL`; `SITE_UR
 - Fetch order in `src/client/fetcher.ts`: direct cross-origin fetch first, then the proxy, then the user can paste the text. If `WORKER_URL` is the placeholder, the proxy step and the access check are disabled with a message rather than an error.
 - GitHub Pages cannot read `Accept-Language`, so the root page redirects once, client-side, to the browser's EU language; a stored choice wins. See "Languages".
 
-## Engine (`crates/core`)
+## The engine, as far as this site is concerned
 
-`Analysis::new(text, Options) -> Analysis` is the entry point (`analysis.rs`): it builds the `Engine` from the default config plus the user TOML, the `Locale` from the dictionary JSON, parses, runs the enabled checks and the fetch-level findings, applies `[rules]` overrides (disabled ids, level changes), and builds the `Report`. The struct keeps the model for the path tester (`check_access`, `clean_params`) and produces every export.
+`engine/` is a submodule with its own CLAUDE.md. Read that one before changing anything in it. From here,
+the surface is small:
 
-- `config.rs` – serde structs for the TOML, `Config::merged(user)` (deep-merge: tables and scalars override, arrays replace), and `Engine::from_config` which compiles every regex once and validates references (crawler categories, levels, bucket specs). `DEFAULT_TOML` is `include_str!` of `config/default.toml`.
-- `i18n.rs` – `Locale`: flat dotted keys, `{name}` placeholders, plural objects picked with `plural.rs` (CLDR cardinal rules for the 24 EU languages). `t(key, params)` falls back to the embedded `locales/en.json`, then to the key itself, so plain text in a config file (a custom category label) is shown as written. The `params!` macro builds the parameter list.
-- `model.rs` – the parsed model and the finding shape `Warning { level, kind, id, line, message }`. `id` is the dictionary key of the message and is stable across languages; exports and tests match on it.
-- `parser.rs` – text in, model out, plus the `Warner` helper every check uses (`push`, `push_variant` for wording that depends on a condition while the id stays the same). Tolerates misspellings, comments, BOM, CRLF. It also repairs what real files contain: a misspelt directive is found by edit distance (≤ 2 against the canonical names, names under 4 characters excluded so `AI:` stays a directive), zero-width characters and Cyrillic look-alikes are stripped from field names, `：` counts as `:`, junk before a name is reported, and UTF-16 (NUL-padded text) is decoded so the rest of the checks still run. Body-level findings, from the CC-MAIN-2026-34 scan: `parser.htmlFragment`, `parser.pluginOutput`, `parser.serverErrorOutput`, `security.injectedCode` (kind `security`), each skipped when the whole response is an HTML page, which is the fetch layer's `fetch.warn.htmlBody`. Directives that are not RFC 9309 are named rather than lumped into `parser.unknownDirective`: `parser.aiDirective` (llm-*, tdm-*, license), `parser.contentSignal` (Cloudflare's key=value policy, validated), `parser.metaRobots`, `parser.bareUrl`, `parser.nonStandardDirective`. Facts baked into messages: Yandex dropped `Host` and `Crawl-delay` in 2018; only Bing honours `Crawl-delay`.
-- `analyser.rs` – RFC 9309 matching: `select_groups` (tokens most specific first, then `*`, then "no group = allow all"), `path_matches` with `*` and trailing `$`, percent-encoding normalisation on both sides, longest normalised pattern wins, Allow wins ties, `/robots.txt` always allowed, `apply_clean_params`, `summarise` for the verdict (`open`, `partial`, `blocked`).
-- `checks.rs` – SEO traps (trailing slash, self-block, case notes, shadowed rules), what the `*` group blocks for everyone (`seo.queryStringBlock`, `seo.assetBlock`, `seo.cssJsBlock`, `seo.imageBlock`; only the `*` group, because a rule aimed at one crawler is a choice), sitemap hygiene, absolute URLs in rules, and `lint.legacyBadBots` (ten or more tokens from `crawlers.legacy_tokens`, the 1990s downloader block lists that 130,000 sites still carry). The trailing-slash trap is a warning only when another rule in the file shows the prefix has siblings, a note otherwise: it fires on 13.7% of all sites, nearly all of them CMS defaults. `run_checks` honours `[checks]`; `apply_rule_overrides` honours `[rules]`.
-- `security.rs` – Disallow paths against `[[security.signatures]]` (keyword lists become segment-bounded regexes; `pattern` is raw), highest severity wins, `ignore` regexes skip paths, categories carry a label and advice key or plain text. When `recon.cms` names the platform with medium or high confidence, a path that is in that platform's `defaults` list keeps its finding but drops to severity `info` with the reason "default path of {platform}": 89% of admin hits and 71% of data hits in the wild are stock CMS paths that disclose nothing.
-- `recon/` – one module per card, each `(model, engine, locale) -> data`: `cms` (scored signatures, `platform_kinds` decide the primary), `cloud` (provider host regex plus a bucket spec mini-language: `host:N`, `segment:N`, `path:REGEX`, `|` alternatives, `+` concatenation), `hosts`, `api`, `data`, `extensions`, `comments` (the detector regexes parse robots.txt content and stay English). `generators` (the tool that wrote the file, from `[[recon.generators]]` comment fingerprints: Yoast, Wix, Shopify, Cloudflare, Joomla, Drupal and the rest). `recon()` runs the enabled ones.
-- `agents.rs`, `ai_status.rs` – per-crawler summaries from `[crawlers]` and the AI scraping card (`ai_categories[0]` is the training group).
-- `fetch.rs` – `FetchInfo` (what the caller fetched) and `fetch_warnings`: redirect chain, cross-host, wrong path, plus the answer itself (`fetch.warn.serverError` for 5xx and `rateLimited` for 429, which Google both treat as "block everything"; `forbidden` for 401/403, which crawlers treat as "no restrictions"; `contentType`/`contentTypeMissing`; `htmlBody` for an HTML page served at /robots.txt with status 200).
-- `report.rs` – `build_report` produces the normalised object described by `schema/report.schema.json`; `tests/report.rs` validates the kitchen-sink report against it with the `jsonschema` crate. **Adding a field means updating both the builder and the schema, and bumping `SCHEMA_VERSION` for breaking changes** (1.2.0 added `tool.version`, `crawlers[].note`, `aiStatus.groups[].crawlers[].explanation`, `securityCategories`; 1.3.0 added `recon.generators`, the finding kind `security`, the severity `info`, and turned the crawler and security category enums into plain strings because both lists are configurable).
-- `export/markdown.rs` – the client audit (`md.*` keys keep their Markdown markup), `recommended_actions` (matches issues by id), a Markdown-to-HTML renderer for the emitted subset, `audit_html`. `export/csv.rs` – four tabs, tagged CSV, TSV.
-- `url_util.rs` – `root_domain` (knows common two-level suffixes), URL and hostname extraction, private IP test.
-
-Tests live in `crates/core/tests/*.rs` (ported from the original JavaScript suites) with shared helpers in `tests/common/mod.rs`; `report.rs` also builds the kitchen-sink report under each complete locale and fails if any string still equals its English rendering. Keep `examples/kitchen-sink.robots.txt` triggering every check; its English comments are test fixtures and are never translated.
-
-## Bindings and CLI
-
-- `crates/wasm/src/lib.rs` – `Analysis` (constructor takes the text and `Options` as JSON; methods return JSON strings or text), `defaultConfig()`, `validateConfig(toml)`, `version()`. `js/engine.js` wraps it (`loadEngine()`, `new Analysis(text, options)` with `.report` parsed).
-- `crates/cli/` – subcommands, one module each. `audit.rs`: `susbot audit <url|file|-> [--config x.toml] [--format json|markdown|html|csv|summary] [--out f] [--lang de --locale-dir locales] [--site-url u] [--fail-on never|error|warning] [--fail-on-security never|high|medium|low] [--access-check]` (a bare `susbot <target>` is rewritten to `audit` in `main.rs`, which is what `action.yml` relies on). `diff_cmd.rs`: `susbot diff old new [--format markdown|json|social] [--fail-on-change]`. `track.rs`: `susbot track --config list.json --data-dir dir [--summary-out] [--social-out] [--changed-out] [--webhook] [--webhook-high-impact-only] [--git-base-url] [--dry-run]`; both sides of a diff are analysed with the same options (site URL, no fetch info) so only the text decides `is_changed`; 404/410 answers are stored as an empty snapshot like crawlers see them; a bot wall (403, 429, 5xx or an HTML body) keeps the last snapshot and never seeds a first one; the apex host falls back to `www.` when it accepts no connection; the leaderboard README is rewritten only when a snapshot changed. `crawl.rs`: `susbot crawl --input list --out x.jsonl.gz [--summary s.json] [--limit] [--offset] [--concurrency]` on a thread pool sharing one `Arc<Engine>` (`Analysis::with_engine`). `net.rs`: fetch with a reported redirect chain (five hops, 512 KiB cap), the clock, webhooks. Exit 1 on a threshold, 2 on errors. Tests in `crates/cli/tests/cli.rs` run the binary offline.
-- `crates/core/src/diff.rs` – `diff_analyses(old, new)`: crawler verdict flips, security findings that appeared or went away (keyed by path and category), issues (keyed by id and message, not line), sitemap adds/removes, an LCS unified text diff with three lines of context; `to_markdown`, `to_social_post`, `has_high_impact`.
-- Workflows on top of the CLI: `famous-100.yml` (daily `track` of the 200 domains in `config/famous-100.json`, the name is historical, into `data/famous-100`, committed by the workflow; `ALERT_WEBHOOK` secret optional), `customer-monitor.yml` (six-hourly `track` against the private repo named by the `CUSTOMERS_REPO` secret, checked out and pushed with the write deploy key in `CUSTOMERS_DEPLOY_KEY`; falls back to the placeholder `config/customers.json`; each entry's `webhook_url` is where that customer's alerts go), `census.yml`, the sus.bot census (semi-annual `crawl` of the Tranco list, published as a GitHub Release named `susbot-census-<year>-H<half>`). All have timeouts and concurrency groups.
-- **crates.io:** `susbot-core` (the engine), `susbot-cli` (the CLI as a library with a `run()` and the `susbot` binary) and `susbot` (a thin crate in `crates/susbot/` that only claims the short name, so `cargo install susbot` works; it calls `susbot_cli::run()` and has its own workspace, excluded from the root one, so two `susbot` binaries never share a target directory) are published; `susbot-wasm` has `publish = false`. The engine embeds copies of `config/default.toml` and `locales/en.json` in `crates/core/data/` and each crate carries `LICENSE.md`, so the packages are self-contained; `crates/core/tests/embedded.rs` fails when a copy drifts (`npm run i18n` refreshes `data/en.json`). To release: bump `version` (all in lockstep) in the root `Cargo.toml`, in the CLI's `susbot-core` dependency, in `crates/susbot/Cargo.toml`, in `crates/python/Cargo.toml` (their own versions and their path dependencies) and in `npm/susbot/package.json`, then `cargo publish -p susbot-core`, `cargo publish -p susbot-cli`, and `cargo publish --manifest-path crates/susbot/Cargo.toml`, in that order, with `CARGO_REGISTRY_TOKEN` from `CRATES_API_KEY` in the git-ignored `.env`. Tests are excluded from the packages because they read repository files.
-- **PyPI:** `crates/python/` is the `susbot` Python package (`publish = false` on crates.io, its own workspace so `cargo test --workspace` needs no Python). PyO3 abi3 bindings in `src/lib.rs` pass JSON strings like the WASM bindings; `python/susbot/__init__.py` is the typed API (`Analysis` with keyword options, `.report` dict, `allowed`, `check_access`, exports, `diff`, `default_config`, `validate_config`), and the `susbot` script / `python -m susbot` calls `susbot_cli::run_with(argv)` in-process (it returns the exit code instead of exiting, and help and version return 0). Develop with `maturin develop` in a virtualenv from `crates/python`, then `pytest tests`; the `python` job of `test.yml` does the same. `.github/workflows/release.yml` builds abi3 wheels (manylinux and musllinux x86_64/aarch64, macOS arm64/x86_64, Windows x64) and the sdist, tests the native wheels, and on a `v*` tag publishes to PyPI by trusted publishing (no token; PyPI trusts `sitefig/robots` `release.yml`). It checks that the tag equals the version in the root, `crates/susbot` and `crates/python` manifests. Release order: publish the crates, commit, then `git tag vX.Y.Z && git push origin vX.Y.Z`.
-- **npm:** `npm/susbot/` is the `@sitefig/susbot` npm package (npm refuses the bare name `susbot` as too close to `hubot` and `busboy`; the platform packages are `@sitefig/susbot-<platform>-<arch>` and the installed command is `susbot`): only the engine and the CLI, nothing from the site. `lib/api.js` wraps the wasm-bindgen glue (built with `--target web` and the `diff` feature of `susbot-wasm` by `scripts/build-npm-wasm.sh` into the git-ignored `npm/susbot/wasm/`; the site build leaves `diff` out to keep its bundle small) with the same names as the Python API in camelCase; `node.js` initialises it synchronously from the file, `web.js` exports `init()` for browsers and bundlers; `index.d.ts` holds the types. `bin/susbot.js` runs the native binary from the optional dependency `@sitefig/susbot-<platform>-<arch>` (`SUSBOT_BINARY` overrides it). `scripts/npm-pack.mjs <bins> <out>` generates the platform packages (linux-x64/arm64 static musl, darwin-x64/arm64, win32-x64) and fails when a version or binary is missing. Tests: `node --test npm/susbot/test/*.test.js` (with `SUSBOT_BINARY` set for the CLI tests); the `npm` job of `test.yml` runs them. `release.yml` builds the binaries, packs and installs every tarball, and on a tag publishes the platform packages, then `@sitefig/susbot`, by trusted publishing; versions already on npm are skipped. It publishes with the `NPM_TOKEN` secret (the `NPM_API_KEY` from `.env`). Trusted publishing would avoid the stored token, but npm only accepts a trusted publisher, or an unpublish, from a second factor its CLI can answer, and this account's cannot; the packages are set to "require two-factor authentication or a granular access token with bypass 2FA", which is why publishing with that token works. Configure trust in the npmjs.com package settings if that changes, then set the repository variable `NPM_TRUSTED_PUBLISHING` to `true`. A manual run of the workflow checks that the token still authenticates and lists what a release would publish, without publishing. Bump `npm/susbot/package.json` (version and every optionalDependencies entry) with the crates.
-- `action.yml` – composite Action wrapping the CLI (`uses: sitefig/robots@main`, inputs `url`, `config`, `format`, `output`, `fail-on`, `fail-on-security`, `lang`, `access-check`); Markdown output also lands in the job summary.
-
-## Configuration (`config/default.toml`)
-
-Sections: `[tool]`, `[rules]` (`disabled` ids, `levels` overrides), `[checks]` and `[checks.recon]` toggles, `[crawlers]` (`categories`, `ai_categories`, `browser_ua`, `legacy_tokens`, `[[crawlers.list]]`; 134 crawlers across search, ai-training, ai-search, ai-scraper, social, seo, ads, archive, marketing, scraper and retired), `[security]` (`ignore`, `[[security.categories]]`, `[[security.signatures]]`), `[recon.cms]` (`disabled`, `platform_kinds`, `[[recon.cms.signatures]]`, each with an optional `defaults` list of that platform's stock paths), `[[recon.generators]]`, `[[recon.cloud.providers]]`, `[recon.hosts]`, `[[recon.api.signatures]]`, `[recon.data]`, `[[recon.extensions.groups]]`, `[recon.comments]`. In TOML, plain keys of a table must come before its `[[array]]` entries (see `feed_fallback`). A user file replaces arrays wholesale; to extend a list, copy it from the default file. The browser page always runs the default configuration: it deliberately has no way for a visitor to supply TOML (no panel, no `?config=` URL), so custom rules are a CLI and GitHub Action feature only.
+- `npm run build:wasm` runs `engine/scripts/build-wasm.sh` into the git-ignored `src/client/wasm/`.
+  The bundle exports `Analysis` (constructor takes the text and options as JSON; methods return JSON
+  strings or text), `defaultConfig()`, `validateConfig(toml)` and `version()`.
+- `src/client/engine.ts` wraps it: `loadEngine()`, then `new Analysis(text, options)` with `.report`
+  already parsed. `src/client/types.ts` is this site's view of the report, and it has to match
+  `engine/schema/report.schema.json`. **When the engine's schema version changes, those types and the
+  components that read them are what needs checking.** `schemaVersion` is semver: a minor bump only adds
+  fields, so a minor engine release cannot break the page.
+- Findings arrive already translated, in the language the page asked for; the schema's enums (`level`,
+  `kind`, `severity`, `confidence`, `role`, `risk`, `relation`, `source`, `verdict`) arrive raw and are
+  translated at render time through `enum.*`.
+- The engine never fetches. `src/client/fetcher.ts` does, and hands the result in as `FetchInfo` so the
+  engine can report on how the file was served (5xx, 429, 401/403, a wrong content type, an HTML page at
+  /robots.txt).
 
 ## Languages (i18n)
 
-Translations are gettext `.po` files in `po/`, one per language, and they are the source. `npm run i18n` (`tools/i18n.ts`) generates `locales/<code>.json` from them (committed: the Rust engine embeds `en.json`, the CLI and the page read the others) and `po/messages.pot`. `npm test` fails when the JSON is out of date. Each entry is keyed by its dictionary key in `msgctxt`; `msgid` is the English text and `msgstr` the translation, empty when untranslated (English is used). Plurals use `msgid_plural` and `msgstr[i]`, where index `i` is the language's i-th CLDR category in the order zero, one, two, few, many, other; `PLURAL_FORMS` in `src/lib/po.ts` gives each language a `Plural-Forms` expression that picks that index, and `tests/po.test.js` checks every one against `Intl.PluralRules`. Entries flagged `#, fuzzy` are left out of the JSON until reviewed.
+**The dictionaries are the submodule's.** Translations are gettext `.po` files in `engine/po/`, one per
+language, and they are the source; `engine/locales/<code>.json` is generated from them and committed
+there. This site reads those JSON files at build time (page chrome) and at run time (the client and the
+engine's own findings).
 
-English lives in `po/en.po` (its `msgstr` is the English text). To add or change a string: edit `po/en.po`, then `npm run i18n:sync`, which adds new keys untranslated to every other `.po`, drops removed ones, flags translations of changed English as fuzzy, and regenerates the JSON. Commit `po/` and `locales/` together. To translate: fill `msgstr` in `po/<code>.po` (any gettext editor works), clear the fuzzy flag once checked, `npm run i18n`. A language gets its own home page once every `page.*` entry is translated. `de fr nl es it` are complete; the other 18 EU languages have the page chrome and the AI section translated and English analysis text.
+To change any wording on the page, including sales copy:
 
-The engine formats analysis text, exports and labels; `src/client/i18n.ts` formats only page chrome (`ui.*`, `page.*`) and fetch errors with the same rules. Keys: `page.*` (static chrome, build only), `ui.*` (client), `parser.*`, `seo.*`, `sitemap.*`, `lint.*`, `fetch.*`, `security.*`, `agents.*`, `ai.*`, `recon.<module>.*`, `md.*`, `csv.*`, `enum.*`.
+1. edit `engine/po/en.po`,
+2. `npm run i18n:sync` (it runs in `engine/`: adds new keys untranslated to the other 23 languages, drops
+   removed ones, flags changed English as fuzzy, regenerates the JSON and `engine/crates/core/data/en.json`),
+3. commit `po/` and `locales/` **inside `engine/`** and push that repository,
+4. then commit the moved submodule pointer here. Both halves are needed: without the pointer the live site
+   shows the old words, and without the engine push CI cannot check the submodule out at all.
 
-- **Never call `t()` at module top level** in the client; constants hold keys. In Rust, `Locale::t`/`s` run inside functions by construction.
-- **Free text produced inside the engine is translated at detection time** (issue messages, security `reason`, recon `kind`/`label`/`note`/`risk`, AI-status text, `securityCategories`), so the JSON report is in one language, recorded in `report.language`. **Schema enums** (`level`, `kind`, `severity`, `confidence`, `role`, `risk`, `relation`, `source`, `verdict`) stay raw and are translated at render time through `enum.*`.
-- **Never translated:** the kitchen-sink example, detector regexes in the config, directive names, agent names, `sources[].source` values, `report_filename`, `report.tool`.
-- In client components, a sentence that wraps an element uses `tx(key, params)`.
-- `tests/locales.test.js` fails if `src/`, `tools/`, `crates/` or `config/` reference a key English lacks (including `e()`, `raw()`, `text()` in page components), or if a locale has a key, placeholder or plural form English does not.
+Keys: `page.*` is static chrome, resolved at build time; `ui.*` is the client; the rest (`parser.*`,
+`seo.*`, `sitemap.*`, `lint.*`, `fetch.*`, `security.*`, `agents.*`, `ai.*`, `recon.<module>.*`, `md.*`,
+`csv.*`, `enum.*`) belong to the engine and arrive already translated.
+
+- **A language gets its own home page once every `page.*` entry is translated.** That is why the offer's
+  copy uses a `sales.*` prefix instead: new sales wording is going to change often, and a single
+  untranslated `page.*` key would take a language's home page off the site. `sales.*` falls back to
+  English string by string. Think before adding a `page.*` key.
+- `de fr nl es it` are complete; the other 18 EU languages have the page chrome and the AI section
+  translated, and English analysis text.
+- **Never call `t()` at module top level** in the client; constants hold keys, and `t()` runs inside
+  functions once a dictionary is loaded.
+- In client components, a sentence that wraps an element uses `tx(key, params)`; page components use
+  `e()` (escaped), `raw()` (the few `page.*` values with inline HTML) and `text()`.
+- The engine's repository owns the checks that the `.po` files round-trip, that every locale has the keys
+  and plural forms English has, and that nothing references a key English lacks. `npm test` here fails if
+  the pages do not build or a language's home page is missing.
 
 ## Site (Eleventy, `src/`)
 
@@ -156,4 +199,4 @@ Utilities come last in the cascade, so a block never sets a property a utility o
 - **Cloudflare Worker** (the proxy, in the private repository): Workers Free plan, 100,000 requests a day, then errors until midnight UTC and never a charge. Per-IP (90/min) and global (40/10 s) rate limits keep one client or a burst from burning the quota. `PAUSED = "true"` in the dashboard switches the proxy off instantly; the page then asks visitors to paste the file. Do not move the account to Workers Paid; if you do, turn on the usage-based-billing notification.
 - **GitHub Actions**: the repository is public, so runner minutes are free. Every job has a `timeout-minutes`, superseded runs are cancelled, and the site only rebuilds when files that reach the site change. If the repository is ever made private, set the Actions spending limit to $0 in the billing settings (the default) so minutes stop instead of billing.
 - **GitHub Pages**: free, with a soft limit of 100 GB of bandwidth a month. The WASM engine is about 1.6 MB, gzipped to roughly 640 KB in transit and cached for ten minutes by Pages, so a month's limit is about 150,000 first visits. Putting the domain behind Cloudflare's proxy (free plan) caches it at the edge and lifts that ceiling.
-- **The GitHub Action** (`action.yml`) and the CLI run on the user's own account and machine, and never call the worker.
+- **The CLI and the GitHub Action** are the engine repository's, and they run on the user's own machine or their own Actions minutes. They fetch robots.txt themselves and never call our worker, so no amount of command line use costs us anything. That is why pointing a developer at `cargo install susbot` is a good answer and not a lost sale.
