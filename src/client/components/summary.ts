@@ -2,7 +2,7 @@
 // and the facts about the file.
 
 import { t, formatNumber, type Params } from '../i18n.ts';
-import { el, badge, replace, slot, meta, formatBytes, formatMs, type Child } from '../dom.ts';
+import { el, badge, replace, slot, formatBytes, type Child } from '../dom.ts';
 import { state, current } from '../state.ts';
 import type { FetchInfo } from '../types.ts';
 
@@ -84,10 +84,7 @@ function legend(now: string): HTMLElement {
 }
 
 export function renderSummary(): void {
-  const r = current().report;
-  const f = state.fetch;
   const callout = summaryCallout();
-  meta('summary-meta', t('ui.summary.meta', { size: formatBytes(r.raw.length), ms: formatMs(state.parseMs || 0) }));
   // The verdict fills its own row; the facts go in the row below, beside the
   // export buttons (see src/components/home/verdict.ts).
   replace(
@@ -95,21 +92,80 @@ export function renderSummary(): void {
     el('div', { class: 'callout', 'data-state': callout.state }, el('p', { class: 'verdict' }, callout.title), el('p', {}, callout.body)),
     legend(callout.state),
   );
+  // What it means, then what it is. A visitor who has just checked their site
+  // wants to know whether search engines can read it and whether AI crawlers are
+  // helping themselves; a content type, a byte count and an HTTP status number
+  // answer a question nobody asked. Those are still here, one disclosure away,
+  // because whoever has to fix the file does need them.
   replace(
     slot('summary-facts'),
-    defs([
-      [t('ui.defs.source'), f ? (f.source === 'proxy' ? t('ui.source.proxy') : t('ui.source.direct')) : t('ui.source.pasted')],
-      f && [t('ui.defs.url'), el('a', { href: f.finalUrl, target: '_blank', rel: 'noopener' }, f.finalUrl.replace(/^https?:\/\/[^/]+/, '') || f.finalUrl)],
-      f && f.finalUrl !== f.robotsUrl && [t('ui.defs.redirects'), redirectChain(f)],
-      f && [t('ui.defs.contentType'), f.contentType || t('ui.defs.notSent')],
-      f?.truncated && [t('ui.defs.size'), formatBytes(r.raw.length) + t('ui.defs.truncated')],
-      f && [t('ui.defs.status'), `${f.status} ${f.statusText || ''}`.trim()],
-      [t('ui.defs.groups'), formatNumber(r.summary.groups)],
-      [t('ui.defs.rules'), formatNumber(r.summary.rules)],
-      [t('ui.defs.sitemaps'), t('ui.defs.declared', { n: r.summary.sitemaps })],
-      r.directives.host && [t('ui.defs.host'), el('code', {}, r.directives.host.value)],
-      r.directives.cleanParams.length > 0 && [t('ui.defs.cleanParam'), t('ui.defs.directives', { n: r.directives.cleanParams.length })],
-      [t('ui.defs.issues'), t('ui.defs.issueCounts', { errors: r.summary.issues.errors, warnings: r.summary.issues.warnings })],
-    ]),
+    defs(plainFacts()),
+    el(
+      'details',
+      { class: 'facts-technical' },
+      el('summary', { class: 'text-sm' }, t('ui.defs.technical')),
+      defs(technicalFacts()),
+    ),
   );
+}
+
+/** Whether AI training crawlers are being let in, as the page reads it. */
+function trainingState(): 'open' | 'partial' | 'blocked' | null {
+  const group = current().report.aiStatus.groups[0];
+  if (!group) return null;
+  const { open, partial, blocked } = group.counts;
+  if (open === 0 && partial === 0) return 'blocked';
+  if (blocked > 0 || partial > 0) return 'partial';
+  return 'open';
+}
+
+/**
+ * The four or five lines a business owner came for. Each is a consequence, not a
+ * measurement: whether search engines can read the site, whether AI crawlers are
+ * taking it, whether Google is being told where the pages are, and what it costs.
+ */
+function plainFacts(): Row[] {
+  const r = current().report;
+  const f = state.fetch;
+  const p = r.summary.defaultPolicy;
+  const { errors, warnings } = r.summary.issues;
+  // A failing server is not an open door. Google reads 5xx, and a redirect chain
+  // it gives up on, as "stay away from everything" for weeks, so saying search
+  // engines "can read the whole site" here would contradict the verdict directly
+  // above it. A missing file is different: that really does mean no instructions.
+  const serverFailed = Boolean(f && (f.status >= 500 || f.redirectLimit));
+  const search = !p.hasStarGroup || p.verdict === 'open' ? 'open' : p.verdict;
+  const training = trainingState();
+  return [
+    [t('ui.plain.search'), serverFailed ? t('ui.plain.search.serverFail') : t(`ui.plain.search.${search}`)],
+    serverFailed ? [t('ui.plain.ai'), t('ui.plain.ai.unknown')] : training && [t('ui.plain.ai'), t(`ui.plain.ai.${training}`)],
+    [t('ui.plain.sitemap'), r.summary.sitemaps > 0 ? t('ui.plain.sitemap.some', { n: r.summary.sitemaps }) : t('ui.plain.sitemap.none')],
+    [t('ui.plain.problems'), errors + warnings === 0 ? t('ui.plain.problems.none') : t('ui.plain.problems.some', { errors, warnings })],
+    [
+      t('ui.plain.rules'),
+      serverFailed && r.summary.rules === 0 ? t('ui.plain.rules.unread')
+        : r.summary.rules === 0 ? t('ui.plain.rules.none')
+          : t('ui.plain.rules.some', { n: formatNumber(r.summary.rules) }),
+    ],
+  ];
+}
+
+/** The same check, for whoever has to change the file. */
+function technicalFacts(): Row[] {
+  const r = current().report;
+  const f = state.fetch;
+  return [
+    [t('ui.defs.source'), f ? (f.source === 'proxy' ? t('ui.source.proxy') : t('ui.source.direct')) : t('ui.source.pasted')],
+    f && [t('ui.defs.url'), el('a', { href: f.finalUrl, target: '_blank', rel: 'noopener' }, f.finalUrl.replace(/^https?:\/\/[^/]+/, '') || f.finalUrl)],
+    f && f.finalUrl !== f.robotsUrl && [t('ui.defs.redirects'), redirectChain(f)],
+    f && [t('ui.defs.contentType'), f.contentType || t('ui.defs.notSent')],
+    f && [t('ui.defs.size'), formatBytes(r.raw.length) + (f.truncated ? t('ui.defs.truncated') : '')],
+    f && [t('ui.defs.status'), `${f.status} ${f.statusText || ''}`.trim()],
+    [t('ui.defs.groups'), formatNumber(r.summary.groups)],
+    [t('ui.defs.rules'), formatNumber(r.summary.rules)],
+    [t('ui.defs.sitemaps'), t('ui.defs.declared', { n: r.summary.sitemaps })],
+    r.directives.host && [t('ui.defs.host'), el('code', {}, r.directives.host.value)],
+    r.directives.cleanParams.length > 0 && [t('ui.defs.cleanParam'), t('ui.defs.directives', { n: r.directives.cleanParams.length })],
+    [t('ui.defs.issues'), t('ui.defs.issueCounts', { errors: r.summary.issues.errors, warnings: r.summary.issues.warnings })],
+  ];
 }
