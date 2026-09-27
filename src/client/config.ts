@@ -25,6 +25,10 @@ export function proxyConfigured(): boolean {
   return Boolean(WORKER_URL) && !WORKER_URL.includes('YOUR-WORKER');
 }
 
+// The paid app: where a free account is created and where the watching happens.
+// One constant, because the sales section and the export box both link to it.
+export const APP_URL = 'https://app.sitefig.net';
+
 // Public places the page links to. `extension` is empty until one exists.
 export const LINKS = {
   repo: 'https://github.com/sitefig/robots',

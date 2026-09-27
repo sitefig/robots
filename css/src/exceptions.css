@@ -4,8 +4,24 @@
   color-scheme: light;
 }
 
+:root[data-theme="light"] .theme-toggle__sun {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-toggle__moon {
+  display: block;
+}
+
 :root[data-theme="dark"] {
   color-scheme: dark;
+}
+
+/* The state this report is in: named, outlined and bold, so the mark is not
+   the colour doing the work. */
+.legend__item[data-now="true"] {
+  border-color: var(--color-control);
+  color: var(--color-ink);
+  font-weight: var(--font-weight-bold);
 }
 
 /* The one strong action per area uses the signal colour. */

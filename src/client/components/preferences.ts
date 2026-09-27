@@ -1,24 +1,29 @@
-// Theme switch and language menu.
+// Theme toggle and language menu.
 
-import { getLocale, DEFAULT_LANG } from '../i18n.ts';
+import { getLocale, DEFAULT_LANG, t } from '../i18n.ts';
 import { readStored } from '../dom.ts';
 
 export function initTheme(): void {
-  const buttons = document.querySelectorAll<HTMLElement>('[data-theme-choice]');
-  const read = () => readStored('theme') || 'system';
-  const apply = (choice: string) => {
-    if (choice === 'system') delete document.documentElement.dataset.theme;
-    else document.documentElement.dataset.theme = choice;
+  const button = document.getElementById('theme-toggle');
+  if (!button) return;
+  const apply = (choice: 'light' | 'dark') => {
+    document.documentElement.dataset.theme = choice;
     try {
-      if (choice === 'system') localStorage.removeItem('theme');
-      else localStorage.setItem('theme', choice);
+      localStorage.setItem('theme', choice);
     } catch {
       // storage unavailable; the choice still applies for this page view
     }
-    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === choice)));
+    // The name says what pressing it will do next, not what the theme is.
+    const next = choice === 'dark' ? 'light' : 'dark';
+    button.dataset.to = next;
+    button.setAttribute('aria-label', t(next === 'light' ? 'ui.theme.toLight' : 'ui.theme.toDark'));
   };
-  buttons.forEach((b) => b.addEventListener('click', () => apply(b.dataset.themeChoice ?? 'system')));
-  buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === read())));
+  // Dark unless the visitor has said otherwise. The operating system does not
+  // get a vote: the page is drawn dark, and document.ts has already applied a
+  // stored choice before the first paint.
+  const stored = readStored('theme');
+  apply(stored === 'light' ? 'light' : 'dark');
+  button.addEventListener('click', () => apply(button.dataset.to === 'light' ? 'light' : 'dark'));
 }
 
 /**

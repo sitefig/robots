@@ -34,10 +34,12 @@ ${hreflangLinks(ctx.alternates, ctx.active)}
   <link rel="preload" href="${a}fonts/AtkinsonHyperlegibleNext-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="${a}css/site.css">
   <script>
-    // Apply a saved theme before first paint to avoid a flash. Falls back to the OS setting.
+    // Apply a saved theme before the first paint. Dark is the default and comes
+    // from the stylesheet, so only a stored choice has anything to do here, and
+    // the operating system is not consulted at all.
     try {
       const t = localStorage.getItem('theme');
-      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      document.documentElement.dataset.theme = t === 'light' ? 'light' : 'dark';
     } catch {}
   </script>
   <script type="module" src="${a}js/${p.script}"></script>

@@ -50,14 +50,53 @@ export function redirectChain(f: FetchInfo): HTMLElement {
   return el('span', {}, parts);
 }
 
+/**
+ * The colour key, under the verdict, with this report's own state marked.
+ *
+ * Red and green explain themselves; amber and blue do not, and a visitor should
+ * not have to learn a palette to read their own result. Marking the live state
+ * rather than printing a static key is what makes it work: the colour in front
+ * of them is the one with the ring around it and the words "this report" beside
+ * it, so the mapping is made once, in place.
+ *
+ * Never colour alone (SC 1.4.1): every square carries its own words, the marked
+ * one is bold with an outline as well as aria-current, and the squares have a
+ * border so they are visible in forced-colours mode.
+ */
+function legend(now: string): HTMLElement {
+  const states = ['ok', 'info', 'warning', 'error'] as const;
+  return el(
+    'div',
+    { class: 'legend cluster', 'data-space': 'xs', role: 'group', 'aria-label': t('ui.legend.label') },
+    states.map((name) => {
+      const here = name === now;
+      const item = el(
+        'span',
+        { class: 'legend__item', 'data-state': name, 'data-now': here ? 'true' : null },
+        el('span', { class: 'legend__dot', 'aria-hidden': 'true' }),
+        t(`ui.legend.${name}`),
+        here ? el('span', { class: 'legend__now' }, ` (${t('ui.legend.current')})`) : null,
+      );
+      if (here) item.setAttribute('aria-current', 'true');
+      return item;
+    }),
+  );
+}
+
 export function renderSummary(): void {
   const r = current().report;
   const f = state.fetch;
   const callout = summaryCallout();
   meta('summary-meta', t('ui.summary.meta', { size: formatBytes(r.raw.length), ms: formatMs(state.parseMs || 0) }));
+  // The verdict fills its own row; the facts go in the row below, beside the
+  // export buttons (see src/components/home/verdict.ts).
   replace(
     slot('summary'),
     el('div', { class: 'callout', 'data-state': callout.state }, el('p', { class: 'verdict' }, callout.title), el('p', {}, callout.body)),
+    legend(callout.state),
+  );
+  replace(
+    slot('summary-facts'),
     defs([
       [t('ui.defs.source'), f ? (f.source === 'proxy' ? t('ui.source.proxy') : t('ui.source.direct')) : t('ui.source.pasted')],
       f && [t('ui.defs.url'), el('a', { href: f.finalUrl, target: '_blank', rel: 'noopener' }, f.finalUrl.replace(/^https?:\/\/[^/]+/, '') || f.finalUrl)],

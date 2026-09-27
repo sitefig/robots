@@ -12,8 +12,9 @@
 
 import type { PageContext } from '../context.ts';
 import { LINKS } from '../../lib/site.ts';
+import { APP_URL } from '../../client/config.ts';
 
-const APP = 'https://app.sitefig.net';
+const APP = APP_URL;
 
 export function Sales(ctx: PageContext): string {
   const { e } = ctx.s;

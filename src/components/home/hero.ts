@@ -16,8 +16,17 @@ export function Hero(ctx: PageContext): string {
         <form id="fetch-form" class="stack" novalidate>
           <label for="site-url" class="text-lg">${e('page.urlLabel')}</label>
           <div class="cluster" data-align="stretch" data-space="xs">
+            <!-- No placeholder: "example.com" in grey reads as a value that is
+                 already there, and a visitor who submits without noticing gets a
+                 report on somebody else's site. The visible label and the hint
+                 below say what goes here, and both are announced when focus
+                 lands, so nothing is lost by leaving the field empty.
+                 autofocus, because the whole page exists to take this one
+                 value: it is the first interactive thing after the skip link,
+                 the label and hint travel with it through aria-describedby, and
+                 browsers suppress it on touch keyboards themselves. -->
             <input id="site-url" name="url" type="text" inputmode="url" autocomplete="url" spellcheck="false"
-                   placeholder="${e('page.urlPlaceholder')}" required aria-describedby="site-url-hint">
+                   autofocus required aria-describedby="site-url-hint">
             <button type="submit" class="button" data-variant="primary" id="fetch-button">${e('page.analyse')}</button>
           </div>
           <p id="site-url-hint" class="text-sm text-muted">${raw('page.urlHint')}</p>

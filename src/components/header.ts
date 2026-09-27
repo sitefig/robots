@@ -1,4 +1,4 @@
-// Skip link and site header: brand, section links, theme switch, language menu.
+// Skip link and site header: brand, section links, theme toggle, language menu.
 
 import type { PageContext } from './context.ts';
 import { langMenu } from '../lib/site.ts';
@@ -15,6 +15,25 @@ import { PRICING } from '../client/config.ts';
  */
 export function BrandMark(): string {
   return '<svg class="brand__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false"><path d="M17 7 H8 V41 H17" stroke="currentColor" stroke-width="3.6" stroke-linecap="square"/><path d="M31 7 H40 V41 H31" stroke="currentColor" stroke-width="3.6" stroke-linecap="square"/><circle class="brand__eye" cx="24" cy="24" r="7.5" stroke-width="3.6"/></svg>';
+}
+
+/**
+ * Dark or light, as one button rather than three. Dark is the default and the
+ * operating system is not consulted: the page is an instrument, drawn dark, and
+ * a visitor who wants light says so once and is remembered.
+ *
+ * Both icons ship in the markup and CSS shows the one that applies, so the
+ * button never waits for script to look right. The accessible name says what
+ * pressing it will do rather than what the theme is, because "Dark" on a button
+ * is ambiguous about whether it is a state or an action; preferences.ts swaps
+ * that name on click. The label is a `ui.` string, so a language that has not
+ * translated it keeps its home page and falls back to English.
+ */
+function ThemeToggle(ctx: PageContext): string {
+  return `<button type="button" class="theme-toggle" id="theme-toggle" aria-label="${ctx.s.e('ui.theme.toLight')}" data-to="light">
+        <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.6" stroke="currentColor" stroke-width="2"/><path d="M12 2.4v2.6M12 19v2.6M2.4 12h2.6M19 12h2.6M5.2 5.2l1.9 1.9M16.9 16.9l1.9 1.9M18.8 5.2l-1.9 1.9M7.1 16.9l-1.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M20 14.2A8.4 8.4 0 1 1 9.8 4a6.9 6.9 0 0 0 10.2 10.2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>`;
 }
 
 /**
@@ -54,11 +73,7 @@ export function SiteHeader(ctx: PageContext): string {
           ${PRICING.show ? `<li><a href="${h}#pricing">${e('page.nav.pricing')}</a></li>` : ''}
         </ul>
       </nav>
-      <div class="seg" role="group" aria-label="${e('page.themeLabel')}" id="theme-switch">
-        <button type="button" data-theme-choice="system">${e('page.theme.system')}</button>
-        <button type="button" data-theme-choice="light">${e('page.theme.light')}</button>
-        <button type="button" data-theme-choice="dark">${e('page.theme.dark')}</button>
-      </div>
+      ${ThemeToggle(ctx)}
 ${langMenu(ctx.lang, ctx.path, ctx.active, ctx.alternates, ctx.s.text('page.langLabel'))}
     </div>
   </header>

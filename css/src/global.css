@@ -1,7 +1,10 @@
 /* CUBE: Global. Element defaults on top of Tailwind's preflight. No classes. */
 
 :root {
-  color-scheme: light dark;
+  /* Dark by default, with no `light` in the list, so every light-dark() token
+     resolves dark whatever the operating system prefers. Light is a choice a
+     visitor makes, and exceptions.css pins it from [data-theme="light"]. */
+  color-scheme: dark;
 }
 
 html {
