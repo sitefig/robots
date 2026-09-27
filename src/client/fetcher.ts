@@ -35,10 +35,43 @@ export interface FetchResult {
 }
 
 /** Turn whatever the user typed into { origin, robotsUrl }. */
+/**
+ * Whatever is on the clipboard, turned into one origin and its robots.txt.
+ *
+ * People do not paste hostnames. They paste the address bar, a link from an
+ * email with angle brackets still round it, a marketing URL with a tracking
+ * query, an `ftp://` address from an old document, a `mailto:` from a contact
+ * page, or the robots.txt itself because that is what they were told to check.
+ * Every one of those names a site, so every one of them is accepted: refusing
+ * on a technicality when the intent is obvious is just rudeness.
+ *
+ * What survives from the input is the host, the port, and http when http was
+ * asked for explicitly. Everything after the host is dropped, because the file
+ * is only ever at the root, which is also why pasting the robots.txt URL itself
+ * works out as the same request.
+ */
 export function normaliseSiteUrl(input: string): { origin: string; robotsUrl: string } {
   let s = (input || '').trim();
+  // Wrapping a link is what mail clients and chat apps do to it.
+  s = s.replace(/^[<("'`\[]+/, '').replace(/[>)"'`\]]+$/, '').trim();
+  // A sentence's full stop or comma is not part of the address.
+  s = s.replace(/[.,;:!?]+$/, '').trim();
   if (!s) throw new FetchError('empty', t('fetch.error.empty'));
-  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(s)) s = 'https://' + s;
+
+  // An address, or a mailto: holding one, names a site by its domain.
+  const email = s.match(/^(?:mailto:)?\s*[^\s@]+@([^\s@/?#]+)$/i);
+  if (email) s = email[1];
+
+  // Any other scheme is dropped rather than refused: ftp://, sftp://, webcal://
+  // and the protocol-relative //host all name a host we can ask over https.
+  // http:// is kept, because someone who typed it may mean a site with no TLS.
+  const scheme = s.match(/^([a-z][a-z0-9+.-]*):\/\//i);
+  const keepHttp = Boolean(scheme) && scheme![1].toLowerCase() === 'http';
+  if (scheme) s = s.slice(scheme[0].length);
+  else s = s.replace(/^\/\//, '');
+  // Credentials in a pasted URL belong to the person, not to us.
+  s = s.replace(/^[^/@]*@/, '');
+  s = `${keepHttp ? 'http' : 'https'}://${s}`;
 
   let u: URL;
   try {
@@ -46,11 +79,8 @@ export function normaliseSiteUrl(input: string): { origin: string; robotsUrl: st
   } catch {
     throw new FetchError('invalid-url', t('fetch.error.invalidUrl', { input: input.trim() }));
   }
-  if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-    throw new FetchError('invalid-url', t('fetch.error.unsupportedProtocol'));
-  }
-  if (!u.hostname.includes('.') && u.hostname !== 'localhost') {
-    throw new FetchError('invalid-url', t('fetch.error.notHostname', { host: u.hostname }));
+  if (!u.hostname || (!u.hostname.includes('.') && u.hostname !== 'localhost')) {
+    throw new FetchError('invalid-url', t('fetch.error.notHostname', { host: u.hostname || input.trim() }));
   }
   return { origin: u.origin, robotsUrl: `${u.origin}/robots.txt` };
 }
