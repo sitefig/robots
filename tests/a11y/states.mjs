@@ -89,6 +89,13 @@ export function states(path) {
     { name: 'tester-custom-blocked', url: url(), setup: async (page) => { await paste(page); await page.select('#tester-agent', 'custom'); await page.type('#tester-token', 'gptbot'); await page.$eval('#tester-path', (el) => { el.value = '/private/x'; el.dispatchEvent(new Event('input')); }); await page.waitForSelector('#tester .callout[data-state="error"]'); } },
     { name: 'tester-yandex-cleanparam', url: url(), setup: async (page) => { await paste(page); await page.select('#tester-agent', 'YandexBot'); await page.$eval('#tester-path', (el) => { el.value = '/articles/x?utm_source=a&id=1'; el.dispatchEvent(new Event('input')); }); } },
     { name: 'filter-ai-training', url: url(), setup: async (page) => { await paste(page); const chips = await page.$$('#agents .chip'); await chips[2].click(); await page.waitForSelector('#agents tr[data-hidden="true"]'); } },
+    // The crawler table holds 134 rows back to 50; this is the rest revealed.
+    { name: 'agents-expanded', url: url(), setup: async (page) => {
+      await paste(page);
+      await page.waitForFunction(() => document.querySelectorAll('#agents tbody tr[data-hidden="true"]').length > 0);
+      await page.click('#agents .link-button[aria-controls="agents-table"]');
+      await page.waitForFunction(() => document.querySelector('#agents .link-button[aria-controls="agents-table"]')?.getAttribute('aria-expanded') === 'true');
+    } },
     { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#export .button'); } },
     { name: 'export-more-open', url: url(), setup: async (page) => { await paste(page); await page.click('#export details > summary'); } },
     // Only while the prices are published (PRICING.show in src/client/config.ts).
