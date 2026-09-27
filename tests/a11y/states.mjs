@@ -56,7 +56,9 @@ export function states(path) {
     { name: 'language-menu-open', url: url(), setup: async (page) => { await page.click('.lang-menu > summary'); } },
     // The easter egg: the logo's context menu with the logo files and the press kit.
     { name: 'brand-menu-open', url: url(), setup: async (page) => { await page.click('.site-header .brand', { button: 'right' }); await page.waitForSelector('#brand-menu:popover-open'); } },
-    { name: 'theme-pressed', url: url(), setup: async (page) => { await page.click('[data-theme-choice="dark"]'); } },
+    // Dark is the default, so the state worth checking is the light one a
+    // visitor switches to, and the toggle after it has swapped its own label.
+    { name: 'theme-light', url: url(), setup: async (page) => { await page.click('#theme-toggle'); await page.waitForFunction(() => document.documentElement.dataset.theme === 'light'); } },
     { name: 'paste-panel-open', url: url(), setup: async (page) => { await page.click('#paste-details > summary'); } },
     { name: 'paste-empty-error', url: url(), setup: async (page) => { await page.click('#paste-details > summary'); await page.click('#analyse-pasted'); await page.waitForSelector('#status[data-state="error"]'); } },
     { name: 'fetch-invalid-url', url: url(), setup: async (page) => { await page.type('#site-url', 'not a url'); await page.click('#fetch-button'); await page.waitForSelector('#status[data-state="error"]'); } },
