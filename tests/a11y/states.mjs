@@ -48,11 +48,32 @@ async function seedRecent(page) {
   }, [origin(PORTS.worst), origin(PORTS.notFound)]);
 }
 
+/**
+ * Meets the analytics question as a first-time visitor: drops the decision the
+ * harness seeds for every other state, reloads, and waits for the dialog.
+ */
+async function askConsent(page) {
+  await page.evaluate(() => {
+    sessionStorage.setItem('a11y-ask-consent', '1');
+    localStorage.removeItem('consent');
+  });
+  await page.reload({ waitUntil: 'networkidle0' });
+  await page.waitForFunction(() => document.getElementById('consent')?.hasAttribute('open'));
+}
+
 /** States per language page; `path` is '' for English, 'de/' for German. */
 export function states(path) {
   const url = (q = '') => `${BASE}/${path}${q}`;
   return [
     { name: 'initial', url: url(), setup: async () => {} },
+    // The analytics question, as a first-time visitor meets it: blocking, with
+    // refusing exactly as easy as agreeing.
+    { name: 'consent-asked', url: url(), setup: askConsent },
+    { name: 'consent-refused', url: url(), setup: async (page) => {
+      await askConsent(page);
+      await page.click('#consent-reject');
+      await page.waitForFunction(() => !document.getElementById('consent')?.hasAttribute('open'));
+    } },
     { name: 'language-menu-open', url: url(), setup: async (page) => { await page.click('.lang-menu > summary'); } },
     // The easter egg: the logo's context menu with the logo files and the press kit.
     { name: 'brand-menu-open', url: url(), setup: async (page) => { await page.click('.site-header .brand', { button: 'right' }); await page.waitForSelector('#brand-menu:popover-open'); } },
@@ -98,6 +119,24 @@ export function states(path) {
  * mocked; `unreachable.invalid` gets a proxy error so the error state shows.
  */
 export async function installMocks(page) {
+  // Every state except the consent ones runs as a visitor who has already
+  // answered the analytics question, because the dialog blocks the page by
+  // design and would otherwise stop all of them at the first click. "denied" is
+  // the honest default here: it is also what the checkers need, since they abort
+  // requests to Google anyway. The consent states clear this and reload.
+  await page.evaluateOnNewDocument(() => {
+    try {
+      // A state that wants to meet the question sets this and reloads; it has to
+      // be sessionStorage, because this runs again on that very reload.
+      if (sessionStorage.getItem('a11y-ask-consent')) {
+        localStorage.removeItem('consent');
+        return;
+      }
+      if (!localStorage.getItem('consent')) localStorage.setItem('consent', 'denied');
+    } catch {
+      // storage blocked in this context; the dialog will ask, as it should
+    }
+  });
   await page.setRequestInterception(true);
   page.on('request', (req) => {
     const u = req.url();

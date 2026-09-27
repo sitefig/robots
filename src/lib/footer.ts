@@ -4,13 +4,14 @@
 //   { home: '#pricing' }   a section of the home page in the page's language
 //   { site: '/press/' }    a site path
 //   { url: 'https://…' }   an outside address
+//   { dialog: 'consent' }  a button that opens a dialog on the page
 // A group renders as a column with its heading; columns wrap on narrow
 // screens, so the number of groups is not limited.
 
 import { LINKS } from './site.ts';
 import { PRICING } from '../client/config.ts';
 
-export type Target = { home: string } | { site: string } | { url: string };
+export type Target = { home: string } | { site: string } | { url: string } | { dialog: 'consent' };
 
 export interface FooterLink {
   label: string;
@@ -47,6 +48,10 @@ export const FOOTER: FooterGroup[] = [
     links: [
       { label: 'page.footer.press', to: { site: '/press/' } },
       { label: 'page.footer.bot', to: { site: '/bot/' } },
+      { label: 'ui.privacy.title', to: { site: '/privacy/' } },
+      // Withdrawing consent has to be as easy as giving it, so the choice is
+      // reachable from every page (src/client/components/consent.ts).
+      { label: 'ui.consent.footer', to: { dialog: 'consent' } },
       // The address is the label: it reads the same in every language.
       { label: 'receipt@sus.bot', to: { url: 'mailto:receipt@sus.bot' } },
       { label: 'page.footer.licence', to: { url: `${LINKS.repo}/blob/main/LICENSE.md` } },

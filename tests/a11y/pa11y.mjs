@@ -21,21 +21,27 @@ const common = {
 // pa11y's action language cannot carry a multi-line value, so the worst
 // robots.txt reaches the page through the mock origin instead of the paste
 // box, and the crawler <select> (which needs a change event) is left to axe.
+// pa11y drives its own browser, so it meets the analytics question exactly as a
+// first-time visitor does: the dialog is modal, and the page behind it is inert,
+// which is why a target whose first action is a click has to answer it first.
+// The root and the German page deliberately keep it open, so the blocking state
+// itself is audited.
+const decide = 'click element #consent-reject';
 const rendered = ['wait for #results to be visible', 'wait for #recon article to be visible'];
 const worst = `${base}/?url=${origin(PORTS.worst)}`;
 const targets = [
   { url: `${base}/`, label: 'root' },
   { url: `${base}/de/`, label: 'de' },
-  { url: `${base}/`, label: 'paste empty error', actions: ['click element #paste-details > summary', 'click element #analyse-pasted', 'wait for #status[data-state="error"] to be added'] },
-  { url: `${base}/`, label: 'pasted example', actions: ['click element #paste-details > summary', 'click element #load-example', ...rendered] },
+  { url: `${base}/`, label: 'paste empty error', actions: [decide, 'click element #paste-details > summary', 'click element #analyse-pasted', 'wait for #status[data-state="error"] to be added'] },
+  { url: `${base}/`, label: 'pasted example', actions: [decide, 'click element #paste-details > summary', 'click element #load-example', ...rendered] },
   { url: worst, label: 'fetched worst', actions: rendered },
   { url: `${base}/de/?url=${origin(PORTS.worst)}`, label: 'de fetched worst', actions: rendered },
-  { url: worst, label: 'tester blocked path', actions: [...rendered, 'set field #tester-path to /gen/3', 'wait for #tester .callout[data-state="error"] to be added'] },
-  { url: worst, label: 'filter chip', actions: [...rendered, 'click element #agents .chip:nth-child(3)', 'wait for #agents tr[data-hidden="true"] to be added'] },
-  { url: `${base}/?url=${origin(PORTS.notFound)}`, label: 'fetched 404', actions: ['wait for #results to be visible'] },
-  { url: `${base}/?url=${origin(PORTS.serverError)}`, label: 'fetched 503', actions: ['wait for #results to be visible'] },
-  { url: `${base}/?url=${origin(PORTS.html)}`, label: 'fetched html', actions: ['wait for #results to be visible'] },
-  { url: `${base}/?url=${origin(PORTS.empty)}`, label: 'fetched empty', actions: ['wait for #results to be visible'] },
+  { url: worst, label: 'tester blocked path', actions: [decide, ...rendered, 'set field #tester-path to /gen/3', 'wait for #tester .callout[data-state="error"] to be added'] },
+  { url: worst, label: 'filter chip', actions: [decide, ...rendered, 'click element #agents .chip:nth-child(3)', 'wait for #agents tr[data-hidden="true"] to be added'] },
+  { url: `${base}/?url=${origin(PORTS.notFound)}`, label: 'fetched 404', actions: [decide, 'wait for #results to be visible'] },
+  { url: `${base}/?url=${origin(PORTS.serverError)}`, label: 'fetched 503', actions: [decide, 'wait for #results to be visible'] },
+  { url: `${base}/?url=${origin(PORTS.html)}`, label: 'fetched html', actions: [decide, 'wait for #results to be visible'] },
+  { url: `${base}/?url=${origin(PORTS.empty)}`, label: 'fetched empty', actions: [decide, 'wait for #results to be visible'] },
 ];
 let total = 0;
 let unreachable = 0;

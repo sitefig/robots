@@ -12,6 +12,8 @@ function href(ctx: PageContext, to: Target): string {
     const path = to.site.replace(/^\//, '');
     return `${ctx.assets}${path}`;
   }
+  // A dialog target never reaches here: it renders as a button, above.
+  if ('dialog' in to) return '';
   return to.url;
 }
 
@@ -24,6 +26,11 @@ export function SiteFooter(ctx: PageContext): string {
     const id = `footer-group-${i}`;
     const links = g.links
       .map((l) => {
+        // A dialog is opened by a button, not a link: it goes nowhere, and a
+        // link that does not navigate is a lie to anyone using a screen reader.
+        if ('dialog' in l.to) {
+          return `            <li><button type="button" class="link-button" data-consent-open>${label(ctx, l.label)}</button></li>`;
+        }
         const url = href(ctx, l.to);
         const external = 'url' in l.to ? ' rel="noopener"' : '';
         return `            <li><a href="${url}"${external}>${label(ctx, l.label)}</a></li>`;

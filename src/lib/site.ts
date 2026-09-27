@@ -127,7 +127,10 @@ export function langMenu(code: string, path: string, active: string[], alternate
     .join('\n');
   return [
     `          <details class="lang-menu">`,
-    `            <summary aria-label="${escapeHtml(label)}"><span lang="${code}">${escapeHtml(LANGUAGES[code])}</span></summary>`,
+    // The code, not the language's name: "EN" instead of "English" keeps the
+    // header on one line, and the menu it opens lists every language in full.
+    // The accessible name stays "Language", as it was.
+    `            <summary aria-label="${escapeHtml(label)}"><span lang="${code}">${escapeHtml(code.toUpperCase())}</span></summary>`,
     `            <ul class="lang-menu__list">`,
     items,
     `            </ul>`,
@@ -166,13 +169,20 @@ export function redirectScript(active: string[]): string {
 }
 
 /**
- * The Google tag (gtag.js). The page view is queued at once, as in Google's
- * snippet, but gtag.js itself (about 175 KB of script) loads on the first
- * interaction (pointer, key, touch, scroll) or 8 seconds after the page has
- * loaded, so it does not compete with the page for the main thread. A visit
- * shorter than that with no interaction is not counted. On the root page the
- * language redirect runs first and sets window.susRedirect, so a visitor who
- * is sent on to their language page is counted once, on that page.
+ * The Google tag (gtag.js), which does nothing at all until a visitor says yes.
+ *
+ * Analytics is not needed to check a robots.txt, so under the ePrivacy rules it
+ * needs prior consent: no cookie, no request to Google, no page view before the
+ * choice. That is why `js` and `config` are inside susLoadAnalytics rather than
+ * queued here, since `config` is what sends the first page view. Consent Mode is
+ * set to denied on the first line of the queue, so any later call is refused by
+ * the tag itself even if this ordering were ever broken.
+ *
+ * A granted choice is applied by src/client/components/consent.ts on the next
+ * visit too, which is why gtag.js still loads late rather than in the head: it
+ * is about 175 KB and the page does not wait for it. On the root page the
+ * language redirect sets window.susRedirect, so a visitor who is sent on to
+ * their language page is counted once, on that page.
  *
  * `page_location` is set to the origin and path only, before anything is sent.
  * The page puts the address being checked in the query string (`?url=`), and
@@ -184,31 +194,29 @@ export function analyticsTag(): string {
   if (!ANALYTICS_ID) return '';
   const id = JSON.stringify(ANALYTICS_ID);
   const src = JSON.stringify(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ANALYTICS_ID)}`);
-  return `<!-- Google tag (gtag.js), loaded on first interaction or after 8 s -->
+  return `<!-- Google tag (gtag.js). Nothing is requested or sent before consent. -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     window.gtag = gtag;
-    if (!window.susRedirect) {
+    // Consent Mode, denied by default: whatever runs later, this is on the queue
+    // first, so a mistake elsewhere cannot turn into tracking without a choice.
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    gtag('set', { page_location: location.origin + location.pathname });
+    // Called by src/client/components/consent.ts, and only after "yes". Loading
+    // gtag.js and the page view both live in here, so a visitor who refuses or
+    // never answers causes no request to Google at all.
+    window.susLoadAnalytics = function () {
+      if (window.susRedirect || window.susAnalyticsLoaded) return;
+      window.susAnalyticsLoaded = true;
+      gtag('consent', 'update', { analytics_storage: 'granted' });
       gtag('js', new Date());
-      gtag('set', { page_location: location.origin + location.pathname });
       gtag('config', ${id});
-      (function () {
-        var done = false;
-        function load() {
-          if (done) return;
-          done = true;
-          var s = document.createElement('script');
-          s.async = true;
-          s.src = ${src};
-          document.head.appendChild(s);
-        }
-        ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (e) {
-          addEventListener(e, load, { once: true, passive: true });
-        });
-        addEventListener('load', function () { setTimeout(load, 8000); });
-      })();
-    }
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = ${src};
+      document.head.appendChild(s);
+    };
   </script>
 `;
 }

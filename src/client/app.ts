@@ -23,6 +23,7 @@ import { renderRaw } from './components/raw.ts';
 import { initPricing } from './components/pricing.ts';
 import { readRecent, renderRecent, remember } from './components/recent.ts';
 import { initTheme, initLanguage } from './components/preferences.ts';
+import { initConsent } from './components/consent.ts';
 import { initBrandMenu } from './components/brand-menu.ts';
 import { initSales, renderSales } from './components/sales.ts';
 import { trackCheck, type CheckSource, type CheckTrigger } from './track.ts';
@@ -177,6 +178,7 @@ function checkOrigin(origin: string, trigger: CheckTrigger = 'user'): void {
 function init(): void {
   initTheme();
   initLanguage();
+  initConsent();
   initBrandMenu();
   initPricing();
   initSales();

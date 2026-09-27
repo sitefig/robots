@@ -3,6 +3,7 @@
 
 import type { PageContext } from './context.ts';
 import { escapeHtml, absolute, hreflangLinks, analyticsTag } from '../lib/site.ts';
+import { ConsentDialog } from './consent.ts';
 
 export interface DocumentProps {
   title: string;
@@ -46,7 +47,8 @@ ${hreflangLinks(ctx.alternates, ctx.active)}
   <script type="application/ld+json">${p.jsonld}</script>
 </head>
 <body>
-${p.body}</body>
+${p.body}
+${ConsentDialog(ctx)}</body>
 </html>
 `;
 }
