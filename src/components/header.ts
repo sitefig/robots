@@ -65,16 +65,18 @@ export function SiteHeader(ctx: PageContext): string {
   <header class="site-header">
     <div class="wrapper">
       <a class="brand" href="${ctx.assets}">${BrandMark()}<span class="brand__word">sus.bot</span></a>
-      <nav class="nav" aria-label="${e('page.navLabel')}">
-        <ul>
-          <li><a href="${h}#cli">${e('page.nav.cli')}</a></li>
-          <li><a href="${h}#gallery">${e('page.nav.gallery')}</a></li>
-          <li><a href="${h}#extension">${e('page.nav.extension')}</a></li>
-          ${PRICING.show ? `<li><a href="${h}#pricing">${e('page.nav.pricing')}</a></li>` : ''}
-        </ul>
-      </nav>
-      ${ThemeToggle(ctx)}
+      <div class="site-header__tools">
+        <nav class="nav" aria-label="${e('page.navLabel')}">
+          <ul>
+            <li><a href="${h}#cli">${e('page.nav.cli')}</a></li>
+            <li><a href="${h}#gallery">${e('page.nav.gallery')}</a></li>
+            <li><a href="${h}#extension">${e('page.nav.extension')}</a></li>
+            ${PRICING.show ? `<li><a href="${h}#pricing">${e('page.nav.pricing')}</a></li>` : ''}
+          </ul>
+        </nav>
 ${langMenu(ctx.lang, ctx.path, ctx.active, ctx.alternates, ctx.s.text('page.langLabel'))}
+        ${ThemeToggle(ctx)}
+      </div>
     </div>
   </header>
 ${BrandMenu(ctx)}`;
