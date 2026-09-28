@@ -1,10 +1,10 @@
 // The verdict card: a callout for the default policy (or the fetch problem)
 // and the facts about the file.
 
-import { t, formatNumber, type Params } from '../i18n.ts';
+import { t, formatNumber, getLocale, type Params } from '../i18n.ts';
 import { el, badge, replace, slot, formatBytes, type Child } from '../dom.ts';
 import { state, current } from '../state.ts';
-import type { FetchInfo } from '../types.ts';
+import type { FetchInfo, SecurityFinding } from '../types.ts';
 
 interface Callout {
   state: string;
@@ -120,9 +120,75 @@ function trainingState(): 'open' | 'partial' | 'blocked' | null {
 }
 
 /**
- * The four or five lines a business owner came for. Each is a consequence, not a
- * measurement: whether search engines can read the site, whether AI crawlers are
- * taking it, whether Google is being told where the pages are, and what it costs.
+ * The server never handed the file over (5xx, or a redirect chain we gave up on)
+ * and nothing was parsed, so there is nothing to say about what it gives away.
+ * Saying "nothing private is named here" would be a claim about a file we never
+ * read, the same mistake as telling someone their site is open when their server
+ * is down.
+ */
+function unread(): boolean {
+  const f = state.fetch;
+  return Boolean(f && (f.status >= 500 || f.redirectLimit)) && current().report.summary.rules === 0;
+}
+
+/** Worst first, so the one line about severity picks the right finding. */
+const SEVERITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2, info: 3 };
+
+/** "a, b and c" in the visitor's language. */
+function listOf(parts: string[]): string {
+  try {
+    return new Intl.ListFormat(getLocale(), { style: 'long', type: 'conjunction' }).format(parts);
+  } catch {
+    return parts.join(', ');
+  }
+}
+
+/**
+ * The two lines about risk, which is what the business asks about first: not
+ * "is my syntax right" but "what does this file hand to a stranger".
+ *
+ * robots.txt is the first file an attacker reads, because it is the one place a
+ * site volunteers the paths it wants left alone. So the count of private places
+ * named belongs in the verdict, next to the worst kind of them, and so does what
+ * the file says about the systems behind it: the platform, the other servers,
+ * the storage buckets, the internal interfaces, the names and ticket numbers
+ * left in comments. All of it is already in the sections below; a founder should
+ * not have to scroll past the crawler table to learn it.
+ *
+ * Findings the engine rated `info` are left out of the count on purpose: those
+ * are the stock paths of a CMS it recognised, which every installation has and
+ * which therefore disclose nothing.
+ */
+function riskRows(): Row[] {
+  const r = current().report;
+  const named = r.security.filter((s) => s.severity !== 'info');
+  let worst: SecurityFinding | null = null;
+  for (const s of named) if (!worst || SEVERITY_RANK[s.severity] < SEVERITY_RANK[worst.severity]) worst = s;
+  const kind = worst && r.securityCategories.find((c) => c.id === worst.category)?.label;
+  const exposure = named.length === 0
+    ? t('ui.plain.exposure.none')
+    : t('ui.plain.exposure.some', { n: named.length }) + (kind ? `. ${t('ui.plain.exposure.worst', { what: kind })}` : '');
+
+  const rc = r.recon;
+  const tells: string[] = [];
+  if (rc.stack.primary) tells.push(t('ui.plain.setup.platform', { name: rc.stack.primary.name }));
+  if (rc.hosts.hosts.length > 0) tells.push(t('ui.plain.setup.hosts', { n: rc.hosts.hosts.length }));
+  if (rc.cloud.length > 0) tells.push(t('ui.plain.setup.buckets', { n: rc.cloud.length }));
+  if (rc.api.length > 0) tells.push(t('ui.plain.setup.apis', { n: rc.api.length }));
+  if (rc.comments.length > 0) tells.push(t('ui.plain.setup.contacts', { n: rc.comments.length }));
+
+  return [
+    [t('ui.plain.exposure'), unread() ? t('ui.plain.exposure.unknown') : exposure],
+    unread() ? null :
+    [t('ui.plain.setup'), tells.length === 0 ? t('ui.plain.setup.none') : t('ui.plain.setup.some', { what: listOf(tells) })],
+  ];
+}
+
+/**
+ * The lines a business owner came for. Each is a consequence, not a measurement:
+ * whether search engines can read the site, whether AI crawlers are taking it,
+ * whether Google is being told where the pages are, what the file gives away and
+ * what it says about the systems behind it.
  */
 function plainFacts(): Row[] {
   const r = current().report;
@@ -139,6 +205,7 @@ function plainFacts(): Row[] {
   return [
     [t('ui.plain.search'), serverFailed ? t('ui.plain.search.serverFail') : t(`ui.plain.search.${search}`)],
     serverFailed ? [t('ui.plain.ai'), t('ui.plain.ai.unknown')] : training && [t('ui.plain.ai'), t(`ui.plain.ai.${training}`)],
+    ...riskRows(),
     [t('ui.plain.sitemap'), r.summary.sitemaps > 0 ? t('ui.plain.sitemap.some', { n: r.summary.sitemaps }) : t('ui.plain.sitemap.none')],
     [t('ui.plain.problems'), errors + warnings === 0 ? t('ui.plain.problems.none') : t('ui.plain.problems.some', { errors, warnings })],
     [
