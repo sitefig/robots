@@ -32,11 +32,24 @@ function summaryCallout(): Callout {
   return c('info', 'restricted', { disallow: p.disallowRules, allow: p.allowRules });
 }
 
-type Row = [string, Child] | null | undefined | false | '';
+type Row = [label: string, value: Child, anchor?: string] | null | undefined | false | '';
 
-/** Key/value rows: [[key, value], …] → <dl class="defs">. */
+/**
+ * Key/value rows: [[key, value, anchor?], …] → <dl class="defs">.
+ *
+ * A row with an anchor makes its label a link to the section that shows the
+ * working. That is the whole bridge between the two halves of the page: the line
+ * that says 30 private places are named is also the way to the list of them, so
+ * nobody has to guess which of the sections below answers the sentence they just
+ * read. The label is the link text, which says where it goes.
+ */
 function defs(rows: Row[]): HTMLElement {
-  return el('dl', { class: 'defs' }, rows.filter((r): r is [string, Child] => Boolean(r)).map(([k, v]) => el('div', {}, el('dt', {}, k), el('dd', {}, v))));
+  return el(
+    'dl',
+    { class: 'defs' },
+    rows.filter((r): r is [string, Child, string?] => Boolean(r)).map(([k, v, anchor]) =>
+      el('div', {}, el('dt', {}, anchor ? el('a', { href: anchor }, k) : k), el('dd', {}, v))),
+  );
 }
 
 /** "A → 301 → B → 302 → C", or just the endpoints when the proxy was not used. */
@@ -178,9 +191,9 @@ function riskRows(): Row[] {
   if (rc.comments.length > 0) tells.push(t('ui.plain.setup.contacts', { n: rc.comments.length }));
 
   return [
-    [t('ui.plain.exposure'), unread() ? t('ui.plain.exposure.unknown') : exposure],
+    [t('ui.plain.exposure'), unread() ? t('ui.plain.exposure.unknown') : exposure, '#security'],
     unread() ? null :
-    [t('ui.plain.setup'), tells.length === 0 ? t('ui.plain.setup.none') : t('ui.plain.setup.some', { what: listOf(tells) })],
+    [t('ui.plain.setup'), tells.length === 0 ? t('ui.plain.setup.none') : t('ui.plain.setup.some', { what: listOf(tells) }), '#recon'],
   ];
 }
 
@@ -203,16 +216,19 @@ function plainFacts(): Row[] {
   const search = !p.hasStarGroup || p.verdict === 'open' ? 'open' : p.verdict;
   const training = trainingState();
   return [
-    [t('ui.plain.search'), serverFailed ? t('ui.plain.search.serverFail') : t(`ui.plain.search.${search}`)],
-    serverFailed ? [t('ui.plain.ai'), t('ui.plain.ai.unknown')] : training && [t('ui.plain.ai'), t(`ui.plain.ai.${training}`)],
+    [t('ui.plain.search'), serverFailed ? t('ui.plain.search.serverFail') : t(`ui.plain.search.${search}`), '#agents'],
+    serverFailed
+      ? [t('ui.plain.ai'), t('ui.plain.ai.unknown'), '#ai-status-heading']
+      : training && [t('ui.plain.ai'), t(`ui.plain.ai.${training}`), '#ai-status-heading'],
     ...riskRows(),
-    [t('ui.plain.sitemap'), r.summary.sitemaps > 0 ? t('ui.plain.sitemap.some', { n: r.summary.sitemaps }) : t('ui.plain.sitemap.none')],
-    [t('ui.plain.problems'), errors + warnings === 0 ? t('ui.plain.problems.none') : t('ui.plain.problems.some', { errors, warnings })],
+    [t('ui.plain.sitemap'), r.summary.sitemaps > 0 ? t('ui.plain.sitemap.some', { n: r.summary.sitemaps }) : t('ui.plain.sitemap.none'), '#sitemaps'],
+    [t('ui.plain.problems'), errors + warnings === 0 ? t('ui.plain.problems.none') : t('ui.plain.problems.some', { errors, warnings }), '#warnings'],
     [
       t('ui.plain.rules'),
       serverFailed && r.summary.rules === 0 ? t('ui.plain.rules.unread')
         : r.summary.rules === 0 ? t('ui.plain.rules.none')
           : t('ui.plain.rules.some', { n: formatNumber(r.summary.rules) }),
+      '#raw',
     ],
   ];
 }

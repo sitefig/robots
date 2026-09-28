@@ -10,7 +10,7 @@ import { $, el, setStatus, formatBytes, formatMs } from './dom.ts';
 import { state } from './state.ts';
 import { SCHEMA_URL, EXAMPLE_URL } from './paths.ts';
 import { renderSummary } from './components/summary.ts';
-import { renderExport } from './components/export.ts';
+import { renderExport, renderHandoff } from './components/export.ts';
 import { renderAiStatus } from './components/ai-status.ts';
 import { renderAgents } from './components/agents.ts';
 import { renderTester } from './components/tester.ts';
@@ -58,6 +58,7 @@ function render(): void {
   $('#results').hidden = false;
   renderSummary();
   renderExport();
+  renderHandoff();
   renderAiStatus();
   renderAgents();
   renderTester();

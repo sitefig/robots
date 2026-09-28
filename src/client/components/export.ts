@@ -68,27 +68,41 @@ function offerCard(kind: string, title: string, note: Child): HTMLElement {
   );
 }
 
-export function renderExport(): void {
+/**
+ * The two free actions: the audit as Markdown and the link to this check. They
+ * are built twice, beside the verdict and again at the head of the section for
+ * whoever edits the file, because that is where a founder decides to forward it
+ * rather than read on.
+ */
+function shareActions(): Child[] {
   const a = current();
+  const shareUrl = state.input ? `${location.origin}${location.pathname}?${new URLSearchParams({ url: state.input })}` : null;
+  return [
+    actionButton(t('ui.export.quick.audit'), () => {
+      trackExport('markdown');
+      return copyText(a.markdown());
+    }, { primary: true }),
+    shareUrl
+      ? actionButton(t('ui.export.share.copy'), () => {
+        trackExport('link');
+        return copyText(shareUrl);
+      })
+      : null,
+  ];
+}
+
+/** The handoff at the top of the technical half. */
+export function renderHandoff(): void {
+  replace(slot('handoff'), shareActions());
+}
+
+export function renderExport(): void {
   const shareUrl = state.input ? `${location.origin}${location.pathname}?${new URLSearchParams({ url: state.input })}` : null;
 
   $('#export').hidden = false;
   replace(
     slot('export'),
-    el(
-      'div',
-      { class: 'cluster', 'data-space': 'xs' },
-      actionButton(t('ui.export.quick.audit'), () => {
-        trackExport('markdown');
-        return copyText(a.markdown());
-      }, { primary: true }),
-      shareUrl
-        ? actionButton(t('ui.export.share.copy'), () => {
-          trackExport('link');
-          return copyText(shareUrl);
-        })
-        : null,
-    ),
+    el('div', { class: 'cluster', 'data-space': 'xs' }, shareActions()),
     el('p', { class: 'text-xs font-mono text-muted' }, t('ui.export.free.badge')),
     el(
       'details',
