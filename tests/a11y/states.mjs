@@ -100,8 +100,9 @@ export function states(path) {
       await page.waitForFunction(() => document.querySelector('#agents .link-button[aria-controls="agents-table"]')?.getAttribute('aria-expanded') === 'true');
     } },
     // Phone width: the crawler table and the AI list start as the problem list,
-    // with the rest behind their buttons. Four states, because "only the problems"
-    // and "everything" are different DOMs and both have to pass.
+    // with the rest behind their buttons: the crawlers that are shut out, and the
+    // AI agents that are blocked. Four states, because the short list and the full
+    // one are different DOMs and both have to pass.
     { name: 'phone-agents-problems', url: url(), viewport: PHONE, setup: async (page) => {
       await paste(page);
       await page.waitForSelector('#agents-problems-note:not([hidden])');
@@ -112,17 +113,19 @@ export function states(path) {
       await page.click('#agents-more');
       await page.waitForSelector('#agents-problems-note[hidden]');
     } },
-    { name: 'phone-ai-problems', url: url(), viewport: PHONE, setup: async (page) => {
+    { name: 'phone-ai-blocked', url: url(), viewport: PHONE, setup: async (page) => {
       await paste(page);
-      await page.waitForSelector('#ai-problems-note:not([hidden])');
+      await page.waitForSelector('#ai-phone-note:not([hidden])');
     } },
     { name: 'phone-ai-all', url: url(), viewport: PHONE, setup: async (page) => {
       await paste(page);
-      await page.waitForSelector('#ai-problems-note:not([hidden])');
+      await page.waitForSelector('#ai-phone-note:not([hidden])');
       await page.click('#ai-more');
-      await page.waitForSelector('#ai-problems-note[hidden]');
+      await page.waitForSelector('#ai-phone-note[hidden]');
     } },
     { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#export .button'); } },
+    // The same two actions again, where the technical half of the report starts.
+    { name: 'handoff-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#handoff .button'); } },
     { name: 'export-more-open', url: url(), setup: async (page) => { await paste(page); await page.click('#export details > summary'); } },
     // Only while the prices are published (PRICING.show in src/client/config.ts).
     ...(PRICING.show ? [{ name: 'pricing-annual', url: url(), setup: async (page) => { await page.click('#billing-cycle [data-cycle="annual"]'); await page.waitForSelector('#billing-cycle [data-cycle="annual"][aria-pressed="true"]'); } }] : []),
