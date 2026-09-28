@@ -160,6 +160,14 @@ export function states(path) {
       await page.click('#raw button.raw__line');
       await page.waitForSelector('#raw .raw__line[data-selected="true"]');
     } },
+    // Two reports side by side: a second fetch and a second run of the engine,
+    // which is a state of its own because the table only exists afterwards.
+    { name: 'compare-done', url: url(`?url=${origin(PORTS.worst)}`), setup: async (page) => {
+      await results(page);
+      await page.type('#compare-site', origin(PORTS.empty));
+      await page.click('#compare-run');
+      await page.waitForSelector('#compare table', { timeout: 60000 });
+    } },
     { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#export .button'); } },
     // The same two actions again, where the technical half of the report starts.
     { name: 'handoff-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#handoff .button'); } },

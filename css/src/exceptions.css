@@ -201,3 +201,24 @@
   background: var(--color-warn-bg);
   border-inline-start-color: var(--color-signal);
 }
+
+/* The comparison cells carry their own words (Yes, No, Partly, a count), so the
+   colour is emphasis, never the message. */
+.compare-table td[data-cell="ok"] {
+  color: var(--color-ok);
+  font-weight: var(--font-weight-bold);
+}
+
+.compare-table td[data-cell="bad"] {
+  color: var(--color-bad);
+  font-weight: var(--font-weight-bold);
+}
+
+.compare-table td[data-cell="warn"] {
+  color: var(--color-warn);
+  font-weight: var(--font-weight-bold);
+}
+
+.compare-table td[data-cell="muted"] {
+  color: var(--color-muted);
+}

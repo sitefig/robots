@@ -16,14 +16,48 @@ import type { PageContext } from '../context.ts';
 import { escapeHtml } from '../../lib/site.ts';
 import { PRICING } from '../../client/config.ts';
 
-/** One folded row of the appendix, wrapping a section that used to be a panel. */
-function Row(id: string, title: string, count: string, body: string): string {
+/**
+ * One folded row of the appendix, wrapping a section that used to be a panel.
+ * The description says what is inside, because a title alone gives no reason to
+ * open it, and the count comes from the report once there is one.
+ */
+function Row(id: string, title: string, what: string, body: string): string {
   return `        <details class="appendix__row" id="row-${id}">
           <summary>
-            <span class="appendix__title">${title}</span>
-            <span class="appendix__count font-mono text-sm text-muted" data-fill="count-${id}">${count}</span>
+            <span class="appendix__row-title">
+              <span class="appendix__title">${title}</span>
+              <span class="text-sm text-muted">${what}</span>
+            </span>
+            <span class="appendix__count font-mono text-sm text-muted" data-fill="count-${id}"></span>
           </summary>
 ${body}        </details>
+`;
+}
+
+/**
+ * How you compare, which is the question straight after "is my file right". The
+ * form is here in the markup so it exists before the engine does; the table and
+ * the offer are rendered by components/compare.ts when a competitor is named.
+ */
+function Compare(ctx: PageContext): string {
+  const { e } = ctx.s;
+  return `      <section class="flow" data-space="s" id="compare-section" aria-labelledby="compare-heading">
+        <div class="flow" data-space="2xs">
+          <p class="text-sm font-mono text-muted">${e('ui.compare.eyebrow')}</p>
+          <h2 id="compare-heading">${e('ui.compare.title')}</h2>
+          <p class="text-muted max-w-prose">${e('ui.compare.body')}</p>
+        </div>
+        <div class="panel flow" data-space="s">
+          <div class="cluster" data-align="stretch" data-space="xs">
+            <span id="compare-you" class="font-bold"></span>
+            <label for="compare-site" class="sr-only">${e('ui.compare.label')}</label>
+            <input id="compare-site" type="text" inputmode="url" spellcheck="false">
+            <button type="button" class="button" id="compare-run">${e('ui.compare.run')}</button>
+          </div>
+          <p id="compare-status" class="status" role="status" aria-live="polite" data-state="idle"></p>
+          <div id="compare"><div data-slot class="flow" data-space="s"></div></div>
+        </div>
+      </section>
 `;
 }
 
@@ -37,8 +71,8 @@ function Fixes(ctx: PageContext): string {
           <div data-slot class="flow" data-space="s"></div>
 
           <div class="panel flow" data-space="xs" id="handoff-panel" aria-labelledby="handoff-heading">
-            <h3 id="handoff-heading">${e('page.forEditors.title')}</h3>
-            <p class="text-muted">${e('page.forEditors.body')}</p>
+            <h3 id="handoff-heading">${e('sales.handoff.title')}</h3>
+            <p class="text-muted">${e('sales.handoff.body')}</p>
             <div id="handoff"><div data-slot class="cluster" data-space="xs"></div></div>
           </div>
         </section>
@@ -139,10 +173,11 @@ function Appendix(ctx: PageContext, blockRate: string): string {
   return `      <section class="flow" data-space="s" id="appendix" aria-labelledby="appendix-heading">
         <div class="flow" data-space="2xs">
           <h2 id="appendix-heading">${e('ui.appendix.title')}</h2>
-          <p class="text-sm text-muted">${e('page.forEditors.body')}</p>
+          <p class="text-sm text-muted max-w-prose">${e('ui.appendix.body')}</p>
         </div>
         <div class="appendix">
-${Row('issues', e('page.issues'), '', issues)}${Row('agents', e('page.agents'), '', agents)}${Row('ai', e('page.aiStatus'), '', ai)}${Row('security', e('page.security'), '', security)}${Row('recon', e('page.recon'), '', recon)}${Row('tester', e('page.tester'), '', tester)}${Row('access', e('page.access'), '', access)}        </div>
+${Row('issues', e('page.issues'), e('ui.appendix.issues'), issues)}${Row('agents', e('page.agents'), e('ui.appendix.agents'), agents)}${Row('ai', e('page.aiStatus'), e('ui.appendix.ai'), ai)}${Row('security', e('page.security'), e('ui.appendix.security'), security)}${Row('recon', e('page.recon'), e('ui.appendix.recon'), recon)}${Row('tester', e('page.tester'), e('ui.appendix.tester'), tester)}${Row('access', e('page.access'), e('ui.appendix.access'), access)}        </div>
+        <p class="text-sm text-muted max-w-prose">${e('ui.appendix.footnote')}</p>
       </section>
 `;
 }
@@ -151,6 +186,7 @@ export function Results(ctx: PageContext, blockRate: string): string {
   return `    <div id="results" class="flow" data-space="xl" hidden>
 
 ${Fixes(ctx)}
+${Compare(ctx)}
 ${Regression(ctx)}
 ${Appendix(ctx, blockRate)}
     </div>

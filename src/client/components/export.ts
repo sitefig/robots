@@ -18,7 +18,7 @@ import { state, current } from '../state.ts';
 import { SCHEMA_URL } from '../paths.ts';
 import { APP_URL } from '../config.ts';
 import { trackExport, trackOffer } from '../track.ts';
-import { allTickets } from './fixes.ts';
+import { allTickets, fixTotal } from './fixes.ts';
 
 const SIGNUP = `${APP_URL}/signup/`;
 
@@ -35,13 +35,13 @@ export function shareLink(): string | null {
 }
 
 /** Button whose label flashes a result for a moment after an async action. */
-export function actionButton(label: string, action: () => unknown, { primary = false }: { primary?: boolean } = {}): HTMLButtonElement {
+export function actionButton(label: string, action: () => unknown, { primary = false, done }: { primary?: boolean; done?: string } = {}): HTMLButtonElement {
   const button = el('button', { type: 'button', class: 'button', 'data-variant': primary ? 'primary' : null }, label);
   button.addEventListener('click', async () => {
     button.disabled = true;
     try {
       await action();
-      button.textContent = t('ui.done');
+      button.textContent = done || t('ui.done');
     } catch (err) {
       button.textContent = t('ui.failed');
       console.error(err);
@@ -101,15 +101,24 @@ function shareActions(): Child[] {
 }
 
 /**
- * The handoff: one message with every fix in it, and a way to send it.
+ * The handoff. The report is read by the person who is answerable for the site
+ * and acted on by somebody else, so this is the seam: one message with every fix,
+ * an email that carries the live link, and the two things an account adds.
  *
  * The audit is the whole report; this is the worklist, which is what a developer
- * actually wants in a ticket. The email carries the link rather than the text,
- * because a mailto body is capped by the browser and a truncated ticket is worse
- * than none: the person who opens the link gets the live report, with the lines.
+ * wants in a ticket. The email carries the link rather than the text, because a
+ * mailto body is capped by the browser and a truncated ticket is worse than none:
+ * whoever opens the link gets the live report, with the lines.
  */
 export function renderHandoff(): void {
   const share = shareLink();
+  const origin = state.fetch ? new URL(state.fetch.robotsUrl).origin : null;
+  const signup = origin ? `${SIGNUP}?${new URLSearchParams({ site: origin })}` : SIGNUP;
+  const offer = (kind: string, label: string, variant: string | null): HTMLElement => {
+    const link = el('a', { class: 'button', 'data-variant': variant, href: signup }, label);
+    link.addEventListener('click', () => trackOffer(`handoff.${kind}`, current().report));
+    return link;
+  };
   const mail = share
     ? el('a', {
       class: 'button',
@@ -125,8 +134,17 @@ export function renderHandoff(): void {
       actionButton(t('ui.handoff.copyAll'), () => {
         trackExport('fixes');
         return copyText(allTickets());
-      }, { primary: true }),
+      }, { done: t('ui.handoff.copiedAll', { n: fixTotal() }) }),
       mail,
+      offer('jira', t('ui.handoff.jira'), null),
+    ),
+    // The fix is not done when the ticket is sent, and nobody goes back to check.
+    // That is what the watching is for, and it is the honest moment to say so.
+    el(
+      'div',
+      { class: 'watch cluster', 'data-justify': 'between', 'data-space': 'xs' },
+      el('p', { class: 'watch__text' }, t('ui.handoff.watch')),
+      offer('watch', t('ui.handoff.watchCta'), 'primary'),
     ),
   );
 }

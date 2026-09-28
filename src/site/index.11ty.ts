@@ -32,6 +32,6 @@ export function render(d: Data): string {
     redirect: d.code === DEFAULT_LANG ? redirectScript(d.languages) : '',
     script: 'boot.js',
     jsonld: homeJsonLd(d.code, s),
-    body: HomeBody(ctx, rateValue),
+    body: HomeBody(ctx, rateValue, String(d.figures.tracked)),
   });
 }

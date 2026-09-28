@@ -19,7 +19,7 @@
 // job.
 
 import { t, formatNumber } from '../i18n.ts';
-import { el, badge, replace, slot, levelLabel, lineText, LEVEL_ORDER, type Child } from '../dom.ts';
+import { el, badge, replace, slot, lineText, LEVEL_ORDER, type Child } from '../dom.ts';
 import { current } from '../state.ts';
 import { resetSelection, select, onSelect } from '../selection.ts';
 import type { Analysis } from '../engine.ts';
@@ -29,8 +29,8 @@ interface Fix {
   rank: number;
   /** Badge colour, and the tint of the card. */
   level: Level;
-  /** Badge text: the engine's own word for how bad it is. */
-  sev: string;
+  /** Critical, high, medium or a decision to make. */
+  sev: Sev;
   area: string;
   title: string;
   /** The consequence, from the engine. Empty when the title says it all. */
@@ -42,6 +42,26 @@ interface Fix {
   /** The message to send. Plain text, because it is going into a ticket. */
   ticket: string;
 }
+
+/**
+ * How bad it is, in four words a business uses. The engine grades findings as
+ * error / warning / note and security findings as high / medium / low, which is
+ * the right vocabulary for the file and the wrong one for deciding what to do
+ * first. These four are that decision: something is broken, something is exposed,
+ * something is untidy, something is yours to choose.
+ */
+const SEV = ['critical', 'high', 'medium', 'decision'] as const;
+type Sev = typeof SEV[number];
+
+/** The colour each one carries, from the four the page already uses. */
+const SEV_STATE: Record<Sev, string> = { critical: 'error', high: 'warning', medium: 'info', decision: 'info' };
+
+/**
+ * How much work it is. Coarse on purpose: the engine knows what is wrong, not how
+ * long your deploy takes, so this says what kind of change it is rather than
+ * inventing a number of minutes.
+ */
+const EFFORT: Record<Sev, string> = { critical: 'line', high: 'check', medium: 'line', decision: 'call' };
 
 /** Who acts on a finding of this kind. A judgement about people, not the file. */
 const OWNER: Record<string, string> = {
@@ -79,7 +99,7 @@ function fromIssues(raw: string[]): Fix[] {
     .map((w) => ({
       rank: w.level === 'error' ? 0 : 40,
       level: w.level,
-      sev: levelLabel(w.level),
+      sev: w.level === 'error' ? 'critical' : 'medium',
       area: area(w.kind),
       title: w.message,
       body: '',
@@ -115,7 +135,7 @@ function fromSecurity(): Fix[] {
     fixes.push({
       rank: 10 + SEVERITY_RANK[worst.severity],
       level: SEVERITY_LEVEL[worst.severity],
-      sev: t(`enum.severity.${worst.severity}`),
+      sev: worst.severity === 'high' ? 'high' : 'medium',
       area: area('security'),
       title: t('ui.fix.security.title', { n: findings.length, what: category?.label || id }),
       body: advice,
@@ -136,7 +156,7 @@ function fromComments(): Fix[] {
   return [{
     rank: 30,
     level: 'warning',
-    sev: levelLabel('warning'),
+    sev: 'high',
     area: area('security'),
     title: t('ui.fix.comments.title', { n: comments.length }),
     body: t('ui.fix.comments.body'),
@@ -162,7 +182,7 @@ function fromAi(): Fix[] {
   return [{
     rank: 50,
     level: 'info',
-    sev: t('ui.fix.sev.decision'),
+    sev: 'decision',
     area: area('ai'),
     title: t('ui.fix.ai.title', { n: open + partial, total: training.crawlers.length }),
     body: ai.callout.text,
@@ -265,7 +285,13 @@ function card(fix: Fix, index: number): HTMLElement {
       head.setAttribute('aria-expanded', String(open));
       select({ index, lines: fix.lines, hint });
     } },
-    el('span', { class: 'fix__meta' }, badge(fix.sev, fix.level), el('span', { class: 'text-muted text-sm' }, fix.area)),
+    el(
+      'span',
+      { class: 'fix__meta text-sm' },
+      badge(t(`ui.sev.${fix.sev}`), SEV_STATE[fix.sev]),
+      el('span', { class: 'text-muted' }, fix.area),
+      el('span', { class: 'text-muted push-end' }, t(`ui.effort.${EFFORT[fix.sev]}`)),
+    ),
     el('span', { class: 'fix__title' }, fix.title),
     fix.body ? el('span', { class: 'fix__body' }, fix.body) : null,
   );
@@ -296,11 +322,16 @@ function card(fix: Fix, index: number): HTMLElement {
 /** The count line under the verdict: what the list adds up to. */
 export function fixCounts(): string {
   const fixes = allFixes();
-  const count = (level: Level): string => formatNumber(fixes.filter((f) => f.level === level).length);
-  return t('ui.fixes.counts', { now: count('error'), look: count('warning'), decide: count('info') });
+  const count = (sev: Sev): string => formatNumber(fixes.filter((f) => f.sev === sev).length);
+  return t('ui.fixes.counts', { critical: count('critical'), high: count('high'), medium: count('medium'), decision: count('decision') });
 }
 
 /** Everything on the list as one plain-text message, for the handoff. */
 export function allTickets(): string {
-  return allFixes().map((fix, i) => `${i + 1}. [${fix.sev}] ${fix.title}\n${fix.ticket}`).join('\n\n');
+  return allFixes().map((fix, i) => `${i + 1}. [${t(`ui.sev.${fix.sev}`)}] ${fix.title}\n${fix.ticket}`).join('\n\n');
+}
+
+/** How many fixes there are, for the label on the button that copies them all. */
+export function fixTotal(): number {
+  return allFixes().length;
 }

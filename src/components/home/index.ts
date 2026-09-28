@@ -5,6 +5,7 @@ import { SiteHeader } from '../header.ts';
 import { SiteFooter } from '../footer.ts';
 import { Hero } from './hero.ts';
 import { Audience } from './audience.ts';
+import { Pitch } from './pitch.ts';
 import { Verdict } from './verdict.ts';
 import { Sales } from './sales.ts';
 import { Results } from './results.ts';
@@ -12,7 +13,7 @@ import { Pricing } from './pricing.ts';
 import { PRICING } from '../../client/config.ts';
 import { More } from './more.ts';
 
-export function HomeBody(ctx: PageContext, blockRate: string): string {
+export function HomeBody(ctx: PageContext, blockRate: string, tracked: string): string {
   return `${SiteHeader(ctx)}
   <main id="main" class="wrapper flow pt-8" data-space="xl">
 
@@ -20,6 +21,7 @@ export function HomeBody(ctx: PageContext, blockRate: string): string {
 
 ${Hero(ctx)}
 ${Audience(ctx)}
+${Pitch(ctx, tracked, blockRate)}
 ${Verdict(ctx)}
 ${Results(ctx, blockRate)}
 ${Sales(ctx)}

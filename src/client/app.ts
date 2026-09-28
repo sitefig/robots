@@ -14,6 +14,7 @@ import { renderExport, renderHandoff } from './components/export.ts';
 import { renderChecked } from './components/checked.ts';
 import { renderFixes } from './components/fixes.ts';
 import { renderAppendix } from './components/appendix.ts';
+import { renderCompare, runCompare } from './components/compare.ts';
 import { renderAiStatus } from './components/ai-status.ts';
 import { renderAgents } from './components/agents.ts';
 import { renderTester } from './components/tester.ts';
@@ -81,6 +82,7 @@ function render(): void {
   renderSitemaps();
   renderRaw();
   renderAppendix();
+  renderCompare();
   renderSales();
 }
 
@@ -220,6 +222,23 @@ function init(): void {
   $('#load-example').addEventListener('click', () => loadExample('kitchen-sink'));
   // The example chips under the field: a real site, checked the same way a typed
   // one is, so the field shows what was checked afterwards.
+  // The pitch card: check one site and compare it with another in one press.
+  $('#pitch-compare-run').addEventListener('click', () => {
+    void (async () => {
+      const yours = $<HTMLInputElement>('#pitch-compare-you').value;
+      const theirs = $<HTMLInputElement>('#pitch-compare-them').value;
+      if (!yours.trim()) {
+        setStatus('error', t('fetch.error.empty'));
+        return;
+      }
+      $<HTMLInputElement>('#site-url').value = yours;
+      await analyseUrl(yours);
+      if (theirs.trim()) {
+        $<HTMLInputElement>('#compare-site').value = theirs;
+        await runCompare(theirs);
+      }
+    })();
+  });
   document.querySelectorAll<HTMLButtonElement>('[data-check-site]').forEach((chip) => {
     chip.addEventListener('click', () => {
       const site = chip.dataset.checkSite || '';

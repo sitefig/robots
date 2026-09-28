@@ -13,7 +13,7 @@
 import { t, formatNumber, getLocale, type Params } from '../i18n.ts';
 import { el, badge, replace, slot, formatBytes, type Child } from '../dom.ts';
 import { state, current } from '../state.ts';
-import { fixCounts } from './fixes.ts';
+import { fixCounts, fixTotal } from './fixes.ts';
 import type { FetchInfo, SecurityFinding } from '../types.ts';
 
 interface Callout {
@@ -109,7 +109,10 @@ export function renderSummary(): void {
       el('span', { class: 'text-sm text-muted' }, fixCounts()),
     ),
     el('p', { class: 'verdict' }, callout.title),
-    el('p', { class: 'text-lg text-muted max-w-prose' }, callout.body),
+    // The engine says what this file does; the second sentence says what the
+    // list below is, which is the reason to keep reading rather than to forward
+    // the page to somebody else unread.
+    el('p', { class: 'text-lg text-muted max-w-prose' }, fixTotal() > 0 ? `${callout.body} ${t('ui.verdict.intro')}` : callout.body),
     tiles(),
     legend(callout.state),
   );
@@ -167,12 +170,22 @@ function searchTile(): Tile {
   const serverFailed = Boolean(state.fetch && (state.fetch.status >= 500 || state.fetch.redirectLimit));
   const engines = r.crawlers.filter((c) => c.category === 'search');
   const shut = engines.filter((c) => !c.rootAllowed);
+  const allowed = engines.filter((c) => c.rootAllowed);
   const verdict = !p.hasStarGroup || p.verdict === 'open' ? 'open' : p.verdict;
+  // "Googlebot only" is the case worth naming: one search engine let in and the
+  // rest shut out is the most expensive mistake this file can make, and a count
+  // hides it.
+  const status = serverFailed ? t('ui.tile.search.failing')
+    : allowed.length === 1 ? t('ui.tile.search.only', { name: allowed[0].name })
+      : shut.length > 0 ? t('ui.tile.search.someShut', { n: shut.length })
+        : verdict === 'blocked' ? t('ui.tile.search.none')
+          : verdict === 'partial' ? t('ui.tile.search.parts')
+            : t('ui.tile.search.all');
   return {
-    label: t('ui.plain.search'),
+    label: t('ui.tile.searchLabel'),
     anchor: '#agents',
     state: serverFailed || shut.length > 0 || verdict === 'blocked' ? 'error' : verdict === 'partial' ? 'info' : 'ok',
-    value: serverFailed ? t('ui.plain.search.serverFail') : t(`ui.plain.search.${verdict}`),
+    value: status,
     detail: shut.length > 0 ? t('ui.tile.shutOut', { names: names(shut) }) : t('ui.tile.searchAll', { n: engines.length }),
   };
 }
@@ -189,21 +202,26 @@ function socialTile(): Tile {
     label: t('ui.tile.social'),
     anchor: '#agents',
     state: shut.length > 0 ? 'error' : 'ok',
-    value: shut.length > 0 ? t('ui.tile.social.broken') : t('ui.tile.social.fine'),
-    detail: shut.length > 0 ? t('ui.tile.shutOut', { names: names(shut) }) : t('ui.tile.social.all', { n: social.length }),
+    value: shut.length > 0 ? t('ui.tile.social.brokenShort') : t('ui.tile.social.fineShort'),
+    detail: shut.length > 0 ? t('ui.tile.social.broken', { names: names(shut) }) : t('ui.tile.social.all', { n: social.length }),
   };
 }
 
 function aiTile(): Tile {
   const group = current().report.aiStatus.groups[0];
   const counts = group ? group.counts : { open: 0, partial: 0, blocked: 0 };
-  const verdict = counts.open === 0 && counts.partial === 0 ? 'blocked' : counts.blocked > 0 || counts.partial > 0 ? 'partial' : 'open';
+  const total = group ? group.crawlers.length : 0;
+  const loose = counts.open + counts.partial;
+  const status = unread() ? t('ui.tile.ai.unknown')
+    : loose === 0 ? t('ui.tile.ai.blocked')
+      : counts.blocked > 0 ? t('ui.tile.ai.partly')
+        : t('ui.tile.ai.notDecided');
   return {
-    label: t('ui.plain.ai'),
+    label: t('ui.tile.aiLabel'),
     anchor: '#ai-status-heading',
-    state: unread() ? 'warning' : verdict === 'open' ? 'error' : verdict === 'partial' ? 'info' : 'ok',
-    value: unread() ? t('ui.plain.ai.unknown') : t(`ui.plain.ai.${verdict}`),
-    detail: group ? t('ui.tile.aiCounts', { blocked: counts.blocked, total: group.crawlers.length }) : '',
+    state: unread() ? 'warning' : counts.blocked === 0 && loose > 0 ? 'error' : loose > 0 ? 'info' : 'ok',
+    value: status,
+    detail: unread() ? '' : t('ui.tile.aiNote', { n: loose, total }),
   };
 }
 
@@ -213,45 +231,28 @@ function exposureTile(): Tile {
   let worst: SecurityFinding | null = null;
   for (const s of named) if (!worst || SEVERITY_RANK[s.severity] < SEVERITY_RANK[worst.severity]) worst = s;
   const kind = worst && r.securityCategories.find((c) => c.id === worst.category)?.label;
+  const status = unread() ? t('ui.tile.ai.unknown')
+    : named.length === 0 ? t('ui.tile.level.none')
+      : t(`ui.tile.level.${worst ? worst.severity : 'low'}`);
   return {
-    label: t('ui.plain.exposure'),
+    label: t('ui.tile.exposureLabel'),
     anchor: '#security',
     state: unread() ? 'warning' : named.length === 0 ? 'ok' : worst && worst.severity === 'high' ? 'error' : 'warning',
-    value: unread() ? t('ui.plain.exposure.unknown') : named.length === 0 ? t('ui.plain.exposure.none') : t('ui.plain.exposure.some', { n: named.length }),
-    detail: !unread() && kind ? t('ui.plain.exposure.worst', { what: kind }) : '',
+    value: status,
+    detail: unread() ? t('ui.plain.exposure.unknown')
+      : named.length === 0 ? t('ui.plain.exposure.none')
+        : `${t('ui.plain.exposure.some', { n: named.length })}${kind ? `. ${t('ui.plain.exposure.worst', { what: kind })}` : ''}`,
   };
 }
 
-function systemsTile(): Tile {
-  const rc = current().report.recon;
-  const tells: string[] = [];
-  if (rc.stack.primary) tells.push(t('ui.plain.setup.platform', { name: rc.stack.primary.name }));
-  if (rc.hosts.hosts.length > 0) tells.push(t('ui.plain.setup.hosts', { n: rc.hosts.hosts.length }));
-  if (rc.cloud.length > 0) tells.push(t('ui.plain.setup.buckets', { n: rc.cloud.length }));
-  if (rc.api.length > 0) tells.push(t('ui.plain.setup.apis', { n: rc.api.length }));
-  if (rc.comments.length > 0) tells.push(t('ui.plain.setup.contacts', { n: rc.comments.length }));
-  return {
-    label: t('ui.plain.setup'),
-    anchor: '#recon',
-    state: unread() ? 'warning' : tells.length === 0 ? 'ok' : 'info',
-    value: unread() ? t('ui.plain.exposure.unknown') : tells.length === 0 ? t('ui.plain.setup.none') : t('ui.plain.setup.some', { what: listOf(tells) }),
-    detail: '',
-  };
-}
-
-function sitemapTile(): Tile {
-  const n = current().report.summary.sitemaps;
-  return {
-    label: t('ui.plain.sitemap'),
-    anchor: '#sitemaps',
-    state: n > 0 ? 'ok' : 'warning',
-    value: n > 0 ? t('ui.plain.sitemap.some', { n }) : t('ui.plain.sitemap.none'),
-    detail: '',
-  };
-}
-
+/**
+ * Four tiles, because four is what a founder reads. Everything else the report
+ * knows is a click away: what the file says about the systems behind it and where
+ * the sitemaps point are in the appendix, and both are on the worklist when they
+ * are a problem.
+ */
 function tiles(): HTMLElement {
-  const list = [searchTile(), socialTile(), aiTile(), exposureTile(), systemsTile(), sitemapTile()];
+  const list = [searchTile(), socialTile(), exposureTile(), aiTile()];
   return el(
     'div',
     { class: 'grid tiles', 'data-min': 'xs', 'data-align': 'stretch' },
