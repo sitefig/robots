@@ -2,7 +2,7 @@
 // dictionaries, languages, URLs, escaping, and the head snippets (hreflang,
 // language menu, root redirect, analytics, structured data).
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { LANGUAGES, DEFAULT_LANG, type Dictionary, type Value } from '../client/i18n.ts';
 import { SITE_URL, LINKS, ANALYTICS_ID } from '../client/config.ts';
 
@@ -39,6 +39,34 @@ export function activeLanguages(dicts: Record<string, Dictionary>): string[] {
 export const escapeHtml = (s: string): string => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 /** Figures from the tracking data, so the copy states real numbers. */
+/**
+ * The domains whose robots.txt changed most recently, newest first.
+ *
+ * The tracking run rewrites a domain's snapshot only when the file changed, so
+ * `fetched_at` in its meta.json is the day of its last change. That makes this
+ * real data rather than copy, which is the rule for every number on the page: no
+ * invented "large fashion retailer", just the sites and the days.
+ */
+export function recentChanges(limit = 4): { domain: string; iso: string }[] {
+  const dir = new URL('data/famous-100/', ENGINE);
+  let names: string[];
+  try {
+    names = readdirSync(dir, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name);
+  } catch {
+    return [];
+  }
+  const found: { domain: string; iso: string }[] = [];
+  for (const domain of names) {
+    try {
+      const meta = JSON.parse(readFileSync(new URL(`${domain}/meta.json`, dir), 'utf8')) as { fetched_at?: string };
+      if (meta.fetched_at) found.push({ domain, iso: meta.fetched_at });
+    } catch {
+      // a domain with no snapshot yet
+    }
+  }
+  return found.sort((a, b) => b.iso.localeCompare(a.iso)).slice(0, limit);
+}
+
 export function trackingFigures(): { tracked: number; gptbotBlocked: number | null } {
   const tracked = (readEngineJson('config/famous-100.json') as unknown[]).length;
   let gptbotBlocked: number | null = null;

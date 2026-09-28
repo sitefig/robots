@@ -88,8 +88,11 @@ test('the analytics tag never receives the address that was checked', () => {
   assert.ok(tag.indexOf("gtag('set'") < tag.indexOf("gtag('config'"), 'stripping has to happen before the page view');
 });
 
+// page.h1 goes through e() and page.intro through raw(), which is the pair the
+// page components have to keep apart. The probe moved from page.verdict to
+// page.h1 when the verdict became the headline itself.
 test('components escape dictionary text but keep page HTML raw', () => {
-  const page = renderHome({ code: 'en', dicts: { ...dicts, en: { ...dicts.en, 'page.verdict': 'A & B <x>', 'page.intro': '<code>x</code>' } }, languages: active, figures });
+  const page = renderHome({ code: 'en', dicts: { ...dicts, en: { ...dicts.en, 'page.h1': 'A & B <x>', 'page.intro': '<code>x</code>' } }, languages: active, figures });
   assert.ok(page.includes('A &amp; B &lt;x&gt;'));
   assert.ok(page.includes('<code>x</code>'));
 });

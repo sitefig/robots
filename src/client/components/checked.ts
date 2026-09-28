@@ -20,16 +20,23 @@ export function renderChecked(): void {
   const again = el('button', { type: 'button', class: 'button', onclick: () => {
     const field = $<HTMLInputElement>('#site-url');
     field.value = state.input;
+    // A hidden form still submits programmatically, which keeps one code path
+    // for every check the page makes.
     $<HTMLFormElement>('#fetch-form').requestSubmit();
   } }, t('ui.checked.again'));
 
+  // The form and the bar share one row: after a check the address field would
+  // only invite a second check of a different site, which is what the logo is
+  // for, and the design has the bar alone here.
+  $('#fetch-form').hidden = true;
+  $('#checked').hidden = false;
   replace(
     slot('checked'),
     el(
       'p',
       { class: 'checked__what' },
-      el('span', { class: 'font-mono' }, host || t('ui.checked.pasted')),
-      el('span', { class: 'text-sm text-muted' }, t('ui.checked.meta', { n: formatNumber(lines) })),
+      el('span', {}, host || t('ui.checked.pasted')),
+      el('span', { class: 'checked__meta' }, t('ui.checked.meta', { n: formatNumber(lines) })),
     ),
     state.input ? again : null,
     share

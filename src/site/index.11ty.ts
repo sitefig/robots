@@ -4,7 +4,7 @@
 import type { PageContext } from '../components/context.ts';
 import { Document } from '../components/document.ts';
 import { HomeBody } from '../components/home/index.ts';
-import { strings, homePath, assetsFor, redirectScript, homeJsonLd, DEFAULT_LANG, type Alternates } from '../lib/site.ts';
+import { strings, homePath, assetsFor, redirectScript, homeJsonLd, DEFAULT_LANG, type Alternates, recentChanges } from '../lib/site.ts';
 import type { SiteData } from '../../eleventy.config.ts';
 
 interface Data extends SiteData {
@@ -32,6 +32,6 @@ export function render(d: Data): string {
     redirect: d.code === DEFAULT_LANG ? redirectScript(d.languages) : '',
     script: 'boot.js',
     jsonld: homeJsonLd(d.code, s),
-    body: HomeBody(ctx, rateValue, String(d.figures.tracked)),
+    body: HomeBody(ctx, rateValue, recentChanges()),
   });
 }

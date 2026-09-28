@@ -35,8 +35,9 @@ async function openDetails(page) {
 }
 
 async function paste(page) {
+  // The textarea sits in the file panel now, where the file will appear, and it
+  // is visible from the start: there is no disclosure to open first.
   await page.evaluate((text) => {
-    document.querySelector('#paste-details').open = true;
     document.querySelector('#pasted-text').value = text;
   }, WORST);
   await page.click('#analyse-pasted');
@@ -97,8 +98,7 @@ export function states(path) {
     // Dark is the default, so the state worth checking is the light one a
     // visitor switches to, and the toggle after it has swapped its own label.
     { name: 'theme-light', url: url(), setup: async (page) => { await page.click('#theme-toggle'); await page.waitForFunction(() => document.documentElement.dataset.theme === 'light'); } },
-    { name: 'paste-panel-open', url: url(), setup: async (page) => { await page.click('#paste-details > summary'); } },
-    { name: 'paste-empty-error', url: url(), setup: async (page) => { await page.click('#paste-details > summary'); await page.click('#analyse-pasted'); await page.waitForSelector('#status[data-state="error"]'); } },
+    { name: 'paste-empty-error', url: url(), setup: async (page) => { await page.click('#analyse-pasted'); await page.waitForSelector('#status[data-state="error"]'); } },
     { name: 'fetch-invalid-url', url: url(), setup: async (page) => { await page.type('#site-url', 'not a url'); await page.click('#fetch-button'); await page.waitForSelector('#status[data-state="error"]'); } },
     { name: 'pasted-worst', url: url(), setup: paste },
     { name: 'pasted-worst-all-details', url: url(), setup: async (page) => { await paste(page); await openDetails(page); } },
@@ -168,10 +168,10 @@ export function states(path) {
       await page.click('#compare-run');
       await page.waitForSelector('#compare table', { timeout: 60000 });
     } },
-    { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#export .button'); } },
+    { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await openRow(page, 'row-export'); await flash(page, '#export .button'); } },
     // The same two actions again, where the technical half of the report starts.
     { name: 'handoff-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#handoff .button'); } },
-    { name: 'export-more-open', url: url(), setup: async (page) => { await paste(page); await page.click('#export details > summary'); } },
+    { name: 'export-more-open', url: url(), setup: async (page) => { await paste(page); await openRow(page, 'row-export'); await page.click('#export details > summary'); } },
     // Only while the prices are published (PRICING.show in src/client/config.ts).
     ...(PRICING.show ? [{ name: 'pricing-annual', url: url(), setup: async (page) => { await page.click('#billing-cycle [data-cycle="annual"]'); await page.waitForSelector('#billing-cycle [data-cycle="annual"][aria-pressed="true"]'); } }] : []),
     { name: 'raw-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#raw .button'); } },

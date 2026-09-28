@@ -163,12 +163,28 @@
   background: #26282d;
 }
 
-/* The tile's state: the top edge, and the word in the value. Never the colour
-   alone, which is why the value is a sentence and not a dot. */
+
+/* The tile's state: the top edge and the value's colour. Never colour alone,
+   which is why the value is a word and the note a sentence. */
 .tile[data-state="ok"] { border-block-start-color: var(--color-ok); }
 .tile[data-state="info"] { border-block-start-color: var(--color-info); }
 .tile[data-state="warning"] { border-block-start-color: var(--color-warn); }
 .tile[data-state="error"] { border-block-start-color: var(--color-bad); }
+.tile[data-state="ok"] .tile__value { color: var(--color-ok); }
+.tile[data-state="warning"] .tile__value { color: var(--color-warn); }
+.tile[data-state="error"] .tile__value { color: var(--color-bad); }
+
+/* An empty tile before the first check: a dashed edge rather than opacity, which
+   would fail contrast. */
+.tile[data-empty="true"] {
+  border-style: dashed;
+  border-block-start-style: dashed;
+  background: none;
+}
+
+.tile[data-empty="true"] .tile__value {
+  color: var(--color-muted);
+}
 
 .fix[data-level="error"] { border-inline-start: 0.1875rem solid var(--color-bad); }
 .fix[data-level="warning"] { border-inline-start: 0.1875rem solid var(--color-warn); }
@@ -181,10 +197,13 @@
   background: var(--color-raise);
 }
 
+.fix[data-example="true"] {
+  border-style: dashed;
+}
+
 .raw__line[data-selected="true"] {
+  border-inline-start-color: var(--color-signal);
   background: var(--color-warn-bg);
-  border-inline-start: 0.1875rem solid var(--color-signal);
-  padding-inline-start: calc(1.25rem - 0.1875rem);
 }
 
 /* Business shows the consequence; IT adds the line, the paths and the id. */
@@ -193,13 +212,13 @@
 }
 
 .file-legend__item[data-level="error"]::before {
-  background: var(--color-bad-bg);
   border-inline-start-color: var(--color-bad);
+  background: var(--color-bad-bg);
 }
 
 .file-legend__item[data-selected="true"]::before {
-  background: var(--color-warn-bg);
   border-inline-start-color: var(--color-signal);
+  background: var(--color-warn-bg);
 }
 
 /* The comparison cells carry their own words (Yes, No, Partly, a count), so the

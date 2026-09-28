@@ -3,7 +3,7 @@
 // one is analysed by default when the page opens without a URL.
 
 import { t } from '../i18n.ts';
-import { el, replace, $ } from '../dom.ts';
+import { el, replace } from '../dom.ts';
 
 const RECENT_KEY = 'recent';
 const RECENT_MAX = 5;
@@ -53,7 +53,10 @@ let onCheck: (origin: string) => void = () => {};
 /** The chips under the form; `check` analyses an origin when one is clicked. */
 export function renderRecent(check?: (origin: string) => void): void {
   if (check) onCheck = check;
-  const box = $('#recent');
+  // The box lives in the verdict slot, which the report replaces, so after a
+  // check there is nothing to draw and nothing to fix.
+  const box = document.getElementById('recent');
+  if (!box) return;
   const recent = readRecent();
   const ref = referrerOrigin();
   const suggest = ref && !recent.includes(ref) ? ref : null;

@@ -21,6 +21,7 @@
 import { t, formatNumber } from '../i18n.ts';
 import { el, badge, replace, slot, meta, scrollable, verdictBadge, phone } from '../dom.ts';
 import { current } from '../state.ts';
+import { LINKS } from '../config.ts';
 
 // Rotating the phone re-decides what is on show. The listener is registered once
 // and calls the latest render's apply(), so re-running an analysis does not leave
@@ -130,7 +131,9 @@ export function renderAgents(): void {
       scrollable(t('page.agents'), table),
     ),
     more,
-    el('p', { class: 'text-sm text-muted' }, t('ui.agents.local'), ' ', el('a', { href: '#cli' }, t('ui.agents.cli'))),
+    // The command line lives in the engine's repository now, so the link goes
+    // there rather than to a card this page no longer has.
+    el('p', { class: 'text-sm text-muted' }, t('ui.agents.local'), ' ', el('a', { href: `${LINKS.engine}#readme`, rel: 'noopener' }, t('ui.agents.cli'))),
   );
   apply();
 }

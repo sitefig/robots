@@ -110,7 +110,7 @@ function upsell(): HTMLElement {
   cta.addEventListener('click', () => trackOffer('compare.watch', current().report));
   return el(
     'div',
-    { class: 'watch cluster', 'data-justify': 'between', 'data-space': 'xs' },
+    { class: 'upsell' },
     el(
       'div',
       { class: 'flow max-w-prose', 'data-space': '2xs' },

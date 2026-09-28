@@ -63,6 +63,7 @@ function render(): void {
   // the visitor has just checked.
   document.querySelectorAll<HTMLElement>('[data-pitch]').forEach((node) => { node.hidden = true; });
   $('#checked').hidden = false;
+  $('#handoff-panel').hidden = false;
   $('#summary').hidden = false;
   $('#results').hidden = false;
   // The fix list first: it decides which line belongs to which fix, and the
@@ -122,8 +123,10 @@ async function analyseUrl(input: string, trigger: CheckTrigger = 'user'): Promis
     const via = result.source === 'proxy' ? t('ui.via.proxy') : t('ui.via.direct');
     setStatus('ok', t('ui.status.fetched', { via, status: result.status, size: formatBytes(result.bytes), ms: formatMs(result.durationMs) }));
   } catch (err) {
-    $('#summary').hidden = true;
-    $('#results').hidden = true;
+    // Nothing is hidden on a failure. Before the first check this slot holds the
+    // pitch, including the page's only h1, and hiding it left the page headless;
+    // after one it holds a report that is still true of the site named in the bar
+    // above it. The status line is what says this attempt failed.
     setStatus('error', err instanceof FetchError ? err.message : t('ui.status.unexpected', { message: message(err) }));
     console.error(err);
   } finally {
@@ -156,8 +159,8 @@ async function loadExample(name: string, trigger: CheckTrigger = 'user'): Promis
     const res = await fetch(ex.file, { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
-    $<HTMLTextAreaElement>('#pasted-text').value = text;
-    $<HTMLDetailsElement>('#paste-details').open = true;
+    const area = document.getElementById('pasted-text') as HTMLTextAreaElement | null;
+    if (area) area.value = text;
     await analysePasted(text, ex.siteUrl, trigger);
     history.replaceState(null, '', `?${new URLSearchParams({ example: name })}`);
   } catch (err) {
@@ -220,6 +223,15 @@ function init(): void {
     void analysePasted(text);
   });
   $('#load-example').addEventListener('click', () => loadExample('kitchen-sink'));
+  // "Paste a file" in the top row: the textarea is in the file panel, where the
+  // file itself will appear, so this takes you there rather than opening a
+  // second place to put text.
+  $('#paste-open').addEventListener('click', () => {
+    const area = document.getElementById('pasted-text');
+    if (!area) return;
+    area.scrollIntoView({ block: 'center' });
+    area.focus();
+  });
   // The example chips under the field: a real site, checked the same way a typed
   // one is, so the field shows what was checked afterwards.
   // The pitch card: check one site and compare it with another in one press.

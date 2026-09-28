@@ -224,11 +224,8 @@ export function renderFixes(): void {
   }
 
   const cards = fixes.map((fix, i) => card(fix, i));
-  replace(
-    slot('fixes'),
-    modeToggle(() => { for (const node of cards) node.dataset.mode = mode; }),
-    el('div', { class: 'flow', 'data-space': 'xs' }, cards),
-  );
+  replace(slot('fixes-mode'), modeToggle(() => { for (const node of cards) node.dataset.mode = mode; }));
+  replace(slot('fixes'), cards);
 
   // A click in the file has to move the list too.
   onSelect((s) => {
@@ -248,10 +245,10 @@ function modeToggle(apply: () => void): HTMLElement {
     buttons.push(el('button', { type: 'button', class: 'chip', 'data-mode': name, 'aria-pressed': String(mode === name), onclick: () => set(name) }, t(`ui.fixes.${name}`)));
   }
   return el(
-    'div',
-    { class: 'cluster', 'data-space': 'xs', 'data-justify': 'end' },
+    'span',
+    { class: 'cluster', 'data-space': 'xs' },
     el('span', { class: 'text-sm text-muted', id: 'fixes-mode-label' }, t('ui.fixes.explainFor')),
-    el('div', { class: 'seg', role: 'group', 'aria-labelledby': 'fixes-mode-label' }, buttons),
+    el('span', { class: 'seg', role: 'group', 'aria-labelledby': 'fixes-mode-label' }, buttons),
   );
 }
 
@@ -297,7 +294,7 @@ function card(fix: Fix, index: number): HTMLElement {
   );
 
   const chips = fix.lines.map((n) =>
-    el('button', { type: 'button', class: 'chip font-mono', onclick: () => {
+    el('button', { type: 'button', class: 'line-chip', onclick: () => {
       select({ index, lines: fix.lines, hint });
       document.getElementById(`line-${n}`)?.scrollIntoView({ block: 'center' });
     } }, lineText(n)));

@@ -34,8 +34,8 @@ const worst = `${base}/?url=${origin(PORTS.worst)}`;
 const targets = [
   { url: `${base}/`, label: 'root' },
   { url: `${base}/de/`, label: 'de' },
-  { url: `${base}/`, label: 'paste empty error', actions: [decide, 'click element #paste-details > summary', 'click element #analyse-pasted', 'wait for #status[data-state="error"] to be added'] },
-  { url: `${base}/`, label: 'pasted example', actions: [decide, 'click element #paste-details > summary', 'click element #load-example', ...rendered] },
+  { url: `${base}/`, label: 'paste empty error', actions: [decide, 'click element #analyse-pasted', 'wait for #status[data-state="error"] to be added'] },
+  { url: `${base}/`, label: 'pasted example', actions: [decide, 'click element #load-example', ...rendered] },
   { url: worst, label: 'fetched worst', actions: rendered },
   { url: `${base}/de/?url=${origin(PORTS.worst)}`, label: 'de fetched worst', actions: rendered },
   { url: worst, label: 'tester blocked path', actions: [decide, ...rendered, 'click element #row-tester > summary', 'set field #tester-path to /gen/3', 'wait for #tester .callout[data-state="error"] to be added'] },

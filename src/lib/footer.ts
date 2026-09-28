@@ -30,8 +30,8 @@ export const FOOTER: FooterGroup[] = [
       { label: 'page.footer.check', to: { home: '#main' } },
       // Only while the prices are published; see PRICING.show in src/client/config.ts.
       ...(PRICING.show ? [{ label: 'page.nav.pricing', to: { home: '#pricing' } as Target }] : []),
-      { label: 'page.nav.cli', to: { home: '#cli' } },
-      { label: 'page.nav.extension', to: { home: '#extension' } },
+      { label: 'page.nav.cli', to: { url: `${LINKS.engine}#readme` } },
+      ...(LINKS.extension ? [{ label: 'page.nav.extension', to: { url: LINKS.extension } as Target }] : []),
     ],
   },
   {

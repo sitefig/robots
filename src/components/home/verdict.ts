@@ -1,29 +1,50 @@
-// The bar that says what was checked, and the verdict itself. Both hidden until
-// a file has been analysed.
+// The verdict slot, which holds the pitch until there is a report.
 //
-// The verdict is the one thing a visitor came for, so it takes the full width:
-// a state word, the headline, and the consequences as tiles. What the file
-// technically is sits beside the export buttons underneath, one disclosure away.
+// Both views have the same shape here, which is the point of the design: a state
+// line, the headline, the sentence under it, and four tiles. Before a check the
+// state line says what the check costs, the headline says what the tool is for,
+// and the four tiles are empty with a dashed edge, naming the four questions the
+// report will answer. After a check the client replaces all of it with the state
+// word, the verdict, and the four tiles filled in.
+//
+// The headline is the page's h1 in both views, in the same slot and at the same
+// size, so nothing moves when the answer arrives.
 
 import type { PageContext } from '../context.ts';
 
-export function Verdict(ctx: PageContext): string {
+/** One empty tile: the question it will answer, and a dash where the answer goes. */
+function Placeholder(ctx: PageContext, id: string, label: string): string {
   const { e } = ctx.s;
-  return `    <div class="checked" id="checked" hidden>
-      <div data-slot class="cluster" data-space="xs"></div>
-    </div>
+  return `          <div class="tile flow" data-space="2xs" data-empty="true">
+            <p class="tile__label text-sm">${label}</p>
+            <p class="tile__value" aria-hidden="true">&mdash;</p>
+            <p class="text-sm text-muted">${e(`sales.tile.${id}`)}</p>
+          </div>
+`;
+}
 
-    <section class="panel flow" data-space="s" id="summary" hidden aria-labelledby="summary-heading">
-      <div class="section-title">
-        <h2 id="summary-heading">${e('page.verdict')}</h2>
-        <p class="text-sm text-muted font-mono push-end" id="summary-meta"></p>
-      </div>
-      <div data-slot></div>
-      <div class="with-sidebar" data-space="s">
-        <div id="summary-facts"><div data-slot></div></div>
-        <div id="export" class="flow" data-space="xs" hidden>
-          <div data-slot class="flow" data-space="xs"></div>
+export function Verdict(ctx: PageContext): string {
+  const { e, raw } = ctx.s;
+  return `    <section class="flow" data-space="s" id="summary" aria-labelledby="page-h1">
+      <div data-slot class="flow" data-space="s">
+        <p class="cluster trust text-sm text-muted" data-space="xs">
+          <span class="badge" data-state="ok">${e('sales.trust.free')}</span>
+          <span>${e('sales.trust.noAccount')}</span>
+          <span>${e('sales.trust.browser')}</span>
+          <span>${e('sales.trust.noProbe')}</span>
+        </p>
+        <h1 id="page-h1" class="verdict">${e('page.h1')}</h1>
+        <p class="verdict-intro">${raw('page.intro')}</p>
+        <div class="cluster" data-space="xs">
+          <span class="text-sm text-muted">${e('sales.try.label')}</span>
+          <span class="cluster" data-space="2xs" role="group" aria-label="${e('sales.try.label')}">
+            <button type="button" class="chip font-mono" data-check-site="nytimes.com">nytimes.com</button>
+            <button type="button" class="chip font-mono" data-check-site="ikea.com">ikea.com</button>
+            <button type="button" class="chip font-mono" data-check-site="zalando.de">zalando.de</button>
+          </span>
         </div>
+        <div class="grid tiles" data-min="xs" data-align="stretch">
+${Placeholder(ctx, 'search', e('ui.tile.searchLabel'))}${Placeholder(ctx, 'social', e('ui.tile.social'))}${Placeholder(ctx, 'exposure', e('ui.tile.exposureLabel'))}${Placeholder(ctx, 'ai', e('ui.tile.aiLabel'))}        </div>
       </div>
     </section>
 `;

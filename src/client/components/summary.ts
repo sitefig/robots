@@ -100,31 +100,27 @@ function legend(now: string): HTMLElement {
 
 export function renderSummary(): void {
   const callout = summaryCallout();
+  // The same slot the pitch was in, so nothing moves when the answer arrives:
+  // the state line, the headline as the page's h1, the sentence under it, and
+  // the four tiles.
   replace(
     slot('summary'),
     el(
-      'div',
+      'p',
       { class: 'cluster', 'data-space': 'xs' },
       badge(t(`ui.pill.${callout.state}`), callout.state),
       el('span', { class: 'text-sm text-muted' }, fixCounts()),
     ),
-    el('p', { class: 'verdict' }, callout.title),
+    el('h1', { id: 'page-h1', class: 'verdict' }, callout.title),
     // The engine says what this file does; the second sentence says what the
     // list below is, which is the reason to keep reading rather than to forward
     // the page to somebody else unread.
-    el('p', { class: 'text-lg text-muted max-w-prose' }, fixTotal() > 0 ? `${callout.body} ${t('ui.verdict.intro')}` : callout.body),
+    el('p', { class: 'verdict-intro' }, fixTotal() > 0 ? `${callout.body} ${t('ui.verdict.intro')}` : callout.body),
     tiles(),
     legend(callout.state),
   );
-  replace(
-    slot('summary-facts'),
-    el(
-      'details',
-      { class: 'facts-technical' },
-      el('summary', { class: 'text-sm' }, t('ui.defs.technical')),
-      defs(technicalFacts()),
-    ),
-  );
+  // The appendix row is the disclosure now, so these are plain rows inside it.
+  replace(slot('summary-facts'), defs(technicalFacts()));
 }
 
 interface Tile {
