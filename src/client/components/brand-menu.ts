@@ -13,8 +13,15 @@ export function initBrandMenu(): void {
   let opener: HTMLElement | null = null;
 
   const isOpen = () => menu.matches(':popover-open');
+  // A scroll closes the menu, because it is pinned to where the pointer was.
+  // The listener is only attached while the menu is open, and only from the next
+  // frame: opening it can itself scroll the page, because a right click on a
+  // logo that has scrolled out of view brings it back first, and that scroll
+  // must not close the menu it just opened.
+  const onScroll = () => close(false);
   const close = (returnFocus: boolean) => {
     if (!isOpen()) return;
+    removeEventListener('scroll', onScroll);
     menu.hidePopover();
     if (returnFocus) opener?.focus();
   };
@@ -35,6 +42,8 @@ export function initBrandMenu(): void {
       menu.style.left = `${left}px`;
       menu.style.top = `${top}px`;
       menu.querySelector<HTMLElement>('a')?.focus();
+      removeEventListener('scroll', onScroll);
+      requestAnimationFrame(() => { if (isOpen()) addEventListener('scroll', onScroll, { passive: true }); });
     });
   });
 
@@ -50,7 +59,6 @@ export function initBrandMenu(): void {
   menu.addEventListener('focusout', (event) => {
     if (!menu.contains(event.relatedTarget as Node | null) && event.relatedTarget !== null) close(false);
   });
-  addEventListener('scroll', () => close(false), { passive: true });
   menu.addEventListener('click', (event) => {
     if ((event.target as Element).closest('a')) close(false);
   });
