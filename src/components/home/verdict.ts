@@ -1,15 +1,19 @@
-// The verdict card, hidden until a file has been analysed.
+// The bar that says what was checked, and the verdict itself. Both hidden until
+// a file has been analysed.
 //
-// The verdict itself takes the full width of the row: it is the one line a
-// visitor came for, and a column half the page wide made it look like one fact
-// among many. The facts and the export buttons share the row beneath it, so the
-// buttons sit beside what they act on rather than trailing the whole card.
+// The verdict is the one thing a visitor came for, so it takes the full width:
+// a state word, the headline, and the consequences as tiles. What the file
+// technically is sits beside the export buttons underneath, one disclosure away.
 
 import type { PageContext } from '../context.ts';
 
 export function Verdict(ctx: PageContext): string {
   const { e } = ctx.s;
-  return `    <section class="panel flow" data-space="s" id="summary" hidden aria-labelledby="summary-heading">
+  return `    <div class="checked" id="checked" hidden>
+      <div data-slot class="cluster" data-space="xs"></div>
+    </div>
+
+    <section class="panel flow" data-space="s" id="summary" hidden aria-labelledby="summary-heading">
       <div class="section-title">
         <h2 id="summary-heading">${e('page.verdict')}</h2>
         <p class="text-sm text-muted font-mono push-end" id="summary-meta"></p>

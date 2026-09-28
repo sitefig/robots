@@ -13,7 +13,21 @@ const origin = (port) => `http://127.0.0.1:${port}`;
 
 async function results(page) {
   await page.waitForSelector('#results:not([hidden])', { timeout: 30000 });
-  await page.waitForSelector('#recon article', { timeout: 30000 });
+  // The worklist is the report now: either it has cards or it says there is
+  // nothing to fix. The recon cards are in the appendix, folded.
+  await page.waitForSelector('#fixes .fix, #fixes .callout', { timeout: 30000 });
+}
+
+/**
+ * The appendix rows are folded. A state that drives the crawler table, the
+ * tester or the user-agent check opens its row first, which is what a visitor
+ * does before using any of them.
+ */
+async function openRow(page, id) {
+  await page.evaluate((rowId) => {
+    const row = document.getElementById(rowId);
+    if (row) row.open = true;
+  }, id);
 }
 
 async function openDetails(page) {
@@ -88,13 +102,14 @@ export function states(path) {
     { name: 'fetch-invalid-url', url: url(), setup: async (page) => { await page.type('#site-url', 'not a url'); await page.click('#fetch-button'); await page.waitForSelector('#status[data-state="error"]'); } },
     { name: 'pasted-worst', url: url(), setup: paste },
     { name: 'pasted-worst-all-details', url: url(), setup: async (page) => { await paste(page); await openDetails(page); } },
-    { name: 'tester-custom-empty', url: url(), setup: async (page) => { await paste(page); await page.select('#tester-agent', 'custom'); await page.waitForSelector('#tester-token:not([hidden])'); } },
-    { name: 'tester-custom-blocked', url: url(), setup: async (page) => { await paste(page); await page.select('#tester-agent', 'custom'); await page.type('#tester-token', 'gptbot'); await page.$eval('#tester-path', (el) => { el.value = '/private/x'; el.dispatchEvent(new Event('input')); }); await page.waitForSelector('#tester .callout[data-state="error"]'); } },
-    { name: 'tester-yandex-cleanparam', url: url(), setup: async (page) => { await paste(page); await page.select('#tester-agent', 'YandexBot'); await page.$eval('#tester-path', (el) => { el.value = '/articles/x?utm_source=a&id=1'; el.dispatchEvent(new Event('input')); }); } },
-    { name: 'filter-ai-training', url: url(), setup: async (page) => { await paste(page); const chips = await page.$$('#agents .chip'); await chips[2].click(); await page.waitForSelector('#agents tr[data-hidden="true"]'); } },
+    { name: 'tester-custom-empty', url: url(), setup: async (page) => { await paste(page); await openRow(page, 'row-tester'); await page.select('#tester-agent', 'custom'); await page.waitForSelector('#tester-token:not([hidden])'); } },
+    { name: 'tester-custom-blocked', url: url(), setup: async (page) => { await paste(page); await openRow(page, 'row-tester'); await page.select('#tester-agent', 'custom'); await page.type('#tester-token', 'gptbot'); await page.$eval('#tester-path', (el) => { el.value = '/private/x'; el.dispatchEvent(new Event('input')); }); await page.waitForSelector('#tester .callout[data-state="error"]'); } },
+    { name: 'tester-yandex-cleanparam', url: url(), setup: async (page) => { await paste(page); await openRow(page, 'row-tester'); await page.select('#tester-agent', 'YandexBot'); await page.$eval('#tester-path', (el) => { el.value = '/articles/x?utm_source=a&id=1'; el.dispatchEvent(new Event('input')); }); } },
+    { name: 'filter-ai-training', url: url(), setup: async (page) => { await paste(page); await openRow(page, 'row-agents'); const chips = await page.$$('#agents .chip'); await chips[2].click(); await page.waitForSelector('#agents tr[data-hidden="true"]'); } },
     // The crawler table holds 134 rows back to 50; this is the rest revealed.
     { name: 'agents-expanded', url: url(), setup: async (page) => {
       await paste(page);
+      await openRow(page, 'row-agents');
       await page.waitForFunction(() => document.querySelectorAll('#agents tbody tr[data-hidden="true"]').length > 0);
       await page.click('#agents .link-button[aria-controls="agents-table"]');
       await page.waitForFunction(() => document.querySelector('#agents .link-button[aria-controls="agents-table"]')?.getAttribute('aria-expanded') === 'true');
@@ -105,23 +120,45 @@ export function states(path) {
     // one are different DOMs and both have to pass.
     { name: 'phone-agents-problems', url: url(), viewport: PHONE, setup: async (page) => {
       await paste(page);
+      await openRow(page, 'row-agents');
       await page.waitForSelector('#agents-problems-note:not([hidden])');
     } },
     { name: 'phone-agents-all', url: url(), viewport: PHONE, setup: async (page) => {
       await paste(page);
+      await openRow(page, 'row-agents');
       await page.waitForSelector('#agents-problems-note:not([hidden])');
       await page.click('#agents-more');
       await page.waitForSelector('#agents-problems-note[hidden]');
     } },
     { name: 'phone-ai-blocked', url: url(), viewport: PHONE, setup: async (page) => {
       await paste(page);
+      await openRow(page, 'row-ai');
       await page.waitForSelector('#ai-phone-note:not([hidden])');
     } },
     { name: 'phone-ai-all', url: url(), viewport: PHONE, setup: async (page) => {
       await paste(page);
+      await openRow(page, 'row-ai');
       await page.waitForSelector('#ai-phone-note:not([hidden])');
       await page.click('#ai-more');
       await page.waitForSelector('#ai-phone-note[hidden]');
+    } },
+    // The worklist and the file are one control in two halves: opening a fix
+    // marks its lines, pressing a line opens its fix, and IT mode changes what
+    // every card shows. Three states, because all three are different DOMs.
+    { name: 'fix-open', url: url(), setup: async (page) => {
+      await paste(page);
+      await page.click('#fixes .fix__head');
+      await page.waitForSelector('#fix-ticket-0:not([hidden])');
+    } },
+    { name: 'fix-it-mode', url: url(), setup: async (page) => {
+      await paste(page);
+      await page.click('#fixes .seg > button[data-mode="it"]');
+      await page.waitForSelector('#fixes .fix[data-mode="it"]');
+    } },
+    { name: 'file-line-selected', url: url(), setup: async (page) => {
+      await paste(page);
+      await page.click('#raw button.raw__line');
+      await page.waitForSelector('#raw .raw__line[data-selected="true"]');
     } },
     { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#export .button'); } },
     // The same two actions again, where the technical half of the report starts.
@@ -131,7 +168,7 @@ export function states(path) {
     ...(PRICING.show ? [{ name: 'pricing-annual', url: url(), setup: async (page) => { await page.click('#billing-cycle [data-cycle="annual"]'); await page.waitForSelector('#billing-cycle [data-cycle="annual"][aria-pressed="true"]'); } }] : []),
     { name: 'raw-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#raw .button'); } },
     { name: 'fetched-worst', url: url(`?url=${origin(PORTS.worst)}`), setup: results },
-    { name: 'fetched-worst-access-check', url: url(`?url=${origin(PORTS.worst)}`), setup: async (page) => { await results(page); await page.click('#access .button'); await page.waitForSelector('#access .button:not([disabled])', { timeout: 60000 }); } },
+    { name: 'fetched-worst-access-check', url: url(`?url=${origin(PORTS.worst)}`), setup: async (page) => { await results(page); await openRow(page, 'row-access'); await page.click('#access .button'); await page.waitForSelector('#access .button:not([disabled])', { timeout: 60000 }); } },
     { name: 'fetched-404', url: url(`?url=${origin(PORTS.notFound)}`), setup: async (page) => { await page.waitForSelector('#results:not([hidden])'); } },
     { name: 'fetched-410', url: url(`?url=${origin(PORTS.gone)}`), setup: async (page) => { await page.waitForSelector('#results:not([hidden])'); } },
     { name: 'fetched-503', url: url(`?url=${origin(PORTS.serverError)}`), setup: async (page) => { await page.waitForSelector('#results:not([hidden])'); } },

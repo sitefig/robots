@@ -18,6 +18,7 @@ import { state, current } from '../state.ts';
 import { SCHEMA_URL } from '../paths.ts';
 import { APP_URL } from '../config.ts';
 import { trackExport, trackOffer } from '../track.ts';
+import { allTickets } from './fixes.ts';
 
 const SIGNUP = `${APP_URL}/signup/`;
 
@@ -25,8 +26,16 @@ async function copyText(text: string): Promise<void> {
   await navigator.clipboard.writeText(text);
 }
 
+/**
+ * The address of this check, or null when the text was pasted and there is
+ * nothing anyone else could open.
+ */
+export function shareLink(): string | null {
+  return state.input ? `${location.origin}${location.pathname}?${new URLSearchParams({ url: state.input })}` : null;
+}
+
 /** Button whose label flashes a result for a moment after an async action. */
-function actionButton(label: string, action: () => unknown, { primary = false }: { primary?: boolean } = {}): HTMLButtonElement {
+export function actionButton(label: string, action: () => unknown, { primary = false }: { primary?: boolean } = {}): HTMLButtonElement {
   const button = el('button', { type: 'button', class: 'button', 'data-variant': primary ? 'primary' : null }, label);
   button.addEventListener('click', async () => {
     button.disabled = true;
@@ -76,7 +85,7 @@ function offerCard(kind: string, title: string, note: Child): HTMLElement {
  */
 function shareActions(): Child[] {
   const a = current();
-  const shareUrl = state.input ? `${location.origin}${location.pathname}?${new URLSearchParams({ url: state.input })}` : null;
+  const shareUrl = shareLink();
   return [
     actionButton(t('ui.export.quick.audit'), () => {
       trackExport('markdown');
@@ -91,9 +100,35 @@ function shareActions(): Child[] {
   ];
 }
 
-/** The handoff at the top of the technical half. */
+/**
+ * The handoff: one message with every fix in it, and a way to send it.
+ *
+ * The audit is the whole report; this is the worklist, which is what a developer
+ * actually wants in a ticket. The email carries the link rather than the text,
+ * because a mailto body is capped by the browser and a truncated ticket is worse
+ * than none: the person who opens the link gets the live report, with the lines.
+ */
 export function renderHandoff(): void {
-  replace(slot('handoff'), shareActions());
+  const share = shareLink();
+  const mail = share
+    ? el('a', {
+      class: 'button',
+      href: `mailto:?${new URLSearchParams({ subject: t('ui.handoff.emailSubject'), body: t('ui.handoff.emailBody', { url: share }) })}`,
+      onclick: () => trackExport('email'),
+    }, t('ui.handoff.email'))
+    : null;
+  replace(
+    slot('handoff'),
+    el(
+      'div',
+      { class: 'cluster', 'data-space': 'xs' },
+      actionButton(t('ui.handoff.copyAll'), () => {
+        trackExport('fixes');
+        return copyText(allTickets());
+      }, { primary: true }),
+      mail,
+    ),
+  );
 }
 
 export function renderExport(): void {

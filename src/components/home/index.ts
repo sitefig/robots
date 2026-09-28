@@ -4,6 +4,7 @@ import type { PageContext } from '../context.ts';
 import { SiteHeader } from '../header.ts';
 import { SiteFooter } from '../footer.ts';
 import { Hero } from './hero.ts';
+import { Audience } from './audience.ts';
 import { Verdict } from './verdict.ts';
 import { Sales } from './sales.ts';
 import { Results } from './results.ts';
@@ -18,6 +19,7 @@ export function HomeBody(ctx: PageContext, blockRate: string): string {
     <noscript><p class="callout" data-state="warning">${ctx.s.e('page.noscript')}</p></noscript>
 
 ${Hero(ctx)}
+${Audience(ctx)}
 ${Verdict(ctx)}
 ${Results(ctx, blockRate)}
 ${Sales(ctx)}

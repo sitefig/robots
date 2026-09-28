@@ -39,6 +39,7 @@
 .cluster[data-align="baseline"] { align-items: baseline; }
 .cluster[data-align="stretch"] { align-items: stretch; }
 .cluster[data-justify="between"] { justify-content: space-between; }
+.cluster[data-justify="end"] { justify-content: flex-end; }
 
 .cluster > input[type="text"] {
   flex: 1 1 14rem;
@@ -62,6 +63,7 @@
   align-items: start;
 }
 
+.grid[data-min="xs"] { --grid-min: 14rem; --grid-space: 0.75rem; }
 .grid[data-min="s"] { --grid-min: 12rem; --grid-space: 0.75rem; }
 .grid[data-min="l"] { --grid-min: 22rem; }
 .grid[data-align="stretch"] { align-items: stretch; }

@@ -1,9 +1,19 @@
-// The verdict card: a callout for the default policy (or the fetch problem)
-// and the facts about the file.
+// The verdict: a state word, a headline, and the consequences as tiles.
+//
+// The tiles are the whole report in six sentences. Each one is a question a
+// business actually has (can people find us, do our links look right when
+// shared, is AI helping itself, what does the file give away, what does it say
+// about our systems, does Google know where our pages are), each one is answered
+// by the engine rather than by copy, and each one links to the section that shows
+// the working.
+//
+// What the file technically is (content type, byte count, HTTP status) stays one
+// disclosure away. That is for whoever edits it.
 
 import { t, formatNumber, getLocale, type Params } from '../i18n.ts';
 import { el, badge, replace, slot, formatBytes, type Child } from '../dom.ts';
 import { state, current } from '../state.ts';
+import { fixCounts } from './fixes.ts';
 import type { FetchInfo, SecurityFinding } from '../types.ts';
 
 interface Callout {
@@ -34,15 +44,7 @@ function summaryCallout(): Callout {
 
 type Row = [label: string, value: Child, anchor?: string] | null | undefined | false | '';
 
-/**
- * Key/value rows: [[key, value, anchor?], …] → <dl class="defs">.
- *
- * A row with an anchor makes its label a link to the section that shows the
- * working. That is the whole bridge between the two halves of the page: the line
- * that says 30 private places are named is also the way to the list of them, so
- * nobody has to guess which of the sections below answers the sentence they just
- * read. The label is the link text, which says where it goes.
- */
+/** Key/value rows: [[key, value, anchor?], …] → <dl class="defs">. */
 function defs(rows: Row[]): HTMLElement {
   return el(
     'dl',
@@ -64,7 +66,7 @@ export function redirectChain(f: FetchInfo): HTMLElement {
 }
 
 /**
- * The colour key, under the verdict, with this report's own state marked.
+ * The colour key, under the tiles, with this report's own state marked.
  *
  * Red and green explain themselves; amber and blue do not, and a visitor should
  * not have to learn a palette to read their own result. Marking the live state
@@ -98,21 +100,21 @@ function legend(now: string): HTMLElement {
 
 export function renderSummary(): void {
   const callout = summaryCallout();
-  // The verdict fills its own row; the facts go in the row below, beside the
-  // export buttons (see src/components/home/verdict.ts).
   replace(
     slot('summary'),
-    el('div', { class: 'callout', 'data-state': callout.state }, el('p', { class: 'verdict' }, callout.title), el('p', {}, callout.body)),
+    el(
+      'div',
+      { class: 'cluster', 'data-space': 'xs' },
+      badge(t(`ui.pill.${callout.state}`), callout.state),
+      el('span', { class: 'text-sm text-muted' }, fixCounts()),
+    ),
+    el('p', { class: 'verdict' }, callout.title),
+    el('p', { class: 'text-lg text-muted max-w-prose' }, callout.body),
+    tiles(),
     legend(callout.state),
   );
-  // What it means, then what it is. A visitor who has just checked their site
-  // wants to know whether search engines can read it and whether AI crawlers are
-  // helping themselves; a content type, a byte count and an HTTP status number
-  // answer a question nobody asked. Those are still here, one disclosure away,
-  // because whoever has to fix the file does need them.
   replace(
     slot('summary-facts'),
-    defs(plainFacts()),
     el(
       'details',
       { class: 'facts-technical' },
@@ -122,14 +124,12 @@ export function renderSummary(): void {
   );
 }
 
-/** Whether AI training crawlers are being let in, as the page reads it. */
-function trainingState(): 'open' | 'partial' | 'blocked' | null {
-  const group = current().report.aiStatus.groups[0];
-  if (!group) return null;
-  const { open, partial, blocked } = group.counts;
-  if (open === 0 && partial === 0) return 'blocked';
-  if (blocked > 0 || partial > 0) return 'partial';
-  return 'open';
+interface Tile {
+  label: string;
+  anchor: string;
+  state: string;
+  value: string;
+  detail: string;
 }
 
 /**
@@ -144,7 +144,6 @@ function unread(): boolean {
   return Boolean(f && (f.status >= 500 || f.redirectLimit)) && current().report.summary.rules === 0;
 }
 
-/** Worst first, so the one line about severity picks the right finding. */
 const SEVERITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2, info: 3 };
 
 /** "a, b and c" in the visitor's language. */
@@ -156,81 +155,115 @@ function listOf(parts: string[]): string {
   }
 }
 
+/** Up to three of them by name, because a name lands where a count does not. */
+function names(list: { name: string }[]): string {
+  const shown = list.slice(0, 3).map((c) => c.name);
+  return list.length > shown.length ? t('ui.tile.andMore', { names: listOf(shown), n: list.length - shown.length }) : listOf(shown);
+}
+
+function searchTile(): Tile {
+  const r = current().report;
+  const p = r.summary.defaultPolicy;
+  const serverFailed = Boolean(state.fetch && (state.fetch.status >= 500 || state.fetch.redirectLimit));
+  const engines = r.crawlers.filter((c) => c.category === 'search');
+  const shut = engines.filter((c) => !c.rootAllowed);
+  const verdict = !p.hasStarGroup || p.verdict === 'open' ? 'open' : p.verdict;
+  return {
+    label: t('ui.plain.search'),
+    anchor: '#agents',
+    state: serverFailed || shut.length > 0 || verdict === 'blocked' ? 'error' : verdict === 'partial' ? 'info' : 'ok',
+    value: serverFailed ? t('ui.plain.search.serverFail') : t(`ui.plain.search.${verdict}`),
+    detail: shut.length > 0 ? t('ui.tile.shutOut', { names: names(shut) }) : t('ui.tile.searchAll', { n: engines.length }),
+  };
+}
+
 /**
- * The two lines about risk, which is what the business asks about first: not
- * "is my syntax right" but "what does this file hand to a stranger".
- *
- * robots.txt is the first file an attacker reads, because it is the one place a
- * site volunteers the paths it wants left alone. So the count of private places
- * named belongs in the verdict, next to the worst kind of them, and so does what
- * the file says about the systems behind it: the platform, the other servers,
- * the storage buckets, the internal interfaces, the names and ticket numbers
- * left in comments. All of it is already in the sections below; a founder should
- * not have to scroll past the crawler table to learn it.
- *
- * Findings the engine rated `info` are left out of the count on purpose: those
- * are the stock paths of a CMS it recognised, which every installation has and
- * which therefore disclose nothing.
+ * Link previews. Nobody checks their robots.txt for this, and it is the one
+ * marketing feels first: a blocked social fetcher means every share of every page
+ * is a bare URL with no title and no image.
  */
-function riskRows(): Row[] {
+function socialTile(): Tile {
+  const social = current().report.crawlers.filter((c) => c.category === 'social');
+  const shut = social.filter((c) => !c.rootAllowed);
+  return {
+    label: t('ui.tile.social'),
+    anchor: '#agents',
+    state: shut.length > 0 ? 'error' : 'ok',
+    value: shut.length > 0 ? t('ui.tile.social.broken') : t('ui.tile.social.fine'),
+    detail: shut.length > 0 ? t('ui.tile.shutOut', { names: names(shut) }) : t('ui.tile.social.all', { n: social.length }),
+  };
+}
+
+function aiTile(): Tile {
+  const group = current().report.aiStatus.groups[0];
+  const counts = group ? group.counts : { open: 0, partial: 0, blocked: 0 };
+  const verdict = counts.open === 0 && counts.partial === 0 ? 'blocked' : counts.blocked > 0 || counts.partial > 0 ? 'partial' : 'open';
+  return {
+    label: t('ui.plain.ai'),
+    anchor: '#ai-status-heading',
+    state: unread() ? 'warning' : verdict === 'open' ? 'error' : verdict === 'partial' ? 'info' : 'ok',
+    value: unread() ? t('ui.plain.ai.unknown') : t(`ui.plain.ai.${verdict}`),
+    detail: group ? t('ui.tile.aiCounts', { blocked: counts.blocked, total: group.crawlers.length }) : '',
+  };
+}
+
+function exposureTile(): Tile {
   const r = current().report;
   const named = r.security.filter((s) => s.severity !== 'info');
   let worst: SecurityFinding | null = null;
   for (const s of named) if (!worst || SEVERITY_RANK[s.severity] < SEVERITY_RANK[worst.severity]) worst = s;
   const kind = worst && r.securityCategories.find((c) => c.id === worst.category)?.label;
-  const exposure = named.length === 0
-    ? t('ui.plain.exposure.none')
-    : t('ui.plain.exposure.some', { n: named.length }) + (kind ? `. ${t('ui.plain.exposure.worst', { what: kind })}` : '');
+  return {
+    label: t('ui.plain.exposure'),
+    anchor: '#security',
+    state: unread() ? 'warning' : named.length === 0 ? 'ok' : worst && worst.severity === 'high' ? 'error' : 'warning',
+    value: unread() ? t('ui.plain.exposure.unknown') : named.length === 0 ? t('ui.plain.exposure.none') : t('ui.plain.exposure.some', { n: named.length }),
+    detail: !unread() && kind ? t('ui.plain.exposure.worst', { what: kind }) : '',
+  };
+}
 
-  const rc = r.recon;
+function systemsTile(): Tile {
+  const rc = current().report.recon;
   const tells: string[] = [];
   if (rc.stack.primary) tells.push(t('ui.plain.setup.platform', { name: rc.stack.primary.name }));
   if (rc.hosts.hosts.length > 0) tells.push(t('ui.plain.setup.hosts', { n: rc.hosts.hosts.length }));
   if (rc.cloud.length > 0) tells.push(t('ui.plain.setup.buckets', { n: rc.cloud.length }));
   if (rc.api.length > 0) tells.push(t('ui.plain.setup.apis', { n: rc.api.length }));
   if (rc.comments.length > 0) tells.push(t('ui.plain.setup.contacts', { n: rc.comments.length }));
-
-  return [
-    [t('ui.plain.exposure'), unread() ? t('ui.plain.exposure.unknown') : exposure, '#security'],
-    unread() ? null :
-    [t('ui.plain.setup'), tells.length === 0 ? t('ui.plain.setup.none') : t('ui.plain.setup.some', { what: listOf(tells) }), '#recon'],
-  ];
+  return {
+    label: t('ui.plain.setup'),
+    anchor: '#recon',
+    state: unread() ? 'warning' : tells.length === 0 ? 'ok' : 'info',
+    value: unread() ? t('ui.plain.exposure.unknown') : tells.length === 0 ? t('ui.plain.setup.none') : t('ui.plain.setup.some', { what: listOf(tells) }),
+    detail: '',
+  };
 }
 
-/**
- * The lines a business owner came for. Each is a consequence, not a measurement:
- * whether search engines can read the site, whether AI crawlers are taking it,
- * whether Google is being told where the pages are, what the file gives away and
- * what it says about the systems behind it.
- */
-function plainFacts(): Row[] {
-  const r = current().report;
-  const f = state.fetch;
-  const p = r.summary.defaultPolicy;
-  const { errors, warnings } = r.summary.issues;
-  // A failing server is not an open door. Google reads 5xx, and a redirect chain
-  // it gives up on, as "stay away from everything" for weeks, so saying search
-  // engines "can read the whole site" here would contradict the verdict directly
-  // above it. A missing file is different: that really does mean no instructions.
-  const serverFailed = Boolean(f && (f.status >= 500 || f.redirectLimit));
-  const search = !p.hasStarGroup || p.verdict === 'open' ? 'open' : p.verdict;
-  const training = trainingState();
-  return [
-    [t('ui.plain.search'), serverFailed ? t('ui.plain.search.serverFail') : t(`ui.plain.search.${search}`), '#agents'],
-    serverFailed
-      ? [t('ui.plain.ai'), t('ui.plain.ai.unknown'), '#ai-status-heading']
-      : training && [t('ui.plain.ai'), t(`ui.plain.ai.${training}`), '#ai-status-heading'],
-    ...riskRows(),
-    [t('ui.plain.sitemap'), r.summary.sitemaps > 0 ? t('ui.plain.sitemap.some', { n: r.summary.sitemaps }) : t('ui.plain.sitemap.none'), '#sitemaps'],
-    [t('ui.plain.problems'), errors + warnings === 0 ? t('ui.plain.problems.none') : t('ui.plain.problems.some', { errors, warnings }), '#warnings'],
-    [
-      t('ui.plain.rules'),
-      serverFailed && r.summary.rules === 0 ? t('ui.plain.rules.unread')
-        : r.summary.rules === 0 ? t('ui.plain.rules.none')
-          : t('ui.plain.rules.some', { n: formatNumber(r.summary.rules) }),
-      '#raw',
-    ],
-  ];
+function sitemapTile(): Tile {
+  const n = current().report.summary.sitemaps;
+  return {
+    label: t('ui.plain.sitemap'),
+    anchor: '#sitemaps',
+    state: n > 0 ? 'ok' : 'warning',
+    value: n > 0 ? t('ui.plain.sitemap.some', { n }) : t('ui.plain.sitemap.none'),
+    detail: '',
+  };
+}
+
+function tiles(): HTMLElement {
+  const list = [searchTile(), socialTile(), aiTile(), exposureTile(), systemsTile(), sitemapTile()];
+  return el(
+    'div',
+    { class: 'grid tiles', 'data-min': 'xs', 'data-align': 'stretch' },
+    list.map((tile) =>
+      el(
+        'div',
+        { class: 'tile flow', 'data-space': '2xs', 'data-state': tile.state },
+        el('p', { class: 'tile__label text-sm' }, el('a', { href: tile.anchor }, tile.label)),
+        el('p', { class: 'tile__value' }, tile.value),
+        tile.detail ? el('p', { class: 'text-sm text-muted' }, tile.detail) : null,
+      )),
+  );
 }
 
 /** The same check, for whoever has to change the file. */

@@ -11,6 +11,9 @@ import { state } from './state.ts';
 import { SCHEMA_URL, EXAMPLE_URL } from './paths.ts';
 import { renderSummary } from './components/summary.ts';
 import { renderExport, renderHandoff } from './components/export.ts';
+import { renderChecked } from './components/checked.ts';
+import { renderFixes } from './components/fixes.ts';
+import { renderAppendix } from './components/appendix.ts';
 import { renderAiStatus } from './components/ai-status.ts';
 import { renderAgents } from './components/agents.ts';
 import { renderTester } from './components/tester.ts';
@@ -54,8 +57,17 @@ function analyse(source: CheckSource, trigger: CheckTrigger): void {
 }
 
 function render(): void {
+  // The pitch has done its job the moment there is a report: the sample, the
+  // audience columns and the example chips are all arguments for checking, and
+  // the visitor has just checked.
+  document.querySelectorAll<HTMLElement>('[data-pitch]').forEach((node) => { node.hidden = true; });
+  $('#checked').hidden = false;
   $('#summary').hidden = false;
   $('#results').hidden = false;
+  // The fix list first: it decides which line belongs to which fix, and the
+  // verdict counts and the file viewer both read that.
+  renderFixes();
+  renderChecked();
   renderSummary();
   renderExport();
   renderHandoff();
@@ -68,6 +80,7 @@ function render(): void {
   renderRecon();
   renderSitemaps();
   renderRaw();
+  renderAppendix();
   renderSales();
 }
 
@@ -205,6 +218,15 @@ function init(): void {
     void analysePasted(text);
   });
   $('#load-example').addEventListener('click', () => loadExample('kitchen-sink'));
+  // The example chips under the field: a real site, checked the same way a typed
+  // one is, so the field shows what was checked afterwards.
+  document.querySelectorAll<HTMLButtonElement>('[data-check-site]').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const site = chip.dataset.checkSite || '';
+      $<HTMLInputElement>('#site-url').value = site;
+      void analyseUrl(site);
+    });
+  });
   renderRecent(checkOrigin);
   const params = new URLSearchParams(location.search);
   const url = params.get('url');

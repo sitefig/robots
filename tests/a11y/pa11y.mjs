@@ -27,7 +27,9 @@ const common = {
 // The root and the German page deliberately keep it open, so the blocking state
 // itself is audited.
 const decide = 'click element #consent-reject';
-const rendered = ['wait for #results to be visible', 'wait for #recon article to be visible'];
+// The report is rendered once the worklist has cards in it. The recon cards are
+// no longer a signal: they live in the appendix now, folded away until asked for.
+const rendered = ['wait for #results to be visible', 'wait for #fixes .fix to be added'];
 const worst = `${base}/?url=${origin(PORTS.worst)}`;
 const targets = [
   { url: `${base}/`, label: 'root' },
@@ -36,8 +38,8 @@ const targets = [
   { url: `${base}/`, label: 'pasted example', actions: [decide, 'click element #paste-details > summary', 'click element #load-example', ...rendered] },
   { url: worst, label: 'fetched worst', actions: rendered },
   { url: `${base}/de/?url=${origin(PORTS.worst)}`, label: 'de fetched worst', actions: rendered },
-  { url: worst, label: 'tester blocked path', actions: [decide, ...rendered, 'set field #tester-path to /gen/3', 'wait for #tester .callout[data-state="error"] to be added'] },
-  { url: worst, label: 'filter chip', actions: [decide, ...rendered, 'click element #agents .chip:nth-child(3)', 'wait for #agents tr[data-hidden="true"] to be added'] },
+  { url: worst, label: 'tester blocked path', actions: [decide, ...rendered, 'click element #row-tester > summary', 'set field #tester-path to /gen/3', 'wait for #tester .callout[data-state="error"] to be added'] },
+  { url: worst, label: 'filter chip', actions: [decide, ...rendered, 'click element #row-agents > summary', 'click element #agents .chip:nth-child(3)', 'wait for #agents tr[data-hidden="true"] to be added'] },
   { url: `${base}/?url=${origin(PORTS.notFound)}`, label: 'fetched 404', actions: [decide, 'wait for #results to be visible'] },
   { url: `${base}/?url=${origin(PORTS.serverError)}`, label: 'fetched 503', actions: [decide, 'wait for #results to be visible'] },
   { url: `${base}/?url=${origin(PORTS.html)}`, label: 'fetched html', actions: [decide, 'wait for #results to be visible'] },

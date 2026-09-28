@@ -162,3 +162,42 @@
 .logo-card__preview[data-ground="mid"] {
   background: #26282d;
 }
+
+/* The tile's state: the top edge, and the word in the value. Never the colour
+   alone, which is why the value is a sentence and not a dot. */
+.tile[data-state="ok"] { border-block-start-color: var(--color-ok); }
+.tile[data-state="info"] { border-block-start-color: var(--color-info); }
+.tile[data-state="warning"] { border-block-start-color: var(--color-warn); }
+.tile[data-state="error"] { border-block-start-color: var(--color-bad); }
+
+.fix[data-level="error"] { border-inline-start: 0.1875rem solid var(--color-bad); }
+.fix[data-level="warning"] { border-inline-start: 0.1875rem solid var(--color-warn); }
+.fix[data-level="info"] { border-inline-start: 0.1875rem solid var(--color-info); }
+
+/* The selected fix and the lines it points at, marked the same way in both
+   places so the pair is obvious. */
+.fix[data-selected="true"] {
+  border-color: var(--color-signal);
+  background: var(--color-raise);
+}
+
+.raw__line[data-selected="true"] {
+  background: var(--color-warn-bg);
+  border-inline-start: 0.1875rem solid var(--color-signal);
+  padding-inline-start: calc(1.25rem - 0.1875rem);
+}
+
+/* Business shows the consequence; IT adds the line, the paths and the id. */
+.fix[data-mode="business"] .fix__detail {
+  display: none;
+}
+
+.file-legend__item[data-level="error"]::before {
+  background: var(--color-bad-bg);
+  border-inline-start-color: var(--color-bad);
+}
+
+.file-legend__item[data-selected="true"]::before {
+  background: var(--color-warn-bg);
+  border-inline-start-color: var(--color-signal);
+}
