@@ -2,7 +2,7 @@
 
 import type { PageContext } from './context.ts';
 import { langMenu } from '../lib/site.ts';
-import { PRICING } from '../client/config.ts';
+import { PRICING, APP_URL } from '../client/config.ts';
 
 /**
  * The sus.bot mark from the identity guide (claude.ai/design "sus.bot
@@ -68,10 +68,15 @@ export function SiteHeader(ctx: PageContext): string {
       <div class="site-header__tools">
         <nav class="nav" aria-label="${e('page.navLabel')}">
           <ul>
-            <li><a href="${h}#cli">${e('page.nav.cli')}</a></li>
-            <li><a href="${h}#gallery">${e('page.nav.gallery')}</a></li>
+            <!-- Sales order: what is sold, then the thing that carries it, then
+                 the way in. The gallery and the command line are still on the
+                 page as cards; neither is a reason to buy, so neither is in the
+                 nav. Monitoring and the account live in the app because the
+                 section that sells them here only exists after a report. -->
+            <li><a href="${APP_URL}" rel="noopener">${e('sales.nav.monitoring')}</a></li>
             <li><a href="${h}#extension">${e('page.nav.extension')}</a></li>
             ${PRICING.show ? `<li><a href="${h}#pricing">${e('page.nav.pricing')}</a></li>` : ''}
+            <li><a href="${APP_URL}/signup/" rel="noopener">${e('sales.nav.account')}</a></li>
           </ul>
         </nav>
 ${langMenu(ctx.lang, ctx.path, ctx.active, ctx.alternates, ctx.s.text('page.langLabel'))}
