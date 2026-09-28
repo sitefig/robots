@@ -6,6 +6,9 @@ import { WORKER_URL, PRICING } from '../../src/client/config.ts';
 import { PORTS, WORST, mockProxy } from './server.mjs';
 
 export const BASE = `http://127.0.0.1:${PORTS.site}`;
+
+/** A phone, for the states that only exist below the 48rem layout switch. */
+const PHONE = { width: 390, height: 900 };
 const origin = (port) => `http://127.0.0.1:${port}`;
 
 async function results(page) {
@@ -95,6 +98,29 @@ export function states(path) {
       await page.waitForFunction(() => document.querySelectorAll('#agents tbody tr[data-hidden="true"]').length > 0);
       await page.click('#agents .link-button[aria-controls="agents-table"]');
       await page.waitForFunction(() => document.querySelector('#agents .link-button[aria-controls="agents-table"]')?.getAttribute('aria-expanded') === 'true');
+    } },
+    // Phone width: the crawler table and the AI list start as the problem list,
+    // with the rest behind their buttons. Four states, because "only the problems"
+    // and "everything" are different DOMs and both have to pass.
+    { name: 'phone-agents-problems', url: url(), viewport: PHONE, setup: async (page) => {
+      await paste(page);
+      await page.waitForSelector('#agents-problems-note:not([hidden])');
+    } },
+    { name: 'phone-agents-all', url: url(), viewport: PHONE, setup: async (page) => {
+      await paste(page);
+      await page.waitForSelector('#agents-problems-note:not([hidden])');
+      await page.click('#agents-more');
+      await page.waitForSelector('#agents-problems-note[hidden]');
+    } },
+    { name: 'phone-ai-problems', url: url(), viewport: PHONE, setup: async (page) => {
+      await paste(page);
+      await page.waitForSelector('#ai-problems-note:not([hidden])');
+    } },
+    { name: 'phone-ai-all', url: url(), viewport: PHONE, setup: async (page) => {
+      await paste(page);
+      await page.waitForSelector('#ai-problems-note:not([hidden])');
+      await page.click('#ai-more');
+      await page.waitForSelector('#ai-problems-note[hidden]');
     } },
     { name: 'export-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#export .button'); } },
     { name: 'export-more-open', url: url(), setup: async (page) => { await paste(page); await page.click('#export details > summary'); } },

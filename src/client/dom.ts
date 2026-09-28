@@ -7,6 +7,17 @@ import type { Level, Verdict } from './types.ts';
 export type Child = Node | string | number | null | undefined | false | Child[];
 export type AttrValue = string | number | boolean | null | undefined | ((event: Event) => void);
 
+/**
+ * Phone layout. A long list of crawlers is a scroll on a desktop and a wall on a
+ * phone, so the two long lists show only the entries that are a problem at this
+ * width, with a button for the rest. 48rem is where the seven-column crawler
+ * table stops fitting without a sideways scroll.
+ *
+ * `matchMedia` at module level is fine (no t() call) and the components listen
+ * for `change`, so rotating the phone re-decides rather than sticking.
+ */
+export const phone = window.matchMedia('(width < 48rem)');
+
 export const $ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document): T => root.querySelector(sel) as T;
 export const slot = (id: string): HTMLElement => $(`#${id} > [data-slot]`);
 

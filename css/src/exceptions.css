@@ -129,7 +129,8 @@
   color: var(--color-bad);
 }
 
-.data-table tr[data-hidden="true"] {
+.data-table tr[data-hidden="true"],
+.bot-pill[data-hidden="true"] {
   display: none;
 }
 

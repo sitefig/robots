@@ -95,6 +95,9 @@ try {
         await installMocks(page);
         const label = `${lang} ${scheme} ${st.name}`;
         try {
+          // A state may ask for a phone: the crawler table and the AI list show
+          // only the problems at that width, which is a state of its own.
+          if (st.viewport) await page.setViewport(st.viewport);
           if (st.before) await st.before(page);
           await page.goto(st.url, { waitUntil: 'networkidle0', timeout: 60000, referer: st.referer });
           await st.setup(page);
