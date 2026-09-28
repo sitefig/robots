@@ -61,6 +61,7 @@ would otherwise put every domain anyone looked at into the analytics property as
 ## Commands
 
 ```
+./start.sh                             # a fresh clone: submodule, npm ci, WASM, site, serve (--no-serve, --dev, --port)
 npm test                               # the Node tests: Eleventy build, pages, browser i18n
 npm run typecheck                      # tsc over src/, tools/ and the Eleventy config (needs the WASM .d.ts from a build)
 npm run test:all                       # typecheck and the site tests

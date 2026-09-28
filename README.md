@@ -117,12 +117,21 @@ The Cloudflare Worker that fetches robots.txt for the page is not here either: i
 
 ```
 git clone --recurse-submodules https://github.com/sitefig/robots.git
+cd robots && ./start.sh                  # checks, builds and serves on :8888
 git submodule update --remote engine     # move the site to a newer engine
 ```
+
+`./start.sh` is the whole setup: it checks out the submodule if the clone
+missed it, installs the dependencies, builds the WebAssembly engine when
+`src/client/wasm/` is empty, builds the site and serves it. It never installs a
+toolchain silently: if Rust or the pinned `wasm-bindgen` is missing it prints
+the one command to run. `--no-serve` builds only, `--dev` builds the engine
+unoptimised, `--port 9000` serves elsewhere.
 
 ## Development
 
 ```
+./start.sh --no-serve      # the checks and the full build, without serving
 npm test                   # site build and browser i18n tests
 npm ci && npm run build    # the WebAssembly engine, then the Eleventy site into _site/
 npm start                  # rebuild and serve _site/ on http://localhost:8888
