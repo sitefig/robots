@@ -9,7 +9,7 @@ import { t, getLocale, DEFAULT_LANG, currentDictionary } from './i18n.ts';
 import { $, el, setStatus, formatBytes, formatMs } from './dom.ts';
 import { state } from './state.ts';
 import { SCHEMA_URL, EXAMPLE_URL } from './paths.ts';
-import { renderSummary } from './components/summary.ts';
+import { renderSummary, renderCrawlerSummary } from './components/summary.ts';
 import { renderExport, renderHandoff } from './components/export.ts';
 import { renderChecked } from './components/checked.ts';
 import { renderFixes } from './components/fixes.ts';
@@ -75,6 +75,7 @@ function render(): void {
   renderHandoff();
   renderAiStatus();
   renderAgents();
+  renderCrawlerSummary();
   renderTester();
   renderAccess();
   renderWarnings();

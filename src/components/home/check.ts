@@ -15,8 +15,10 @@
 import type { PageContext } from '../context.ts';
 
 export function Check(ctx: PageContext): string {
-  const { e, text } = ctx.s;
+  const { e, text, raw } = ctx.s;
   return `    <div class="flow" data-space="xs" id="check">
+     <h1 id="page-h1" class="verdict">${e('page.h1')}</h1>
+        <p class="verdict-intro">${raw('page.intro')}</p>
       <form id="fetch-form" class="check-bar" novalidate>
         <label for="site-url" class="sr-only">${e('page.urlLabel')}</label>
         <input id="site-url" name="url" type="text" inputmode="url" autocomplete="url" spellcheck="false"

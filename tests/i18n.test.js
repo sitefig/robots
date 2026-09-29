@@ -11,7 +11,7 @@ after(() => setLocale());
 test('English is the default and keys resolve with placeholders', () => {
   assert.equal(getLocale(), DEFAULT_LANG);
   assert.equal(t('parser.notFieldValue'), en['parser.notFieldValue']);
-  assert.equal(t('parser.unknownDirective', { field: 'foo' }), 'Unknown directive "foo" is ignored.');
+  assert.equal(t('parser.unknownDirective', { field: 'foo' }), 'Crawlers ignore this line, because "foo" is not a directive they know.');
 });
 
 test('unknown keys come back as the key, unknown placeholders stay', () => {

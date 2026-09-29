@@ -1,11 +1,11 @@
 // The verdict: a state word, a headline, and the consequences as tiles.
 //
-// The tiles are the whole report in six sentences. Each one is a question a
-// business actually has (can people find us, do our links look right when
-// shared, is AI helping itself, what does the file give away, what does it say
-// about our systems, does Google know where our pages are), each one is answered
-// by the engine rather than by copy, and each one links to the section that shows
-// the working.
+// The tiles are the report in four sentences, in the order a business asks:
+// is AI helping itself, which sensitive files does the file name, what does it
+// say about our systems, and is the file itself in order. Each one is answered by
+// the engine rather than by copy, and each one links to the section that shows
+// the working. Search engines and link previews are one level down, at the top
+// of the crawler table, which is where their working is.
 //
 // What the file technically is (content type, byte count, HTTP status) stays one
 // disclosure away. That is for whoever edits it.
@@ -100,9 +100,18 @@ function legend(now: string): HTMLElement {
 
 export function renderSummary(): void {
   const callout = summaryCallout();
+  // The headline and the sentence under it sit above the check field and are
+  // the page's h1 in both views, so the verdict is written into them. A second
+  // h1 in the slot would give the page two headlines with one id.
+  const headline = document.getElementById('page-h1');
+  if (headline) headline.textContent = callout.title;
+  // The engine says what this file does; the second sentence says what the
+  // list below is, which is the reason to keep reading rather than to forward
+  // the page to somebody else unread.
+  const intro = document.querySelector('#check .verdict-intro');
+  if (intro) intro.textContent = fixTotal() > 0 ? `${callout.body} ${t('ui.verdict.intro')}` : callout.body;
   // The same slot the pitch was in, so nothing moves when the answer arrives:
-  // the state line, the headline as the page's h1, the sentence under it, and
-  // the four tiles.
+  // the state line and the four tiles.
   replace(
     slot('summary'),
     el(
@@ -111,11 +120,6 @@ export function renderSummary(): void {
       badge(t(`ui.pill.${callout.state}`), callout.state),
       el('span', { class: 'text-sm text-muted' }, fixCounts()),
     ),
-    el('h1', { id: 'page-h1', class: 'verdict' }, callout.title),
-    // The engine says what this file does; the second sentence says what the
-    // list below is, which is the reason to keep reading rather than to forward
-    // the page to somebody else unread.
-    el('p', { class: 'verdict-intro' }, fixTotal() > 0 ? `${callout.body} ${t('ui.verdict.intro')}` : callout.body),
     tiles(),
     legend(callout.state),
   );
@@ -242,13 +246,53 @@ function exposureTile(): Tile {
 }
 
 /**
- * Four tiles, because four is what a founder reads. Everything else the report
- * knows is a click away: what the file says about the systems behind it and where
- * the sitemaps point are in the appendix, and both are on the worklist when they
- * are a problem.
+ * What the file says about the systems behind the site. The platform's name is
+ * the value when the engine found one, because a name lands where "named in the
+ * file" does not; the sentence under it lists the rest.
  */
-function tiles(): HTMLElement {
-  const list = [searchTile(), socialTile(), exposureTile(), aiTile()];
+function systemsTile(): Tile {
+  const rc = current().report.recon;
+  const tells: string[] = [];
+  if (rc.stack.primary) tells.push(t('ui.plain.setup.platform', { name: rc.stack.primary.name }));
+  if (rc.hosts.hosts.length > 0) tells.push(t('ui.plain.setup.hosts', { n: rc.hosts.hosts.length }));
+  if (rc.cloud.length > 0) tells.push(t('ui.plain.setup.buckets', { n: rc.cloud.length }));
+  if (rc.api.length > 0) tells.push(t('ui.plain.setup.apis', { n: rc.api.length }));
+  if (rc.comments.length > 0) tells.push(t('ui.plain.setup.contacts', { n: rc.comments.length }));
+  const status = unread() ? t('ui.tile.ai.unknown')
+    : tells.length === 0 ? t('ui.tile.systems.none')
+      : rc.stack.primary ? rc.stack.primary.name
+        : t('ui.tile.systems.named');
+  return {
+    label: t('ui.tile.systemsLabel'),
+    anchor: '#recon',
+    state: unread() ? 'warning' : tells.length === 0 ? 'ok' : 'info',
+    value: status,
+    detail: unread() ? t('ui.plain.exposure.unknown')
+      : tells.length === 0 ? t('ui.plain.setup.none')
+        : t('ui.plain.setup.some', { what: listOf(tells) }),
+  };
+}
+
+/**
+ * The file as a file: how many errors the engine found in it, and how much is in
+ * it. The counts are the engine's, and the rows behind them are the appendix.
+ */
+function technicalTile(): Tile {
+  const s = current().report.summary;
+  const { errors, warnings } = s.issues;
+  return {
+    label: t('ui.tile.technicalLabel'),
+    anchor: '#appendix',
+    state: unread() || errors > 0 ? 'error' : warnings > 0 ? 'warning' : 'ok',
+    value: unread() ? t('ui.tile.ai.unknown')
+      : errors > 0 ? t('ui.tile.tech.errors', { n: errors })
+        : warnings > 0 ? t('ui.tile.tech.warnings', { n: warnings })
+          : t('ui.tile.tech.clean'),
+    detail: unread() ? t('ui.plain.rules.unread') : listOf([t('md.rules', { n: s.rules }), t('md.sitemaps', { n: s.sitemaps })]),
+  };
+}
+
+function tileGrid(list: Tile[]): HTMLElement {
   return el(
     'div',
     { class: 'grid tiles', 'data-min': 'xs', 'data-align': 'stretch' },
@@ -261,6 +305,24 @@ function tiles(): HTMLElement {
         tile.detail ? el('p', { class: 'text-sm text-muted' }, tile.detail) : null,
       )),
   );
+}
+
+/**
+ * Four tiles, because four is what a founder reads, and in the order a founder
+ * asks: AI, then what the file gives away, then what it says about the systems
+ * behind the site, and only then the technical data.
+ */
+function tiles(): HTMLElement {
+  return tileGrid([aiTile(), exposureTile(), systemsTile(), technicalTile()]);
+}
+
+/**
+ * Search engines and link previews, above the crawler table that shows their
+ * working. They were tiles under the verdict until the verdict was given to AI,
+ * exposure, systems and the file itself.
+ */
+export function renderCrawlerSummary(): void {
+  replace(slot('agents-summary'), tileGrid([searchTile(), socialTile()]));
 }
 
 /** The same check, for whoever has to change the file. */

@@ -24,17 +24,16 @@ function Placeholder(ctx: PageContext, id: string, label: string): string {
 }
 
 export function Verdict(ctx: PageContext): string {
-  const { e, raw } = ctx.s;
+  const { e } = ctx.s;
   return `    <section class="flow" data-space="s" id="summary" aria-labelledby="page-h1">
-      <div data-slot class="flow" data-space="s">
+      <div data-slot class="flow" data-space="m">
+     
         <p class="cluster trust text-sm text-muted" data-space="xs">
           <span class="badge" data-state="ok">${e('sales.trust.free')}</span>
           <span>${e('sales.trust.noAccount')}</span>
           <span>${e('sales.trust.browser')}</span>
           <span>${e('sales.trust.noProbe')}</span>
         </p>
-        <h1 id="page-h1" class="verdict">${e('page.h1')}</h1>
-        <p class="verdict-intro">${raw('page.intro')}</p>
         <div class="cluster" data-space="xs">
           <span class="text-sm text-muted">${e('sales.try.label')}</span>
           <span class="cluster" data-space="2xs" role="group" aria-label="${e('sales.try.label')}">
@@ -44,7 +43,7 @@ export function Verdict(ctx: PageContext): string {
           </span>
         </div>
         <div class="grid tiles" data-min="xs" data-align="stretch">
-${Placeholder(ctx, 'search', e('ui.tile.searchLabel'))}${Placeholder(ctx, 'social', e('ui.tile.social'))}${Placeholder(ctx, 'exposure', e('ui.tile.exposureLabel'))}${Placeholder(ctx, 'ai', e('ui.tile.aiLabel'))}        </div>
+${Placeholder(ctx, 'ai', e('ui.tile.aiLabel'))}${Placeholder(ctx, 'exposure', e('ui.tile.exposureLabel'))}${Placeholder(ctx, 'systems', e('ui.tile.systemsLabel'))}${Placeholder(ctx, 'technical', e('ui.tile.technicalLabel'))}        </div>
       </div>
     </section>
 `;

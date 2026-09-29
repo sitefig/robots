@@ -56,7 +56,11 @@ function Compare(ctx: PageContext): string {
 `;
 }
 
-/** Everything the report used to open with, in the order it used to open it. */
+/**
+ * Everything the report used to open with, in the order of the tiles: AI, what
+ * the file gives away, what it says about the systems behind the site, and then
+ * the technical rows, with the exports last.
+ */
 function Appendix(ctx: PageContext, blockRate: string): string {
   const { e, raw } = ctx.s;
   const issues = `          <section class="flow" data-space="s" id="warnings" aria-labelledby="warnings-heading">
@@ -73,6 +77,7 @@ function Appendix(ctx: PageContext, blockRate: string): string {
               <p class="text-sm text-muted" id="agents-meta"></p>
             </div>
             <p class="text-muted measure-body">${raw('page.agentsIntro')}</p>
+            <div id="agents-summary"><div data-slot></div></div>
             <div data-slot class="flow" data-space="s"></div>
           </section>
 `;
@@ -137,7 +142,7 @@ function Appendix(ctx: PageContext, blockRate: string): string {
           <p class="text-sm text-muted measure-body">${e('ui.appendix.body')}</p>
         </div>
         <div class="appendix">
-${Row('issues', e('page.issues'), e('ui.appendix.issues'), issues)}${Row('agents', e('page.agents'), e('ui.appendix.agents'), agents)}${Row('ai', e('page.aiStatus'), e('ui.appendix.ai'), ai)}${Row('security', e('page.security'), e('ui.appendix.security'), security)}${Row('recon', e('page.recon'), e('ui.appendix.recon'), recon)}${Row('tester', e('page.tester'), e('ui.appendix.tester'), tester)}${Row('access', e('page.access'), e('ui.appendix.access'), access)}${Row('export', e('ui.appendix.exports'), e('ui.appendix.exportsWhat'), exports)}${Row('served', e('ui.appendix.served'), e('ui.appendix.servedWhat'), served)}        </div>
+${Row('ai', e('page.aiStatus'), e('ui.appendix.ai'), ai)}${Row('security', e('page.security'), e('ui.appendix.security'), security)}${Row('recon', e('page.recon'), e('ui.appendix.recon'), recon)}${Row('issues', e('page.issues'), e('ui.appendix.issues'), issues)}${Row('agents', e('page.agents'), e('ui.appendix.agents'), agents)}${Row('tester', e('page.tester'), e('ui.appendix.tester'), tester)}${Row('access', e('page.access'), e('ui.appendix.access'), access)}${Row('served', e('ui.appendix.served'), e('ui.appendix.servedWhat'), served)}${Row('export', e('ui.appendix.exports'), e('ui.appendix.exportsWhat'), exports)}        </div>
       </section>
 `;
 }

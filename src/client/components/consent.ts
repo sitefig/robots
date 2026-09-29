@@ -74,8 +74,13 @@ export function initConsent(): void {
     // Focus goes back where it came from, or to the field the page is for.
     (returnTo ?? document.getElementById('site-url'))?.focus();
     returnTo = null;
+    // Only a refusal is confirmed in words. Agreeing says nothing, except that
+    // it takes back the refusal's sentence when that is still on the page.
     const status = document.getElementById('status');
-    if (status) status.textContent = t(choice === 'granted' ? 'ui.consent.saved.granted' : 'ui.consent.saved.denied');
+    if (!status) return;
+    const refused = t('ui.consent.saved.denied');
+    if (choice === 'denied') status.textContent = refused;
+    else if (status.textContent === refused) status.textContent = '';
   };
 
   accept.addEventListener('click', () => decide('granted'));
