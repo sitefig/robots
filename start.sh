@@ -57,6 +57,20 @@ if [ ! -f engine/config/default.toml ]; then
   [ -f engine/config/default.toml ] || die "engine/config/default.toml is still missing.
   If engine/ is empty:                 git submodule update --init --force
   If files inside engine/ were lost:   git -C engine restore ."
+elif command -v git >/dev/null 2>&1 && git rev-parse --git-dir >/dev/null 2>&1 &&
+     git submodule status engine 2>/dev/null | grep -qv '^ '; then
+  # A pull moves the pointer without moving the submodule, and then the build
+  # reads yesterday's dictionaries against today's components, which fails on a
+  # missing key at best and renders the wrong words at worst. Uncommitted work in
+  # engine/ is left alone: that is somebody's unpushed change, not a stale
+  # checkout, and this script does not get to throw it away.
+  if [ -n "$(git -C engine status --porcelain 2>/dev/null)" ]; then
+    say "engine/ is not the commit this repo records, and it has uncommitted changes, so it is being left alone"
+    echo "   to move it anyway, commit or stash in engine/ and run: git submodule update"
+  else
+    say "Moving engine/ to the commit this repo records"
+    git submodule update --init
+  fi
 fi
 
 # ---------------------------------------------------------------- dependencies
