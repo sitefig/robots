@@ -1,17 +1,14 @@
 /* CUBE: Composition. Layout only: no colour, no type. Spacing variants are
    data attributes that map to spacing tokens. */
 
+/* The page frame, to the design's measurements: 1320px wide with a gutter that
+   grows from 16px to 48px. The header, the content and the footer all sit in
+   it, so the logo starts where the content starts. */
 .wrapper {
   width: 100%;
-  max-width: 76rem;
+  max-width: 82.5rem;
   margin-inline: auto;
-  padding-inline: 1rem;
-}
-
-@media (width >= 40rem) {
-  .wrapper {
-    padding-inline: 1.5rem;
-  }
+  padding-inline: clamp(1rem, 4vw, 3rem);
 }
 
 /* Vertical rhythm between siblings. */
@@ -35,7 +32,7 @@
   align-items: center;
 }
 
-.cluster[data-space="2xs"] { --cluster-space: 0.375rem; }
+.cluster[data-space="2xs"] { --cluster-space: 0.5rem; }
 .cluster[data-space="xs"] { --cluster-space: 0.5rem; }
 .cluster[data-space="l"] { --cluster-space: 1.5rem; }
 .cluster[data-align="baseline"] { align-items: baseline; }

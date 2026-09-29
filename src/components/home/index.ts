@@ -25,7 +25,7 @@ import { PRICING } from '../../client/config.ts';
 
 export function HomeBody(ctx: PageContext, blockRate: string, changes: { domain: string; iso: string }[]): string {
   return `${SiteHeader(ctx)}
-  <main id="main" class="report-main flow" data-space="m">
+  <main id="main" class="wrapper report-main flow" data-space="m">
 
     <noscript><p class="callout" data-state="warning">${ctx.s.e('page.noscript')}</p></noscript>
 
