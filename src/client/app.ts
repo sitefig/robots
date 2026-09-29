@@ -252,13 +252,14 @@ function init(): void {
       }
     })();
   });
-  document.querySelectorAll<HTMLButtonElement>('[data-check-site]').forEach((chip) => {
-    chip.addEventListener('click', () => {
-      const site = chip.dataset.checkSite || '';
-      $<HTMLInputElement>('#site-url').value = site;
-      void analyseUrl(site);
-    });
+  // The compare card asks for two domains, and the first is the one being typed
+  // above, so it follows that field until somebody edits it themselves. Then the
+  // only thing left to fill in is the competitor.
+  const mine = $<HTMLInputElement>('#pitch-compare-you');
+  $('#site-url').addEventListener('input', () => {
+    if (mine.dataset.touched !== 'true') mine.value = $<HTMLInputElement>('#site-url').value;
   });
+  mine.addEventListener('input', () => { mine.dataset.touched = 'true'; });
   renderRecent(checkOrigin);
   const params = new URLSearchParams(location.search);
   const url = params.get('url');

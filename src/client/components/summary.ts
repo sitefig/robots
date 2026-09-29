@@ -22,10 +22,29 @@ interface Callout {
   body: string;
 }
 
+/**
+ * The verdicts that can name the site instead of saying "your site". A headline
+ * reads as a fact about a particular place when it says "Parts of example.com are
+ * hidden", and each of these has a `.titleSite` in the dictionary for it.
+ *
+ * The generic wording stays for a pasted file, where there is no address to name:
+ * the two are separate strings rather than one with a placeholder, because
+ * "parts of your site" and "parts of example.com" do not take the same
+ * preposition or article in most of the 24 languages.
+ */
+const SITE_TITLES = new Set(['restricted', 'allBlocked', 'open', 'notFound', 'serverError']);
+
 function summaryCallout(): Callout {
   const r = current().report;
   const f = state.fetch;
-  const c = (stateName: string, key: string, params: Params = {}): Callout => ({ state: stateName, title: t(`ui.summary.${key}.title`, params), body: t(`ui.summary.${key}.body`, params) });
+  const site = f ? new URL(f.robotsUrl).host : null;
+  const c = (stateName: string, key: string, params: Params = {}): Callout => ({
+    state: stateName,
+    title: site && SITE_TITLES.has(key)
+      ? t(`ui.summary.${key}.titleSite`, { ...params, site })
+      : t(`ui.summary.${key}.title`, params),
+    body: t(`ui.summary.${key}.body`, params),
+  });
   if (f && f.redirectLimit) return c('error', 'redirectLimit');
   if (f && (f.status === 404 || f.status === 410)) return c('warning', 'notFound', { status: f.status });
   if (f && f.status >= 400 && f.status < 500) {

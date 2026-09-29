@@ -40,31 +40,40 @@ export const escapeHtml = (s: string): string => String(s).replace(/&/g, '&amp;'
 
 /** Figures from the tracking data, so the copy states real numbers. */
 /**
- * The domains whose robots.txt changed most recently, newest first.
+ * Every tracked domain and the day its robots.txt last changed.
  *
  * The tracking run rewrites a domain's snapshot only when the file changed, so
  * `fetched_at` in its meta.json is the day of its last change. That makes this
  * real data rather than copy, which is the rule for every number on the page: no
- * invented "large fashion retailer", just the sites and the days.
+ * invented "large fashion retailer", just the sites and the days. The page serves
+ * it as /tracked-changes.json and the comparison reads it to answer "when did
+ * this file last change" for the sites we do watch.
  */
-export function recentChanges(limit = 4): { domain: string; iso: string }[] {
+export function trackedChanges(): Record<string, string> {
   const dir = new URL('data/famous-100/', ENGINE);
   let names: string[];
   try {
     names = readdirSync(dir, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name);
   } catch {
-    return [];
+    return {};
   }
-  const found: { domain: string; iso: string }[] = [];
+  const dates: Record<string, string> = {};
   for (const domain of names) {
     try {
       const meta = JSON.parse(readFileSync(new URL(`${domain}/meta.json`, dir), 'utf8')) as { fetched_at?: string };
-      if (meta.fetched_at) found.push({ domain, iso: meta.fetched_at });
+      if (meta.fetched_at) dates[domain] = meta.fetched_at;
     } catch {
       // a domain with no snapshot yet
     }
   }
-  return found.sort((a, b) => b.iso.localeCompare(a.iso)).slice(0, limit);
+  return dates;
+}
+
+export function recentChanges(limit = 4): { domain: string; iso: string }[] {
+  return Object.entries(trackedChanges())
+    .map(([domain, iso]) => ({ domain, iso }))
+    .sort((a, b) => b.iso.localeCompare(a.iso))
+    .slice(0, limit);
 }
 
 export function trackingFigures(): { tracked: number; gptbotBlocked: number | null } {

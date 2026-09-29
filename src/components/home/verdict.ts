@@ -34,14 +34,6 @@ export function Verdict(ctx: PageContext): string {
           <span>${e('sales.trust.browser')}</span>
           <span>${e('sales.trust.noProbe')}</span>
         </p>
-        <div class="cluster" data-space="xs">
-          <span class="text-sm text-muted">${e('sales.try.label')}</span>
-          <span class="cluster" data-space="2xs" role="group" aria-label="${e('sales.try.label')}">
-            <button type="button" class="chip font-mono" data-check-site="nytimes.com">nytimes.com</button>
-            <button type="button" class="chip font-mono" data-check-site="ikea.com">ikea.com</button>
-            <button type="button" class="chip font-mono" data-check-site="zalando.de">zalando.de</button>
-          </span>
-        </div>
         <div class="grid tiles" data-min="xs" data-align="stretch">
 ${Placeholder(ctx, 'ai', e('ui.tile.aiLabel'))}${Placeholder(ctx, 'exposure', e('ui.tile.exposureLabel'))}${Placeholder(ctx, 'systems', e('ui.tile.systemsLabel'))}${Placeholder(ctx, 'technical', e('ui.tile.technicalLabel'))}        </div>
       </div>

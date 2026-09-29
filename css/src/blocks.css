@@ -881,6 +881,15 @@
   font-size: var(--text-base);
 }
 
+/* On a wide screen the field stops growing at about half the row. A domain is
+   short, and a box a thousand pixels wide invites a paragraph. On a phone it
+   still takes the whole line, because there the line is the width of a domain. */
+@media (width >= 48rem) {
+  .check-bar > input[type="text"] {
+    max-width: 28rem;
+  }
+}
+
 .check-bar > .button,
 .checked .button {
   height: 2.875rem;

@@ -17,6 +17,7 @@ import { fetchRobots, FetchError } from '../fetcher.ts';
 import { Analysis, loadEngine, type Options } from '../engine.ts';
 import { trackOffer, trackExport } from '../track.ts';
 import { APP_URL } from '../config.ts';
+import { TRACKED_URL } from '../paths.ts';
 import type { Report } from '../types.ts';
 
 const SEARCH_TOKENS = ['bingbot', 'duckduckbot', 'applebot'];
@@ -65,14 +66,53 @@ function exposed(report: Report): Cell {
   return { text: formatNumber(n), state: n === 0 ? 'ok' : 'bad' };
 }
 
-function rows(you: Report, them: Report): Row[] {
-  const unknown = { text: t('ui.compare.unknown'), state: 'muted' };
+/**
+ * When a file last changed, for the sites we actually watch.
+ *
+ * Nothing in a robots.txt says when it was written, so for most domains this is
+ * honestly unknown. The two hundred we fetch every day are different: their
+ * snapshot is only rewritten when the file changed, so its date is the day of the
+ * change. The page serves that list as a small JSON file, fetched once per visit
+ * and only when somebody runs a comparison.
+ */
+let dates: Record<string, string> | null = null;
+
+async function changeDates(): Promise<Record<string, string>> {
+  if (!dates) {
+    try {
+      const res = await fetch(TRACKED_URL, { cache: 'force-cache' });
+      dates = res.ok ? ((await res.json()) as Record<string, string>) : {};
+    } catch {
+      dates = {};
+    }
+  }
+  return dates;
+}
+
+function lastChange(host: string): Cell {
+  const known = dates || {};
+  const iso = known[host] ?? known[host.replace(/^www\./, '')];
+  if (!iso) return { text: t('ui.compare.unknown'), state: 'muted' };
+  const days = Math.round((Date.parse(iso) - Date.now()) / 86400000);
+  try {
+    return { text: new Intl.RelativeTimeFormat(getLocale(), { numeric: 'auto' }).format(days, 'day'), state: 'ok' };
+  } catch {
+    return { text: iso.slice(0, 10), state: 'ok' };
+  }
+}
+
+function rows(you: Report, them: Report, youHost: string, themHost: string): Row[] {
+  const changedYou = lastChange(youHost);
+  const changedThem = lastChange(themHost);
+  const watched = changedYou.state === 'ok' || changedThem.state === 'ok';
   return [
     { label: t('ui.compare.row.found'), you: reach(you, SEARCH_TOKENS), them: reach(them, SEARCH_TOKENS), soWhat: t('ui.compare.so.found') },
     { label: t('ui.compare.row.cited'), you: cited(you), them: cited(them), soWhat: t('ui.compare.so.cited') },
     { label: t('ui.compare.row.training'), you: training(you), them: training(them), soWhat: t('ui.compare.so.training') },
     { label: t('ui.compare.row.exposed'), you: exposed(you), them: exposed(them), soWhat: t('ui.compare.so.exposed') },
-    { label: t('ui.compare.row.changed'), you: unknown, them: unknown, soWhat: t('ui.compare.so.changed') },
+    // The sentence changes with the answer: claiming only watching can tell you,
+    // right after telling you, would be silly.
+    { label: t('ui.compare.row.changed'), you: changedYou, them: changedThem, soWhat: watched ? t('ui.compare.so.changedKnown') : t('ui.compare.so.changed') },
   ];
 }
 
@@ -136,8 +176,7 @@ export async function runCompare(input: string): Promise<void> {
   status.dataset.state = 'loading';
   status.textContent = t('ui.compare.running');
   try {
-    await loadEngine();
-    const result = await fetchRobots(target);
+    const [, result] = await Promise.all([loadEngine(), fetchRobots(target), changeDates()]);
     const options: Options = {
       siteUrl: result.origin,
       // The same shape the page builds for its own check, so the engine reports
@@ -162,7 +201,7 @@ export async function runCompare(input: string): Promise<void> {
     const theirs = new Analysis(result.text, options);
     const youHost = state.fetch ? new URL(state.fetch.robotsUrl).host : t('ui.checked.pasted');
     const themHost = new URL(result.robotsUrl).host;
-    replace(slot('compare'), table(youHost, themHost, rows(current().report, theirs.report)), upsell());
+    replace(slot('compare'), table(youHost, themHost, rows(current().report, theirs.report, youHost, themHost)), upsell());
     theirs.free();
     status.dataset.state = 'idle';
     status.textContent = '';
