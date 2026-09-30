@@ -187,8 +187,10 @@ export function states(path) {
     { name: 'fetch-unreachable', url: url('?url=https://unreachable.invalid'), setup: async (page) => { await page.waitForSelector('#status[data-state="error"]', { timeout: 60000 }); } },
     { name: 'example-kitchen-sink', url: url('?example=kitchen-sink'), setup: results },
     // Recent sites: the newest one is analysed by default on an empty URL.
-    { name: 'recent-default', url: url(), before: seedRecent, setup: async (page) => { await results(page); await page.waitForSelector('#recent:not([hidden]) li'); } },
-    { name: 'recent-cleared', url: url(), before: seedRecent, setup: async (page) => { await results(page); await page.click('#recent .link-button'); await page.waitForSelector('#recent[hidden]'); } },
+    // The chips are an offer now: a visit no longer re-checks the newest site by
+    // itself, so this state is the page as it arrives with a history behind it.
+    { name: 'recent-default', url: url(), before: seedRecent, setup: async (page) => { await page.waitForSelector('#recent:not([hidden]) li'); } },
+    { name: 'recent-cleared', url: url(), before: seedRecent, setup: async (page) => { await page.waitForSelector('#recent:not([hidden]) li'); await page.click('#recent .link-button'); await page.waitForSelector('#recent[hidden]'); } },
     // The site that linked here is offered as a suggestion.
     { name: 'referrer-suggestion', url: url(), referer: 'http://www.example.org/blog/post', setup: async (page) => { await page.waitForSelector('#recent:not([hidden]) .chip'); } },
   ];

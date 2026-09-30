@@ -25,7 +25,7 @@ import { renderRecon } from './components/recon.ts';
 import { renderSitemaps } from './components/sitemaps.ts';
 import { renderRaw } from './components/raw.ts';
 import { initPricing } from './components/pricing.ts';
-import { readRecent, renderRecent, remember } from './components/recent.ts';
+import { renderRecent, remember } from './components/recent.ts';
 import { initTheme, initLanguage } from './components/preferences.ts';
 import { initConsent } from './components/consent.ts';
 import { initBrandMenu } from './components/brand-menu.ts';
@@ -264,13 +264,15 @@ function init(): void {
   const params = new URLSearchParams(location.search);
   const url = params.get('url');
   const example = params.get('example');
+  // A visit starts on the page the design draws, not on yesterday's answer. An
+  // address in ?url= or ?example= is somebody asking for that check, so those
+  // still run on load; the sites this browser checked before are offered as
+  // chips instead, which is a choice rather than a surprise.
   if (url) {
     $<HTMLInputElement>('#site-url').value = url;
     analyseUrl(url, 'load');
   } else if (example) {
     loadExample(example, 'load');
-  } else if (readRecent().length) {
-    checkOrigin(readRecent()[0], 'load');
   } else {
     prefetchEngine();
   }
