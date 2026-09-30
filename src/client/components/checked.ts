@@ -17,18 +17,13 @@ export function renderChecked(): void {
   const host = state.fetch ? new URL(state.fetch.robotsUrl).host : null;
   const share = shareLink();
 
-  const again = el('button', { type: 'button', class: 'button', onclick: () => {
-    const field = $<HTMLInputElement>('#site-url');
-    field.value = state.input;
-    // A hidden form still submits programmatically, which keeps one code path
-    // for every check the page makes.
-    $<HTMLFormElement>('#fetch-form').requestSubmit();
-  } }, t('ui.checked.again'));
-
-  // The form and the bar share one row: after a check the address field would
-  // only invite a second check of a different site, which is what the logo is
-  // for, and the design has the bar alone here.
-  $('#fetch-form').hidden = true;
+  // The field stays where it is. Checking a second site is the next thing most
+  // people want, and swapping the box for a "Check again" button made them hunt
+  // for it; the bar beside it says which report is on screen. The address is put
+  // back in the field, so pressing the button re-checks this site and typing over
+  // it checks another.
+  const field = $<HTMLInputElement>('#site-url');
+  if (state.input && !field.value) field.value = state.input;
   $('#checked').hidden = false;
   replace(
     slot('checked'),
@@ -38,7 +33,6 @@ export function renderChecked(): void {
       el('span', {}, host || t('ui.checked.pasted')),
       el('span', { class: 'checked__meta' }, t('ui.checked.meta', { n: formatNumber(lines) })),
     ),
-    state.input ? again : null,
     share
       ? actionButton(t('ui.checked.share'), () => {
         trackExport('link');

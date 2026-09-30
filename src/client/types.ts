@@ -85,7 +85,7 @@ export interface Report {
     defaultPolicy: { hasStarGroup: boolean; verdict: Verdict; allowRules: number; disallowRules: number };
   };
   directives: { host: { value: string; line: number } | null; cleanParams: unknown[] };
-  rules: { type: 'allow' | 'disallow'; path: string }[];
+  rules: { group: number; userAgents: string[]; type: 'allow' | 'disallow'; path: string; line: number }[];
   sitemaps: { url: string; line: number; valid: boolean }[];
   issues: Issue[];
   crawlers: ReportCrawler[];

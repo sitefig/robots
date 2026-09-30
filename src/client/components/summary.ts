@@ -226,6 +226,11 @@ function socialTile(): Tile {
   };
 }
 
+/** The first one by name, and how many more there are. */
+function firstAndRest(first: string, n: number): string {
+  return n > 1 ? t('ui.tile.andRest', { first, n: n - 1 }) : first;
+}
+
 function aiTile(): Tile {
   const group = current().report.aiStatus.groups[0];
   const counts = group ? group.counts : { open: 0, partial: 0, blocked: 0 };
@@ -240,8 +245,17 @@ function aiTile(): Tile {
     anchor: '#ai-status-heading',
     state: unread() ? 'warning' : counts.blocked === 0 && loose > 0 ? 'error' : loose > 0 ? 'info' : 'ok',
     value: status,
-    detail: unread() ? '' : t('ui.tile.aiNote', { n: loose, total }),
+    detail: unread() ? ''
+      : loose === 0 ? t('ui.tile.ai.detailNone', { total })
+        : t('ui.tile.ai.detail', { name: firstLoose(), n: loose, total }),
   };
+}
+
+/** The first AI crawler this file does not turn away, by name. */
+function firstLoose(): string {
+  const group = current().report.aiStatus.groups[0];
+  const first = group?.crawlers.find((c) => c.verdict !== 'blocked');
+  return first ? first.name : '';
 }
 
 function exposureTile(): Tile {
@@ -260,7 +274,7 @@ function exposureTile(): Tile {
     value: status,
     detail: unread() ? t('ui.plain.exposure.unknown')
       : named.length === 0 ? t('ui.plain.exposure.none')
-        : `${t('ui.plain.exposure.some', { n: named.length })}${kind ? `. ${t('ui.plain.exposure.worst', { what: kind })}` : ''}`,
+        : t('ui.tile.exposure.detail', { path: worst ? worst.path : '', what: kind || '', n: named.length }),
   };
 }
 
@@ -288,7 +302,7 @@ function systemsTile(): Tile {
     value: status,
     detail: unread() ? t('ui.plain.exposure.unknown')
       : tells.length === 0 ? t('ui.plain.setup.none')
-        : t('ui.plain.setup.some', { what: listOf(tells) }),
+        : t('ui.tile.systems.detail', { what: firstAndRest(rc.stack.primary ? t('ui.tile.systems.platform', { name: rc.stack.primary.name }) : tells[0], tells.length) }),
   };
 }
 
@@ -296,18 +310,31 @@ function systemsTile(): Tile {
  * The file as a file: how many errors the engine found in it, and how much is in
  * it. The counts are the engine's, and the rows behind them are the appendix.
  */
-function technicalTile(): Tile {
-  const s = current().report.summary;
-  const { errors, warnings } = s.issues;
+/**
+ * What the file keeps crawlers out of: the directories and paths disallowed for
+ * everyone, named one at a time.
+ *
+ * This is the tile a founder can act on without knowing anything about the
+ * format. "20 paths are blocked" is a statistic; "/backup/ is blocked, and 19
+ * more" is a list of decisions somebody made, each of which is either deliberate
+ * or a mistake that is costing traffic.
+ */
+function hiddenTile(): Tile {
+  const r = current().report;
+  // The rules that apply to every crawler without a group of its own, which is
+  // what "hidden from search" means for a visitor who has not read RFC 9309.
+  const blocked = r.rules.filter((rule) => rule.type === 'disallow' && rule.userAgents.includes('*'));
+  const first = blocked.find((rule) => rule.path.endsWith('/')) || blocked[0];
   return {
-    label: t('ui.tile.technicalLabel'),
-    anchor: '#appendix',
-    state: unread() || errors > 0 ? 'error' : warnings > 0 ? 'warning' : 'ok',
+    label: t('ui.tile.hiddenLabel'),
+    anchor: '#raw',
+    state: unread() ? 'warning' : blocked.length === 0 ? 'ok' : 'info',
     value: unread() ? t('ui.tile.ai.unknown')
-      : errors > 0 ? t('ui.tile.tech.errors', { n: errors })
-        : warnings > 0 ? t('ui.tile.tech.warnings', { n: warnings })
-          : t('ui.tile.tech.clean'),
-    detail: unread() ? t('ui.plain.rules.unread') : listOf([t('md.rules', { n: s.rules }), t('md.sitemaps', { n: s.sitemaps })]),
+      : blocked.length === 0 ? t('ui.tile.hidden.none')
+        : t('ui.tile.hidden.some', { n: blocked.length }),
+    detail: unread() ? t('ui.plain.rules.unread')
+      : blocked.length === 0 ? t('ui.tile.hidden.detailNone')
+        : t('ui.tile.hidden.detail', { path: first ? first.path : '', n: blocked.length }),
   };
 }
 
@@ -315,14 +342,24 @@ function tileGrid(list: Tile[]): HTMLElement {
   return el(
     'div',
     { class: 'grid tiles', 'data-min': 'xs', 'data-align': 'stretch' },
-    list.map((tile) =>
-      el(
+    list.map((tile) => {
+      const card = el(
         'div',
-        { class: 'tile flow', 'data-space': '2xs', 'data-state': tile.state },
+        { class: 'tile flow', 'data-space': '2xs', 'data-state': tile.state, 'data-live': 'true' },
         el('p', { class: 'tile__label text-sm' }, el('a', { href: tile.anchor }, tile.label)),
         el('p', { class: 'tile__value' }, tile.value),
         tile.detail ? el('p', { class: 'text-sm text-muted' }, tile.detail) : null,
-      )),
+      );
+      // The whole card takes you to the section that shows the working. The label
+      // is still the link, so it is one tab stop and one accessible name rather
+      // than a card-sized anchor with every line underlined inside it; this only
+      // widens the target for a pointer.
+      card.addEventListener('click', (event) => {
+        if ((event.target as Element).closest('a')) return;
+        location.hash = tile.anchor;
+      });
+      return card;
+    }),
   );
 }
 
@@ -332,7 +369,7 @@ function tileGrid(list: Tile[]): HTMLElement {
  * behind the site, and only then the technical data.
  */
 function tiles(): HTMLElement {
-  return tileGrid([aiTile(), exposureTile(), systemsTile(), technicalTile()]);
+  return tileGrid([aiTile(), exposureTile(), systemsTile(), hiddenTile()]);
 }
 
 /**

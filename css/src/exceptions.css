@@ -174,6 +174,19 @@
 .tile[data-state="warning"] .tile__value { color: var(--color-warn); }
 .tile[data-state="error"] .tile__value { color: var(--color-bad); }
 
+/* A tile with an answer in it: raised off the page, and the whole card takes you
+   to the section that shows the working. The placeholder below stays flat and
+   dashed, so the difference between "waiting" and "this is your result" is the
+   first thing you see when a report arrives. */
+.tile[data-live="true"] {
+  background: var(--color-raise);
+  cursor: pointer;
+}
+
+.tile[data-live="true"]:hover {
+  border-color: var(--color-control);
+}
+
 /* An empty tile before the first check: a dashed edge rather than opacity, which
    would fail contrast. */
 .tile[data-empty="true"] {
