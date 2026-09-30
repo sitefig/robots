@@ -150,6 +150,22 @@ export function states(path) {
       await page.click('#fixes .fix__head');
       await page.waitForSelector('#fix-ticket-0:not([hidden])');
     } },
+    // We are sometimes wrong, so a fix can be edited or ignored, and both stop at
+    // the account. Two states: the message open for editing, and the wall.
+    { name: 'fix-editing', url: url(), setup: async (page) => {
+      await paste(page);
+      await page.click('#fixes .fix__head');
+      await page.waitForSelector('#fix-ticket-0:not([hidden])');
+      await page.click('#fix-ticket-0 .cluster .button:nth-child(2)');
+      await page.waitForSelector('#fix-editor-0:not([hidden])');
+    } },
+    { name: 'fix-ignored', url: url(), setup: async (page) => {
+      await paste(page);
+      await page.click('#fixes .fix__head');
+      await page.waitForSelector('#fix-ticket-0:not([hidden])');
+      await page.click('#fix-ticket-0 .cluster .button:nth-child(3)');
+      await page.waitForSelector('#fix-ticket-0 .fix__offer:not([hidden])');
+    } },
     { name: 'fix-it-mode', url: url(), setup: async (page) => {
       await paste(page);
       await page.click('#fixes .seg > button[data-mode="it"]');

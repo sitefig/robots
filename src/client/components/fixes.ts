@@ -22,6 +22,8 @@ import { t, formatNumber } from '../i18n.ts';
 import { el, badge, replace, slot, lineText, LEVEL_ORDER, type Child } from '../dom.ts';
 import { current } from '../state.ts';
 import { resetSelection, select, onSelect } from '../selection.ts';
+import { signupLink } from '../offer.ts';
+import { trackOffer } from '../track.ts';
 import type { Analysis } from '../engine.ts';
 import type { Level, SecurityFinding } from '../types.ts';
 
@@ -252,22 +254,78 @@ function modeToggle(apply: () => void): HTMLElement {
   );
 }
 
+/**
+ * One card, and what a visitor can do with it besides read it.
+ *
+ * We are sometimes wrong. A path that looks sensitive can be deliberate, a rule
+ * that looks like a mistake can be a decision somebody already made, and the
+ * message we wrote for IT may not be the message this team would send. So the
+ * card takes an edit and an "ignore", and both of them stop at the same honest
+ * wall: keeping a decision means having somewhere to keep it, which is the
+ * account. Nothing is hidden or silently remembered here, because a report that
+ * pretends to remember and then forgets is worse than one that never offered.
+ */
 function card(fix: Fix, index: number): HTMLElement {
   const id = `fix-ticket-${index}`;
   const copy = el('button', { type: 'button', class: 'button', onclick: async () => {
     try {
-      await navigator.clipboard.writeText(fix.ticket);
+      await navigator.clipboard.writeText(editor.hidden ? fix.ticket : editor.value);
       copy.textContent = t('ui.done');
     } catch {
       copy.textContent = t('ui.failed');
     }
     setTimeout(() => { copy.textContent = t('ui.fixes.copy'); }, 1600);
   } }, t('ui.fixes.copy'));
+
+  const message = el('pre', { class: 'fix__message' }, fix.ticket);
+  const editor = el('textarea', { id: `fix-editor-${index}`, class: 'fix__editor', rows: '7', spellcheck: 'false', hidden: true });
+  const editorLabel = el('label', { class: 'sr-only', for: `fix-editor-${index}` }, t('ui.fixes.editLabel'));
+
+  // The wall, in words, with the way through it. Focus moves here when it
+  // appears, because it is the answer to the button that was just pressed.
+  const offer = el(
+    'div',
+    { class: 'callout fix__offer flow', 'data-state': 'info', 'data-space': '2xs', tabindex: '-1', hidden: true },
+    el('p', { class: 'font-bold' }, t('ui.fixes.account.title')),
+    el('p', { class: 'text-sm' }, t('ui.fixes.account.body')),
+    el('p', {}, el('a', { class: 'button', 'data-variant': 'primary', href: signupLink('fix.account') }, t('ui.fixes.account.cta'))),
+  );
+  const ask = (intent: string): void => {
+    offer.hidden = false;
+    trackOffer(`fix.${intent}`, current().report);
+    offer.focus();
+  };
+
+  const edit = el('button', { type: 'button', class: 'button', onclick: () => {
+    if (editor.hidden) {
+      editor.value = message.textContent || fix.ticket;
+      editor.hidden = false;
+      message.hidden = true;
+      edit.textContent = t('ui.fixes.save');
+      editor.focus();
+      return;
+    }
+    // Saving is the account's job. The edit stays on screen and in the copy
+    // button, so the visitor can still send their own wording by hand.
+    message.textContent = editor.value;
+    ask('save');
+  } }, t('ui.fixes.edit'));
+
+  const ignore = el('button', { type: 'button', class: 'button', onclick: () => ask('ignore') }, t('ui.fixes.ignore'));
+
   const ticket = el(
     'div',
     { class: 'fix__ticket flow', id, 'data-space': 'xs', hidden: true },
-    el('div', { class: 'cluster', 'data-justify': 'between', 'data-space': 'xs' }, el('span', { class: 'text-xs font-mono' }, t('ui.fixes.ticketLabel')), copy),
-    el('pre', { class: 'fix__message' }, fix.ticket),
+    el(
+      'div',
+      { class: 'cluster', 'data-justify': 'between', 'data-space': 'xs' },
+      el('span', { class: 'text-xs font-mono ticket-label' }, t('ui.fixes.ticketLabel')),
+      el('span', { class: 'cluster', 'data-space': 'xs' }, copy, edit, ignore),
+    ),
+    editorLabel,
+    message,
+    editor,
+    offer,
   );
 
   const hint = fix.lines.length

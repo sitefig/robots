@@ -16,11 +16,9 @@ import { t } from '../i18n.ts';
 import { el, tx, replace, slot, $, type Child } from '../dom.ts';
 import { state, current } from '../state.ts';
 import { SCHEMA_URL } from '../paths.ts';
-import { APP_URL } from '../config.ts';
+import { signupLink } from '../offer.ts';
 import { trackExport, trackOffer } from '../track.ts';
 import { allTickets, fixTotal } from './fixes.ts';
-
-const SIGNUP = `${APP_URL}/signup/`;
 
 async function copyText(text: string): Promise<void> {
   await navigator.clipboard.writeText(text);
@@ -63,9 +61,7 @@ export function actionButton(label: string, action: () => unknown, { primary = f
  * The link carries the checked origin, so signing up starts on that site.
  */
 function offerCard(kind: string, title: string, note: Child): HTMLElement {
-  const origin = state.fetch ? new URL(state.fetch.robotsUrl).origin : null;
-  const href = origin ? `${SIGNUP}?${new URLSearchParams({ site: origin })}` : SIGNUP;
-  const cta = el('a', { class: 'button', 'data-variant': 'primary', href }, t('ui.export.locked.cta'));
+  const cta = el('a', { class: 'button', 'data-variant': 'primary', href: signupLink(`export.${kind}`) }, t('ui.export.locked.cta'));
   cta.addEventListener('click', () => trackOffer(`export.${kind}`, current().report));
   return el(
     'div',
@@ -112,10 +108,8 @@ function shareActions(): Child[] {
  */
 export function renderHandoff(): void {
   const share = shareLink();
-  const origin = state.fetch ? new URL(state.fetch.robotsUrl).origin : null;
-  const signup = origin ? `${SIGNUP}?${new URLSearchParams({ site: origin })}` : SIGNUP;
   const offer = (kind: string, label: string, variant: string | null): HTMLElement => {
-    const link = el('a', { class: 'button', 'data-variant': variant, href: signup }, label);
+    const link = el('a', { class: 'button', 'data-variant': variant, href: signupLink(`handoff.${kind}`) }, label);
     link.addEventListener('click', () => trackOffer(`handoff.${kind}`, current().report));
     return link;
   };

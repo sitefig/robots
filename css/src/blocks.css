@@ -1173,6 +1173,9 @@ button.raw__line {
   flex: 1 1 13.75rem;
   min-width: 0;
   height: 2.75rem;
+  /* The same signal edge as the check field: these are the fields the page wants
+     filled in, and there are only ever three of them on screen. */
+  border-color: var(--color-signal);
   font-size: 0.90625rem;
 }
 
@@ -1304,4 +1307,17 @@ button.raw__line {
 
 .changes__link {
   flex-basis: 100%;
+}
+
+/* The message for IT, opened for editing, and the wall that follows a save or an
+   ignore: both live inside the ticket box, so the card stays one thing. */
+.fix__editor {
+  min-height: 9rem;
+  font-family: var(--font-mono);
+  font-size: 0.84375rem;
+  line-height: 1.6;
+}
+
+.fix__offer {
+  border-inline-start-width: 0.375rem;
 }
