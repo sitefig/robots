@@ -15,6 +15,7 @@ import { renderChecked } from './components/checked.ts';
 import { renderFixes } from './components/fixes.ts';
 import { renderAppendix } from './components/appendix.ts';
 import { renderCompare, runCompare } from './components/compare.ts';
+import { fillSignupLinks } from './offer.ts';
 import { renderAiStatus } from './components/ai-status.ts';
 import { renderAgents } from './components/agents.ts';
 import { renderTester } from './components/tester.ts';
@@ -86,6 +87,9 @@ function render(): void {
   renderAppendix();
   renderCompare();
   renderSales();
+  // Last, so it catches the links the components have just drawn as well as the
+  // ones that shipped in the HTML.
+  fillSignupLinks();
 }
 
 async function analyseUrl(input: string, trigger: CheckTrigger = 'user'): Promise<void> {

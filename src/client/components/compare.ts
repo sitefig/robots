@@ -16,7 +16,7 @@ import { state, current } from '../state.ts';
 import { fetchRobots, FetchError } from '../fetcher.ts';
 import { Analysis, loadEngine, type Options } from '../engine.ts';
 import { trackOffer, trackExport } from '../track.ts';
-import { APP_URL } from '../config.ts';
+import { signupLink } from '../offer.ts';
 import { TRACKED_URL } from '../paths.ts';
 import type { Report } from '../types.ts';
 
@@ -144,9 +144,7 @@ function table(youHost: string, themHost: string, list: Row[]): HTMLElement {
 
 /** The offer under the table: one check is a snapshot, and theirs will change. */
 function upsell(): HTMLElement {
-  const origin = state.fetch ? new URL(state.fetch.robotsUrl).origin : null;
-  const href = origin ? `${APP_URL}/signup/?${new URLSearchParams({ site: origin })}` : `${APP_URL}/signup/`;
-  const cta = el('a', { class: 'button', 'data-variant': 'primary', href }, t('ui.compare.cta'));
+  const cta = el('a', { class: 'button', 'data-variant': 'primary', href: signupLink('compare.watch') }, t('ui.compare.cta'));
   cta.addEventListener('click', () => trackOffer('compare.watch', current().report));
   return el(
     'div',

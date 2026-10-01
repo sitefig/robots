@@ -19,9 +19,6 @@ import type { Report } from '../types.ts';
 
 const SECTION = '#keep-watching';
 
-/** The pristine hrefs, kept because render() rewrites them and can run twice. */
-const hrefs = new WeakMap<HTMLAnchorElement, string>();
-
 function offers(): HTMLAnchorElement[] {
   return [...document.querySelectorAll<HTMLAnchorElement>(`${SECTION} [data-offer]`)];
 }
@@ -46,7 +43,6 @@ export function leadKey(report: Report): string {
 /** Counts a click on an offer, with what the visitor had just been told. */
 export function initSales(): void {
   for (const link of offers()) {
-    hrefs.set(link, link.getAttribute('href') ?? '');
     link.addEventListener('click', () => trackOffer(link.dataset['offer'] ?? 'unknown', state.analysis?.report ?? null));
   }
 }
@@ -60,15 +56,8 @@ export function renderSales(): void {
   const lead = section.querySelector<HTMLElement>('[data-slot="sales-lead"]');
   if (lead) lead.textContent = t(leadKey(report));
 
-  // Hand the checked site over, so the app knows what to watch.
-  const origin = state.fetch ? new URL(state.fetch.robotsUrl).origin : null;
-  if (origin) {
-    for (const link of offers()) {
-      const base = hrefs.get(link);
-      if (!base || !base.includes('/signup/')) continue;
-      link.href = `${base}?${new URLSearchParams({ site: origin })}`;
-    }
-  }
+  // The checked site goes on these links with every other signup link on the
+  // page, in offer.ts.
 
   section.hidden = false;
 }
