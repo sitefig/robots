@@ -16,7 +16,7 @@ import { state, current } from '../state.ts';
 import { fetchRobots, FetchError } from '../fetcher.ts';
 import { Analysis, loadEngine, type Options } from '../engine.ts';
 import { trackOffer, trackExport } from '../track.ts';
-import { signupLink } from '../offer.ts';
+import { addRival, fillSignupLinks, signupLink } from '../offer.ts';
 import { TRACKED_URL } from '../paths.ts';
 import type { Report } from '../types.ts';
 
@@ -201,6 +201,9 @@ export async function runCompare(input: string): Promise<void> {
     const themHost = new URL(result.robotsUrl).host;
     replace(slot('compare'), table(youHost, themHost, rows(current().report, theirs.report, youHost, themHost)), upsell());
     theirs.free();
+    // The signup links carry who they were compared with, so onboarding can start watching them.
+    addRival(result.origin);
+    fillSignupLinks();
     status.dataset.state = 'idle';
     status.textContent = '';
     trackExport('compare');
@@ -214,6 +217,10 @@ export async function runCompare(input: string): Promise<void> {
 
 /** The form, once there is a report to compare against. */
 export function renderCompare(): void {
+  // A new report means the old table is about a comparison nobody asked for any
+  // more. The rivals behind the sign-up links are keyed to the checked site and
+  // clear themselves; the table has to be cleared here.
+  replace(slot('compare'));
   const host = state.fetch ? new URL(state.fetch.robotsUrl).host : t('ui.checked.pasted');
   $('#compare-you').textContent = t('ui.compare.youAre', { host });
   const field = $<HTMLInputElement>('#compare-site');
