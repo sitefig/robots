@@ -16,7 +16,7 @@ import { Document } from '../components/document.ts';
 import { SiteHeader } from '../components/header.ts';
 import { SiteFooter } from '../components/footer.ts';
 import { strings, assetsFor, relative, homePath, pageJsonLd, escapeHtml, DEFAULT_LANG } from '../lib/site.ts';
-import { crawlers, measuredCount, type Crawler } from '../lib/crawlers.ts';
+import { crawlers, measuredCount, credit, type Crawler } from '../lib/crawlers.ts';
 import type { SiteData } from '../../eleventy.config.ts';
 
 interface Data extends SiteData {
@@ -38,6 +38,8 @@ export const data = {
 /** Bing is the only crawler that honours Crawl-delay, which is worth saying once. */
 const HONOURS_DELAY = ['bingbot', 'msnbot', 'adidxbot', 'bingpreview'];
 
+const count = (n: number): string => n.toLocaleString('en-GB');
+
 export function render(d: Data): string {
   const c = d.crawler;
   const path = `/crawlers/${c.slug}/`;
@@ -45,6 +47,7 @@ export function render(d: Data): string {
   const ctx: PageContext = { lang: DEFAULT_LANG, path, assets: assetsFor(path), home: relative(path, homePath(DEFAULT_LANG)), s, active: d.languages, alternates: { [DEFAULT_LANG]: path } };
   const kind = s.text(`agents.category.${c.category}`);
   const tracked = measuredCount();
+  const source = credit();
   const delay = c.tokens.some((token) => HONOURS_DELAY.includes(token));
   // A note in the configuration is either a dictionary key or the sentence
   // itself, which is how the engine reads it too: a key that is not in the
@@ -68,6 +71,7 @@ export function render(d: Data): string {
     `<div><dt>Named by</dt><dd>${c.named} of ${tracked} large sites</dd></div>`,
   ];
   if (c.board) facts.push(`<div><dt>Blocked by</dt><dd>${c.board.blocked} of ${tracked} (${c.board.percent}%)</dd></div>`);
+  if (c.world) facts.push(`<div><dt>Named across the web</dt><dd>${count(c.world.total)} files (${escapeHtml(c.world.percent)})</dd></div>`);
   if (c.info) facts.push(`<div><dt>Documented at</dt><dd><a href="${escapeHtml(c.info)}" rel="nofollow noopener">${escapeHtml(c.info.replace(/^https?:\/\//, ''))}</a></dd></div>`);
 
   const body = `${SiteHeader(ctx)}
@@ -97,7 +101,10 @@ ${facts.join('\n')}
     ${c.ua ? `<section class="flow" data-space="s" aria-labelledby="ua-heading">
       <h2 id="ua-heading">What it says it is</h2>
       <p class="text-muted max-w-prose">The user-agent string its operator publishes. Anything can send this string, so it is not proof of who is asking${c.info ? ', and the address in it is where the operator documents the crawler' : ''}.</p>
-      <pre class="raw"><span class="raw__line">${escapeHtml(c.ua)}</span></pre>
+      <!-- Focusable, because a long user-agent string scrolls sideways and a
+           scrollable region has to be reachable without a pointer. The file panel
+           in a report does the same. -->
+      <pre class="raw" tabindex="0"><span class="raw__line">${escapeHtml(c.ua)}</span></pre>
     </section>` : ''}
 
     <section class="flow" data-space="s" aria-labelledby="figures-heading">
@@ -108,6 +115,17 @@ ${facts.join('\n')}
       ${c.board ? `<p class="text-muted max-w-prose">Of those ${tracked} sites, ${c.board.blocked} shut it out of everything (${c.board.percent}%), ${c.board.restricted} keep part of the site back from it, and ${c.board.open} leave it the whole site. Those three come out of the engine, not out of a count of names.</p>` : ''}
       <p><a href="/">Check your own robots.txt</a> to see what it says to ${escapeHtml(c.name)}, line by line.</p>
     </section>
+
+    ${c.world && source ? `<section class="flow" data-space="s" aria-labelledby="world-heading">
+      <h2 id="world-heading">What the whole web does about it</h2>
+      <p class="text-muted max-w-prose">${escapeHtml(source.credit)} crawls robots.txt files at a scale we do not: ${count(c.world.total)} of the files in their dataset name ${escapeHtml(c.name)}, which is ${escapeHtml(c.world.percent)} of all of them.</p>
+      <dl class="defs">
+        <div><dt>Shut out of everything</dt><dd>${count(c.world.disallowAll)} files${c.world.total > 0 ? ` (${Math.round((c.world.disallowAll / c.world.total) * 100)}% of the files that name it)` : ''}</dd></div>
+        <div><dt>Allowed, never disallowed</dt><dd>${count(c.world.allowOnly)} files</dd></div>
+        ${c.world.crawlDelayCount > 0 ? `<div><dt>Given a Crawl-delay</dt><dd>${count(c.world.crawlDelayCount)} files, ${c.world.avgCrawlDelay} seconds on average</dd></div>` : ''}
+      </dl>
+      <p class="text-sm text-muted">Figures from <a href="${escapeHtml(source.source)}" rel="noopener">${escapeHtml(source.credit)}</a>, dataset ${escapeHtml(source.dataset)}, used under <a href="${escapeHtml(source.licenceUrl)}" rel="license noopener">${escapeHtml(source.licence)}</a>.</p>
+    </section>` : ''}
   </main>
 
 ${SiteFooter(ctx)}`;

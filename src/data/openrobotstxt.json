@@ -1,0 +1,1114 @@
+{
+  "source": "https://openrobotstxt.org/stats/most-directed",
+  "credit": "OpenRobotsTxt",
+  "licence": "CC BY 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "dataset": "20260519-030551-77634712",
+  "retrieved": "2026-10-06",
+  "rows": {
+    "*": {
+      "total": 256393205,
+      "percent": "17.74%",
+      "disallowAll": 42125523,
+      "allowOnly": 70515663,
+      "avgCrawlDelay": 77,
+      "crawlDelayCount": 19228613
+    },
+    "gptbot": {
+      "total": 15524330,
+      "percent": "1.07%",
+      "disallowAll": 10817752,
+      "allowOnly": 509469,
+      "avgCrawlDelay": 16,
+      "crawlDelayCount": 691242
+    },
+    "ccbot": {
+      "total": 13976200,
+      "percent": "0.97%",
+      "disallowAll": 10122781,
+      "allowOnly": 255789,
+      "avgCrawlDelay": 45,
+      "crawlDelayCount": 143046
+    },
+    "blexbot": {
+      "total": 10292735,
+      "percent": "0.71%",
+      "disallowAll": 10064585,
+      "allowOnly": 2269,
+      "avgCrawlDelay": 81,
+      "crawlDelayCount": 218998
+    },
+    "bytespider": {
+      "total": 13598507,
+      "percent": "0.94%",
+      "disallowAll": 10028623,
+      "allowOnly": 215390,
+      "avgCrawlDelay": 61,
+      "crawlDelayCount": 133242
+    },
+    "claudebot": {
+      "total": 14076037,
+      "percent": "0.97%",
+      "disallowAll": 9863522,
+      "allowOnly": 404832,
+      "avgCrawlDelay": 27,
+      "crawlDelayCount": 412472
+    },
+    "baiduspider": {
+      "total": 16488264,
+      "percent": "1.14%",
+      "disallowAll": 9403178,
+      "allowOnly": 784196,
+      "avgCrawlDelay": 39,
+      "crawlDelayCount": 266535
+    },
+    "amazonbot": {
+      "total": 13036362,
+      "percent": "0.90%",
+      "disallowAll": 9302930,
+      "allowOnly": 73335,
+      "avgCrawlDelay": 48,
+      "crawlDelayCount": 226800
+    },
+    "petalbot": {
+      "total": 9046089,
+      "percent": "0.63%",
+      "disallowAll": 8627846,
+      "allowOnly": 92306,
+      "avgCrawlDelay": 46,
+      "crawlDelayCount": 240271
+    },
+    "meta-externalagent": {
+      "total": 12516810,
+      "percent": "0.87%",
+      "disallowAll": 8537071,
+      "allowOnly": 346220,
+      "avgCrawlDelay": 32,
+      "crawlDelayCount": 266559
+    },
+    "google-extended": {
+      "total": 12474831,
+      "percent": "0.86%",
+      "disallowAll": 8350031,
+      "allowOnly": 385238,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 222908
+    },
+    "applebot-extended": {
+      "total": 11516255,
+      "percent": "0.80%",
+      "disallowAll": 7812341,
+      "allowOnly": 143717,
+      "avgCrawlDelay": 12,
+      "crawlDelayCount": 116393
+    },
+    "sogou": {
+      "total": 7565295,
+      "percent": "0.52%",
+      "disallowAll": 7453999,
+      "allowOnly": 23248,
+      "avgCrawlDelay": 82,
+      "crawlDelayCount": 52268
+    },
+    "mj12bot": {
+      "total": 11658079,
+      "percent": "0.81%",
+      "disallowAll": 6159943,
+      "allowOnly": 99808,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 5373275
+    },
+    "dotbot": {
+      "total": 12849274,
+      "percent": "0.89%",
+      "disallowAll": 6067293,
+      "allowOnly": 93124,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 6582903
+    },
+    "nutch": {
+      "total": 5616888,
+      "percent": "0.39%",
+      "disallowAll": 5531308,
+      "allowOnly": 13343,
+      "avgCrawlDelay": 23,
+      "crawlDelayCount": 15930
+    },
+    "ahrefsbot": {
+      "total": 16517691,
+      "percent": "1.14%",
+      "disallowAll": 4885498,
+      "allowOnly": 320445,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 11203741
+    },
+    "semrushbot": {
+      "total": 6427734,
+      "percent": "0.44%",
+      "disallowAll": 4767431,
+      "allowOnly": 135915,
+      "avgCrawlDelay": 16,
+      "crawlDelayCount": 1508185
+    },
+    "cloudflarebrowserrenderingcrawler": {
+      "total": 4661370,
+      "percent": "0.32%",
+      "disallowAll": 4660746,
+      "allowOnly": 426,
+      "avgCrawlDelay": 4,
+      "crawlDelayCount": 4
+    },
+    "anthropic-ai": {
+      "total": 6753095,
+      "percent": "0.47%",
+      "disallowAll": 2929622,
+      "allowOnly": 307356,
+      "avgCrawlDelay": 31,
+      "crawlDelayCount": 199551
+    },
+    "chatgpt-user": {
+      "total": 3666370,
+      "percent": "0.25%",
+      "disallowAll": 2620911,
+      "allowOnly": 421792,
+      "avgCrawlDelay": 24,
+      "crawlDelayCount": 310233
+    },
+    "imagesiftbot": {
+      "total": 2908098,
+      "percent": "0.20%",
+      "disallowAll": 2573457,
+      "allowOnly": 3925,
+      "avgCrawlDelay": 7,
+      "crawlDelayCount": 320574
+    },
+    "rogerbot": {
+      "total": 2464692,
+      "percent": "0.17%",
+      "disallowAll": 2113781,
+      "allowOnly": 92421,
+      "avgCrawlDelay": 194,
+      "crawlDelayCount": 163176
+    },
+    "turnitinbot": {
+      "total": 2050137,
+      "percent": "0.14%",
+      "disallowAll": 2041697,
+      "allowOnly": 1178,
+      "avgCrawlDelay": 81,
+      "crawlDelayCount": 3153
+    },
+    "omgili": {
+      "total": 5137084,
+      "percent": "0.36%",
+      "disallowAll": 1964772,
+      "allowOnly": 5283,
+      "avgCrawlDelay": 15,
+      "crawlDelayCount": 58902
+    },
+    "dataforseobot": {
+      "total": 2080392,
+      "percent": "0.14%",
+      "disallowAll": 1952471,
+      "allowOnly": 76932,
+      "avgCrawlDelay": 158,
+      "crawlDelayCount": 46598
+    },
+    "megaindex.ru": {
+      "total": 1940416,
+      "percent": "0.13%",
+      "disallowAll": 1921823,
+      "allowOnly": 479,
+      "avgCrawlDelay": 39,
+      "crawlDelayCount": 16171
+    },
+    "cohere-ai": {
+      "total": 5426889,
+      "percent": "0.38%",
+      "disallowAll": 1874845,
+      "allowOnly": 107229,
+      "avgCrawlDelay": 13,
+      "crawlDelayCount": 59831
+    },
+    "perplexitybot": {
+      "total": 2923308,
+      "percent": "0.20%",
+      "disallowAll": 1833124,
+      "allowOnly": 460582,
+      "avgCrawlDelay": 14,
+      "crawlDelayCount": 324614
+    },
+    "ia_archiver": {
+      "total": 18168396,
+      "percent": "1.26%",
+      "disallowAll": 1822761,
+      "allowOnly": 184386,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 1022298
+    },
+    "oai-searchbot": {
+      "total": 2445882,
+      "percent": "0.17%",
+      "disallowAll": 1789014,
+      "allowOnly": 294657,
+      "avgCrawlDelay": 9,
+      "crawlDelayCount": 349496
+    },
+    "exabot": {
+      "total": 1860124,
+      "percent": "0.13%",
+      "disallowAll": 1780011,
+      "allowOnly": 13543,
+      "avgCrawlDelay": 259,
+      "crawlDelayCount": 20591
+    },
+    "gigabot": {
+      "total": 1844347,
+      "percent": "0.13%",
+      "disallowAll": 1773284,
+      "allowOnly": 4720,
+      "avgCrawlDelay": 132,
+      "crawlDelayCount": 5632
+    },
+    "scrapy": {
+      "total": 1826231,
+      "percent": "0.13%",
+      "disallowAll": 1719299,
+      "allowOnly": 35158,
+      "avgCrawlDelay": 60,
+      "crawlDelayCount": 71876
+    },
+    "facebookbot": {
+      "total": 5360911,
+      "percent": "0.37%",
+      "disallowAll": 1656392,
+      "allowOnly": 100583,
+      "avgCrawlDelay": 33,
+      "crawlDelayCount": 156768
+    },
+    "claude-web": {
+      "total": 2236135,
+      "percent": "0.15%",
+      "disallowAll": 1630527,
+      "allowOnly": 169695,
+      "avgCrawlDelay": 15,
+      "crawlDelayCount": 108514
+    },
+    "spbot": {
+      "total": 2129697,
+      "percent": "0.15%",
+      "disallowAll": 1622132,
+      "allowOnly": 340,
+      "avgCrawlDelay": 12,
+      "crawlDelayCount": 504632
+    },
+    "omgilibot": {
+      "total": 4651426,
+      "percent": "0.32%",
+      "disallowAll": 1470431,
+      "allowOnly": 12907,
+      "avgCrawlDelay": 17,
+      "crawlDelayCount": 59691
+    },
+    "twiceler": {
+      "total": 1454551,
+      "percent": "0.10%",
+      "disallowAll": 1424318,
+      "allowOnly": 1863,
+      "avgCrawlDelay": 146,
+      "crawlDelayCount": 4865
+    },
+    "nerdybot": {
+      "total": 1415996,
+      "percent": "0.10%",
+      "disallowAll": 1414885,
+      "allowOnly": 134,
+      "avgCrawlDelay": 45,
+      "crawlDelayCount": 1444
+    },
+    "teoma": {
+      "total": 1567758,
+      "percent": "0.11%",
+      "disallowAll": 1366583,
+      "allowOnly": 14457,
+      "avgCrawlDelay": 83,
+      "crawlDelayCount": 26376
+    },
+    "diffbot": {
+      "total": 1383595,
+      "percent": "0.10%",
+      "disallowAll": 1246231,
+      "allowOnly": 58667,
+      "avgCrawlDelay": 15,
+      "crawlDelayCount": 66384
+    },
+    "sistrix": {
+      "total": 1255395,
+      "percent": "0.09%",
+      "disallowAll": 1229522,
+      "allowOnly": 623,
+      "avgCrawlDelay": 32,
+      "crawlDelayCount": 19966
+    },
+    "yandexbot": {
+      "total": 6992360,
+      "percent": "0.48%",
+      "disallowAll": 1213890,
+      "allowOnly": 233361,
+      "avgCrawlDelay": 82,
+      "crawlDelayCount": 125505
+    },
+    "bingbot": {
+      "total": 19247230,
+      "percent": "1.33%",
+      "disallowAll": 1206207,
+      "allowOnly": 1264883,
+      "avgCrawlDelay": 13,
+      "crawlDelayCount": 8561188
+    },
+    "heritrix": {
+      "total": 1220341,
+      "percent": "0.08%",
+      "disallowAll": 1201052,
+      "allowOnly": 450,
+      "avgCrawlDelay": 12,
+      "crawlDelayCount": 15907
+    },
+    "yandex": {
+      "total": 10483754,
+      "percent": "0.73%",
+      "disallowAll": 1129960,
+      "allowOnly": 270818,
+      "avgCrawlDelay": 27,
+      "crawlDelayCount": 500040
+    },
+    "archive.org_bot": {
+      "total": 1206356,
+      "percent": "0.08%",
+      "disallowAll": 1110923,
+      "allowOnly": 15533,
+      "avgCrawlDelay": 51,
+      "crawlDelayCount": 6314
+    },
+    "youbot": {
+      "total": 4351228,
+      "percent": "0.30%",
+      "disallowAll": 1080705,
+      "allowOnly": 85512,
+      "avgCrawlDelay": 12,
+      "crawlDelayCount": 89006
+    },
+    "serpstatbot": {
+      "total": 1185095,
+      "percent": "0.08%",
+      "disallowAll": 1075235,
+      "allowOnly": 75251,
+      "avgCrawlDelay": 79,
+      "crawlDelayCount": 34392
+    },
+    "yeti": {
+      "total": 1286528,
+      "percent": "0.09%",
+      "disallowAll": 1030904,
+      "allowOnly": 74761,
+      "avgCrawlDelay": 20,
+      "crawlDelayCount": 58678
+    },
+    "naverbot": {
+      "total": 1116952,
+      "percent": "0.08%",
+      "disallowAll": 972795,
+      "allowOnly": 21923,
+      "avgCrawlDelay": 19,
+      "crawlDelayCount": 26857
+    },
+    "applebot": {
+      "total": 1727387,
+      "percent": "0.12%",
+      "disallowAll": 959565,
+      "allowOnly": 245383,
+      "avgCrawlDelay": 72,
+      "crawlDelayCount": 356322
+    },
+    "barkrowler": {
+      "total": 871010,
+      "percent": "0.06%",
+      "disallowAll": 813614,
+      "allowOnly": 680,
+      "avgCrawlDelay": 1299,
+      "crawlDelayCount": 52667
+    },
+    "googlebot": {
+      "total": 23612583,
+      "percent": "1.63%",
+      "disallowAll": 807384,
+      "allowOnly": 2931365,
+      "avgCrawlDelay": 38,
+      "crawlDelayCount": 1422400
+    },
+    "zoominfobot": {
+      "total": 789744,
+      "percent": "0.05%",
+      "disallowAll": 785047,
+      "allowOnly": 494,
+      "avgCrawlDelay": 891,
+      "crawlDelayCount": 2579
+    },
+    "velenpublicwebcrawler": {
+      "total": 809637,
+      "percent": "0.06%",
+      "disallowAll": 746240,
+      "allowOnly": 632,
+      "avgCrawlDelay": 12,
+      "crawlDelayCount": 56141
+    },
+    "semrushbot-sa": {
+      "total": 814299,
+      "percent": "0.06%",
+      "disallowAll": 724471,
+      "allowOnly": 5401,
+      "avgCrawlDelay": 15,
+      "crawlDelayCount": 74137
+    },
+    "timpibot": {
+      "total": 868314,
+      "percent": "0.06%",
+      "disallowAll": 678558,
+      "allowOnly": 4069,
+      "avgCrawlDelay": 8,
+      "crawlDelayCount": 181128
+    },
+    "pangubot": {
+      "total": 645038,
+      "percent": "0.04%",
+      "disallowAll": 636124,
+      "allowOnly": 784,
+      "avgCrawlDelay": 34,
+      "crawlDelayCount": 2119
+    },
+    "seokicks-robot": {
+      "total": 628596,
+      "percent": "0.04%",
+      "disallowAll": 618939,
+      "allowOnly": 5444,
+      "avgCrawlDelay": 206,
+      "crawlDelayCount": 2128
+    },
+    "semrushbot-swa": {
+      "total": 653968,
+      "percent": "0.05%",
+      "disallowAll": 618437,
+      "allowOnly": 2562,
+      "avgCrawlDelay": 16,
+      "crawlDelayCount": 19695
+    },
+    "semrushbot-ba": {
+      "total": 696911,
+      "percent": "0.05%",
+      "disallowAll": 593988,
+      "allowOnly": 2705,
+      "avgCrawlDelay": 30,
+      "crawlDelayCount": 84547
+    },
+    "msnbot": {
+      "total": 6074243,
+      "percent": "0.42%",
+      "disallowAll": 581156,
+      "allowOnly": 253188,
+      "avgCrawlDelay": 22,
+      "crawlDelayCount": 2678220
+    },
+    "slurp": {
+      "total": 4710311,
+      "percent": "0.33%",
+      "disallowAll": 563455,
+      "allowOnly": 250943,
+      "avgCrawlDelay": 16,
+      "crawlDelayCount": 1444067
+    },
+    "webzio-extended": {
+      "total": 624247,
+      "percent": "0.04%",
+      "disallowAll": 560640,
+      "allowOnly": 1222,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 55142
+    },
+    "360spider": {
+      "total": 1114143,
+      "percent": "0.08%",
+      "disallowAll": 559923,
+      "allowOnly": 220766,
+      "avgCrawlDelay": 5,
+      "crawlDelayCount": 50122
+    },
+    "semrushbot-si": {
+      "total": 648990,
+      "percent": "0.04%",
+      "disallowAll": 541133,
+      "allowOnly": 6634,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 85309
+    },
+    "semrushbot-ct": {
+      "total": 568813,
+      "percent": "0.04%",
+      "disallowAll": 535484,
+      "allowOnly": 2027,
+      "avgCrawlDelay": 14,
+      "crawlDelayCount": 17642
+    },
+    "seznambot": {
+      "total": 5978318,
+      "percent": "0.41%",
+      "disallowAll": 531894,
+      "allowOnly": 12075,
+      "avgCrawlDelay": 292,
+      "crawlDelayCount": 16122
+    },
+    "friendlycrawler": {
+      "total": 594945,
+      "percent": "0.04%",
+      "disallowAll": 531502,
+      "allowOnly": 666,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 56565
+    },
+    "googleother": {
+      "total": 3780815,
+      "percent": "0.26%",
+      "disallowAll": 486645,
+      "allowOnly": 29376,
+      "avgCrawlDelay": 15,
+      "crawlDelayCount": 88377
+    },
+    "cohere-training-data-crawler": {
+      "total": 3566722,
+      "percent": "0.25%",
+      "disallowAll": 477830,
+      "allowOnly": 2861,
+      "avgCrawlDelay": 69,
+      "crawlDelayCount": 942
+    },
+    "google-cloudvertexbot": {
+      "total": 759836,
+      "percent": "0.05%",
+      "disallowAll": 461868,
+      "allowOnly": 9838,
+      "avgCrawlDelay": 21,
+      "crawlDelayCount": 3579
+    },
+    "icc-crawler": {
+      "total": 523880,
+      "percent": "0.04%",
+      "disallowAll": 461433,
+      "allowOnly": 1033,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 54205
+    },
+    "siteauditbot": {
+      "total": 620586,
+      "percent": "0.04%",
+      "disallowAll": 452349,
+      "allowOnly": 21106,
+      "avgCrawlDelay": 12,
+      "crawlDelayCount": 112800
+    },
+    "splitsignalbot": {
+      "total": 476051,
+      "percent": "0.03%",
+      "disallowAll": 441417,
+      "allowOnly": 3619,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 18316
+    },
+    "ai2bot-dolma": {
+      "total": 3578884,
+      "percent": "0.25%",
+      "disallowAll": 440234,
+      "allowOnly": 1161,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 58640
+    },
+    "grapeshot": {
+      "total": 438664,
+      "percent": "0.03%",
+      "disallowAll": 411703,
+      "allowOnly": 1746,
+      "avgCrawlDelay": 220,
+      "crawlDelayCount": 15985
+    },
+    "googlebot-image": {
+      "total": 2997320,
+      "percent": "0.21%",
+      "disallowAll": 411547,
+      "allowOnly": 1215812,
+      "avgCrawlDelay": 26,
+      "crawlDelayCount": 156946
+    },
+    "semrushbot-coub": {
+      "total": 431360,
+      "percent": "0.03%",
+      "disallowAll": 399629,
+      "allowOnly": 1340,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 16874
+    },
+    "ai2bot": {
+      "total": 3538439,
+      "percent": "0.24%",
+      "disallowAll": 390308,
+      "allowOnly": 6350,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 60990
+    },
+    "seokicks": {
+      "total": 469665,
+      "percent": "0.03%",
+      "disallowAll": 386309,
+      "allowOnly": 75096,
+      "avgCrawlDelay": 332,
+      "crawlDelayCount": 7114
+    },
+    "meta-externalfetcher": {
+      "total": 521095,
+      "percent": "0.04%",
+      "disallowAll": 347815,
+      "allowOnly": 59958,
+      "avgCrawlDelay": 14,
+      "crawlDelayCount": 127811
+    },
+    "linkpadbot": {
+      "total": 342035,
+      "percent": "0.02%",
+      "disallowAll": 341018,
+      "allowOnly": 164,
+      "avgCrawlDelay": 63,
+      "crawlDelayCount": 647
+    },
+    "img2dataset": {
+      "total": 3458729,
+      "percent": "0.24%",
+      "disallowAll": 319835,
+      "allowOnly": 935,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 58847
+    },
+    "semrushbot-bm": {
+      "total": 356389,
+      "percent": "0.02%",
+      "disallowAll": 300011,
+      "allowOnly": 1313,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 54282
+    },
+    "facebookexternalhit": {
+      "total": 2182188,
+      "percent": "0.15%",
+      "disallowAll": 265687,
+      "allowOnly": 1224441,
+      "avgCrawlDelay": 40,
+      "crawlDelayCount": 235710
+    },
+    "linkdexbot": {
+      "total": 259974,
+      "percent": "0.02%",
+      "disallowAll": 258586,
+      "allowOnly": 119,
+      "avgCrawlDelay": 177,
+      "crawlDelayCount": 460
+    },
+    "duckassistbot": {
+      "total": 3672558,
+      "percent": "0.25%",
+      "disallowAll": 252464,
+      "allowOnly": 24471,
+      "avgCrawlDelay": 24,
+      "crawlDelayCount": 21807
+    },
+    "perplexity-user": {
+      "total": 452068,
+      "percent": "0.03%",
+      "disallowAll": 224008,
+      "allowOnly": 133935,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 126030
+    },
+    "kangaroo": {
+      "total": 221298,
+      "percent": "0.02%",
+      "disallowAll": 221265,
+      "allowOnly": 9,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 80
+    },
+    "googlebot-mobile": {
+      "total": 945603,
+      "percent": "0.07%",
+      "disallowAll": 219046,
+      "allowOnly": 198673,
+      "avgCrawlDelay": 17,
+      "crawlDelayCount": 77361
+    },
+    "semrushbot-ocob": {
+      "total": 204027,
+      "percent": "0.01%",
+      "disallowAll": 197291,
+      "allowOnly": 878,
+      "avgCrawlDelay": 57,
+      "crawlDelayCount": 2279
+    },
+    "claude-searchbot": {
+      "total": 387638,
+      "percent": "0.03%",
+      "disallowAll": 194419,
+      "allowOnly": 118506,
+      "avgCrawlDelay": 13,
+      "crawlDelayCount": 111792
+    },
+    "daum": {
+      "total": 188749,
+      "percent": "0.01%",
+      "disallowAll": 181795,
+      "allowOnly": 2794,
+      "avgCrawlDelay": 111,
+      "crawlDelayCount": 849
+    },
+    "googleother-image": {
+      "total": 3353359,
+      "percent": "0.23%",
+      "disallowAll": 178960,
+      "allowOnly": 3862,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 81278
+    },
+    "claude-user": {
+      "total": 344451,
+      "percent": "0.02%",
+      "disallowAll": 177486,
+      "allowOnly": 67481,
+      "avgCrawlDelay": 14,
+      "crawlDelayCount": 52636
+    },
+    "googleother-video": {
+      "total": 3350974,
+      "percent": "0.23%",
+      "disallowAll": 177367,
+      "allowOnly": 3589,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 81235
+    },
+    "tiktokspider": {
+      "total": 3251424,
+      "percent": "0.23%",
+      "disallowAll": 155085,
+      "allowOnly": 915,
+      "avgCrawlDelay": 200,
+      "crawlDelayCount": 17998
+    },
+    "mistralai-user": {
+      "total": 180048,
+      "percent": "0.01%",
+      "disallowAll": 137236,
+      "allowOnly": 13297,
+      "avgCrawlDelay": 24,
+      "crawlDelayCount": 18617
+    },
+    "gemini-deep-research": {
+      "total": 150618,
+      "percent": "0.01%",
+      "disallowAll": 128479,
+      "allowOnly": 2955,
+      "avgCrawlDelay": 21,
+      "crawlDelayCount": 13574
+    },
+    "screaming": {
+      "total": 126404,
+      "percent": "0.01%",
+      "disallowAll": 125947,
+      "allowOnly": 50,
+      "avgCrawlDelay": 21,
+      "crawlDelayCount": 81
+    },
+    "phindbot": {
+      "total": 142594,
+      "percent": "0.01%",
+      "disallowAll": 124408,
+      "allowOnly": 11811,
+      "avgCrawlDelay": 45,
+      "crawlDelayCount": 1329
+    },
+    "amzn-searchbot": {
+      "total": 139406,
+      "percent": "0.01%",
+      "disallowAll": 123988,
+      "allowOnly": 2381,
+      "avgCrawlDelay": 46,
+      "crawlDelayCount": 10109
+    },
+    "ahrefssiteaudit": {
+      "total": 4360714,
+      "percent": "0.30%",
+      "disallowAll": 119268,
+      "allowOnly": 50248,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 4128688
+    },
+    "adsbot-google": {
+      "total": 15347857,
+      "percent": "1.06%",
+      "disallowAll": 115842,
+      "allowOnly": 989063,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 99871
+    },
+    "twitterbot": {
+      "total": 1559649,
+      "percent": "0.11%",
+      "disallowAll": 111801,
+      "allowOnly": 809298,
+      "avgCrawlDelay": 44,
+      "crawlDelayCount": 111336
+    },
+    "coccocbot": {
+      "total": 113395,
+      "percent": "0.01%",
+      "disallowAll": 110328,
+      "allowOnly": 1048,
+      "avgCrawlDelay": 30,
+      "crawlDelayCount": 1407
+    },
+    "brightbot": {
+      "total": 110240,
+      "percent": "0.01%",
+      "disallowAll": 108888,
+      "allowOnly": 264,
+      "avgCrawlDelay": 1125,
+      "crawlDelayCount": 359
+    },
+    "mojeekbot": {
+      "total": 111348,
+      "percent": "0.01%",
+      "disallowAll": 102617,
+      "allowOnly": 3757,
+      "avgCrawlDelay": 92,
+      "crawlDelayCount": 1838
+    },
+    "qwantify": {
+      "total": 151264,
+      "percent": "0.01%",
+      "disallowAll": 98085,
+      "allowOnly": 9761,
+      "avgCrawlDelay": 19,
+      "crawlDelayCount": 37040
+    },
+    "mediapartners-google": {
+      "total": 21006990,
+      "percent": "1.45%",
+      "disallowAll": 95685,
+      "allowOnly": 492267,
+      "avgCrawlDelay": 23,
+      "crawlDelayCount": 147001
+    },
+    "xovibot": {
+      "total": 89621,
+      "percent": "0.01%",
+      "disallowAll": 86116,
+      "allowOnly": 119,
+      "avgCrawlDelay": 33,
+      "crawlDelayCount": 2300
+    },
+    "duckduckbot": {
+      "total": 710981,
+      "percent": "0.05%",
+      "disallowAll": 85150,
+      "allowOnly": 206265,
+      "avgCrawlDelay": 18,
+      "crawlDelayCount": 72044
+    },
+    "yandeximages": {
+      "total": 264932,
+      "percent": "0.02%",
+      "disallowAll": 81338,
+      "allowOnly": 107301,
+      "avgCrawlDelay": 53,
+      "crawlDelayCount": 5934
+    },
+    "serankingbacklinksbot": {
+      "total": 90087,
+      "percent": "0.01%",
+      "disallowAll": 74663,
+      "allowOnly": 125,
+      "avgCrawlDelay": 241,
+      "crawlDelayCount": 14781
+    },
+    "firecrawlagent": {
+      "total": 80462,
+      "percent": "0.01%",
+      "disallowAll": 64493,
+      "allowOnly": 8322,
+      "avgCrawlDelay": 26,
+      "crawlDelayCount": 2274
+    },
+    "amazonadbot": {
+      "total": 117571,
+      "percent": "0.01%",
+      "disallowAll": 63201,
+      "allowOnly": 10237,
+      "avgCrawlDelay": 37,
+      "crawlDelayCount": 683
+    },
+    "pinterestbot": {
+      "total": 210320,
+      "percent": "0.01%",
+      "disallowAll": 59327,
+      "allowOnly": 24054,
+      "avgCrawlDelay": 47,
+      "crawlDelayCount": 83228
+    },
+    "adidxbot": {
+      "total": 325270,
+      "percent": "0.02%",
+      "disallowAll": 31426,
+      "allowOnly": 25267,
+      "avgCrawlDelay": 9,
+      "crawlDelayCount": 204384
+    },
+    "linkedinbot": {
+      "total": 316836,
+      "percent": "0.02%",
+      "disallowAll": 30021,
+      "allowOnly": 138737,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 61440
+    },
+    "googlebot-news": {
+      "total": 901564,
+      "percent": "0.06%",
+      "disallowAll": 25949,
+      "allowOnly": 717557,
+      "avgCrawlDelay": 30,
+      "crawlDelayCount": 8141
+    },
+    "adsbot-google-mobile": {
+      "total": 9636486,
+      "percent": "0.67%",
+      "disallowAll": 25906,
+      "allowOnly": 104891,
+      "avgCrawlDelay": 7,
+      "crawlDelayCount": 62563
+    },
+    "googlebot-video": {
+      "total": 830741,
+      "percent": "0.06%",
+      "disallowAll": 24983,
+      "allowOnly": 644427,
+      "avgCrawlDelay": 22,
+      "crawlDelayCount": 8027
+    },
+    "pinterest": {
+      "total": 4330270,
+      "percent": "0.30%",
+      "disallowAll": 19827,
+      "allowOnly": 12158,
+      "avgCrawlDelay": 1,
+      "crawlDelayCount": 4233958
+    },
+    "telegrambot": {
+      "total": 67846,
+      "percent": "0.00%",
+      "disallowAll": 18695,
+      "allowOnly": 25649,
+      "avgCrawlDelay": 264,
+      "crawlDelayCount": 13674
+    },
+    "discordbot": {
+      "total": 45961,
+      "percent": "0.00%",
+      "disallowAll": 14322,
+      "allowOnly": 20428,
+      "avgCrawlDelay": 21,
+      "crawlDelayCount": 2228
+    },
+    "seznam": {
+      "total": 13114,
+      "percent": "0.00%",
+      "disallowAll": 12922,
+      "allowOnly": 64,
+      "avgCrawlDelay": 18,
+      "crawlDelayCount": 41
+    },
+    "storebot-google": {
+      "total": 96809,
+      "percent": "0.01%",
+      "disallowAll": 12212,
+      "allowOnly": 32361,
+      "avgCrawlDelay": 31,
+      "crawlDelayCount": 3324
+    },
+    "webzio": {
+      "total": 11372,
+      "percent": "0.00%",
+      "disallowAll": 10388,
+      "allowOnly": 106,
+      "avgCrawlDelay": 37,
+      "crawlDelayCount": 133
+    },
+    "bingpreview": {
+      "total": 336267,
+      "percent": "0.02%",
+      "disallowAll": 9274,
+      "allowOnly": 27358,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 177730
+    },
+    "whatsapp": {
+      "total": 55387,
+      "percent": "0.00%",
+      "disallowAll": 5863,
+      "allowOnly": 33147,
+      "avgCrawlDelay": 70,
+      "crawlDelayCount": 4343
+    },
+    "sidetrade": {
+      "total": 5715,
+      "percent": "0.00%",
+      "disallowAll": 5687,
+      "allowOnly": 5,
+      "avgCrawlDelay": 99,
+      "crawlDelayCount": 81
+    },
+    "qwantbot": {
+      "total": 22740,
+      "percent": "0.00%",
+      "disallowAll": 4858,
+      "allowOnly": 608,
+      "avgCrawlDelay": 20,
+      "crawlDelayCount": 13425
+    },
+    "slackbot": {
+      "total": 59521,
+      "percent": "0.00%",
+      "disallowAll": 4620,
+      "allowOnly": 20592,
+      "avgCrawlDelay": 46,
+      "crawlDelayCount": 1380
+    },
+    "meta-externalads": {
+      "total": 54709,
+      "percent": "0.00%",
+      "disallowAll": 4077,
+      "allowOnly": 2409,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 37680
+    },
+    "novellum": {
+      "total": 1093,
+      "percent": "0.00%",
+      "disallowAll": 364,
+      "allowOnly": 87,
+      "avgCrawlDelay": 8,
+      "crawlDelayCount": 36
+    }
+  }
+}

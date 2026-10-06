@@ -39,6 +39,62 @@ export interface Crawler {
   named: number;
   /** From the leaderboard, for the crawlers it covers. */
   board?: { blocked: number; percent: number; restricted: number; open: number };
+  /** What the whole web does, from OpenRobotsTxt's published dataset. */
+  world?: World;
+}
+
+/**
+ * One row of the OpenRobotsTxt bot statistics, which counts every robots.txt it
+ * has crawled rather than the 192 we follow. Published under CC BY 4.0, so every
+ * page that shows one of these says where it came from; `credit()` carries the
+ * words for that.
+ */
+export interface World {
+  total: number;
+  percent: string;
+  disallowAll: number;
+  allowOnly: number;
+  avgCrawlDelay: number;
+  crawlDelayCount: number;
+}
+
+interface WorldFile {
+  source: string;
+  credit: string;
+  licence: string;
+  licenceUrl: string;
+  dataset: string;
+  retrieved: string;
+  rows: Record<string, World>;
+}
+
+let world: WorldFile | null = null;
+
+function worldFile(): WorldFile | null {
+  if (world) return world;
+  try {
+    world = JSON.parse(readFileSync(new URL('../data/openrobotstxt.json', import.meta.url), 'utf8')) as WorldFile;
+  } catch {
+    world = null;
+  }
+  return world;
+}
+
+/** Where the web-scale figures come from, for the line that has to say so. */
+export function credit(): Omit<WorldFile, 'rows'> | null {
+  const file = worldFile();
+  return file ? { source: file.source, credit: file.credit, licence: file.licence, licenceUrl: file.licenceUrl, dataset: file.dataset, retrieved: file.retrieved } : null;
+}
+
+/** The row for a crawler: its own token first, then the ones it falls back to. */
+function worldRow(tokens: string[]): World | undefined {
+  const rows = worldFile()?.rows;
+  if (!rows) return undefined;
+  for (const token of tokens) {
+    const row = rows[token.toLowerCase()];
+    if (row) return row;
+  }
+  return undefined;
 }
 
 export const slugFor = (name: string): string => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -176,6 +232,7 @@ export function crawlers(): Crawler[] {
     ai: ai.has(e.category),
     named: named.get(slugFor(e.name)) ?? 0,
     board: board.get(e.name.toLowerCase()),
+    world: worldRow(e.tokens),
   }));
   return cache;
 }

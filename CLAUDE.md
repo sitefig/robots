@@ -77,6 +77,7 @@ npm run i18n                           # runs the engine's tooling in engine/ (c
 npm run i18n:sync                      # the same, after editing engine/po/en.po
 npm run cli -- <url|file> [flags]      # the submodule's CLI, for checking the engine behaves as the page shows
 npm run a11y                           # the three accessibility checkers against _site/ (needs npm ci, a Chrome, and a build); a11y:axe, a11y:html, a11y:pa11y run one
+node tools/openrobotstxt.ts            # refresh src/data/openrobotstxt.json from OpenRobotsTxt's published dataset (CC BY 4.0, credited on the pages)
 node tests/a11y/pixels.mjs <old-site>  # screenshot every UI state of two builds and compare them byte for byte
 npm run lighthouse -- [url ...]        # Lighthouse (performance, accessibility, best practices, SEO; mobile and desktop); defaults to the live site
 ```
