@@ -46,6 +46,7 @@ export const FOOTER: FooterGroup[] = [
   {
     heading: 'page.footer.company',
     links: [
+      { label: 'page.footer.contact', to: { site: '/contact/' } },
       { label: 'page.footer.press', to: { site: '/press/' } },
       { label: 'page.footer.bot', to: { site: '/bot/' } },
       { label: 'ui.privacy.title', to: { site: '/privacy/' } },
