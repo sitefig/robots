@@ -41,6 +41,13 @@ const HONOURS_DELAY = ['bingbot', 'msnbot', 'adidxbot', 'bingpreview'];
 
 const count = (n: number): string => n.toLocaleString('en-GB');
 
+/** 1st, 2nd, 3rd, 8th, 113th: the exceptions are only in the last two digits. */
+function ordinal(n: number): string {
+  const teens = n % 100;
+  const suffix = teens >= 11 && teens <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] ?? 'th';
+  return `${count(n)}${suffix}`;
+}
+
 const day = (iso: string): string => new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 /**
@@ -63,6 +70,9 @@ export function render(d: Data): string {
   const kind = s.text(`agents.category.${c.category}`);
   const tracked = measuredCount();
   const source = credit();
+  // A crawler named in a few hundred files out of 1.4 billion rounds to 0.00%,
+  // and a share that reads as zero says less than the count beside it.
+  const share = c.world && parseFloat(c.world.percent) > 0 ? c.world.percent : '';
   const list = c.listed ? listCredit() : null;
   const delay = c.tokens.some((token) => HONOURS_DELAY.includes(token));
   // A note in the configuration is either a dictionary key or the sentence
@@ -81,7 +91,7 @@ export function render(d: Data): string {
     `<div><dt>Named by</dt><dd>${c.named} of ${tracked} large sites</dd></div>`,
   ];
   if (c.board) facts.push(`<div><dt>Blocked by</dt><dd>${c.board.blocked} of ${tracked} (${c.board.percent}%)</dd></div>`);
-  if (c.world) facts.push(`<div><dt>Named across the web</dt><dd>${count(c.world.total)} files (${escapeHtml(c.world.percent)})</dd></div>`);
+  if (c.world) facts.push(`<div><dt>Named across the web</dt><dd>${count(c.world.total)} files${share ? ` (${escapeHtml(share)})` : ''}</dd></div>`);
   // The operator's own address comes out of the user-agent string where there
   // is one, and otherwise out of the ai.robots.txt list, which records where a
   // crawler is documented for the ones that publish no string.
@@ -147,10 +157,10 @@ ${facts.join('\n')}
 
     ${c.world && source ? `<section class="flow" data-space="s" aria-labelledby="world-heading">
       <h2 id="world-heading">What the whole web does about it</h2>
-      <p class="text-muted max-w-prose">${escapeHtml(source.credit)} crawls robots.txt files at a scale we do not: ${count(c.world.total)} of the files in their dataset name ${escapeHtml(c.name)}, which is ${escapeHtml(c.world.percent)} of all of them.</p>
+      <p class="text-muted max-w-prose">${escapeHtml(source.credit)} crawls robots.txt files at a scale we do not: ${count(c.world.total)} of the files in their dataset name ${escapeHtml(c.name)}, ${share ? `which is ${escapeHtml(share)} of all of them${c.world.rank ? ' and makes' : ''}` : c.world.rank ? 'which makes' : ''}${c.world.rank ? ` it the ${ordinal(c.world.rank)} most addressed of the ${count(source.agents)} user-agents they counted` : ''}.</p>
       <dl class="defs">
         <div><dt>Shut out of everything</dt><dd>${count(c.world.disallowAll)} files${c.world.total > 0 ? ` (${Math.round((c.world.disallowAll / c.world.total) * 100)}% of the files that name it)` : ''}</dd></div>
-        <div><dt>Allowed, never disallowed</dt><dd>${count(c.world.allowOnly)} files</dd></div>
+        <div><dt>Allowed, never disallowed</dt><dd>${count(c.world.allowOnly)} files${c.world.allowRank ? `, the ${ordinal(c.world.allowRank)} most allowed user-agent` : ''}</dd></div>
         ${c.world.crawlDelayCount > 0 ? `<div><dt>Given a Crawl-delay</dt><dd>${count(c.world.crawlDelayCount)} files, ${c.world.avgCrawlDelay} seconds on average</dd></div>` : ''}
       </dl>
       <p class="text-sm text-muted">Figures from <a href="${escapeHtml(source.source)}" rel="noopener">${escapeHtml(source.credit)}</a>, dataset ${escapeHtml(source.dataset)}, used under <a href="${escapeHtml(source.licenceUrl)}" rel="license noopener">${escapeHtml(source.licence)}</a>.</p>

@@ -24,6 +24,10 @@ const OUT = new URL('../src/data/openrobotstxt.json', import.meta.url);
 interface Row {
   /** Files that name this user-agent at all. */
   total: number;
+  /** Where that puts it among every user-agent in the dataset, 1 being first. */
+  rank: number;
+  /** Where it ranks on being allowed and never disallowed. */
+  allowRank?: number;
   /** Share of all the files in the dataset. */
   percent: string;
   /** Files that shut it out of everything. */
@@ -59,18 +63,49 @@ const { text, dataset } = await csv();
 const lines = text.split('\n');
 const head = lines[0].split(',');
 const column = (name: string): number => head.indexOf(name);
-const rows: Record<string, Row> = {};
-let kept = 0;
+
+// Rank needs the whole file, not our slice: being the third most named
+// user-agent on the web is only a fact if the other 64,754 were counted too.
+// That is what OpenRobotsTxt's own "most directed" and "most explicit allow
+// all" tables rank on, and a rank survives in 26 KB where their CSV does not.
+const all: { agent: string; total: number; allowOnly: number; cells: string[] }[] = [];
 for (const line of lines.slice(1)) {
   if (!line) continue;
   const cells = line.split(',');
   const agent = cells[0]?.trim().toLowerCase();
-  if (!agent || !wanted.has(agent)) continue;
+  if (!agent) continue;
+  all.push({ agent, total: Number(cells[column('Total')]) || 0, allowOnly: Number(cells[column('AllowOnly')]) || 0, cells });
+}
+const rankBy = (key: 'total' | 'allowOnly'): Map<string, number> => {
+  const order = [...all].sort((a, b) => b[key] - a[key]);
+  const ranks = new Map<string, number>();
+  // Equal counts share a rank, so the 1,200 user-agents named once are not
+  // ranked 63,000th and 63,001st as if one were rarer than the other.
+  let rank = 0;
+  let last: number | null = null;
+  order.forEach((row, i) => {
+    if (row[key] !== last) {
+      rank = i + 1;
+      last = row[key];
+    }
+    ranks.set(row.agent, rank);
+  });
+  return ranks;
+};
+const byTotal = rankBy('total');
+const byAllow = rankBy('allowOnly');
+
+const rows: Record<string, Row> = {};
+let kept = 0;
+for (const { agent, cells, allowOnly } of all) {
+  if (!wanted.has(agent)) continue;
   rows[agent] = {
     total: Number(cells[column('Total')]) || 0,
+    rank: byTotal.get(agent) ?? 0,
+    allowRank: allowOnly > 0 ? byAllow.get(agent) : undefined,
     percent: cells[column('TotalPercentage')]?.trim() || '',
     disallowAll: Number(cells[column('DisallowAll')]) || 0,
-    allowOnly: Number(cells[column('AllowOnly')]) || 0,
+    allowOnly,
     avgCrawlDelay: Number(cells[column('AvgCrawlDelay')]) || 0,
     crawlDelayCount: Number(cells[column('CrawlDelayCount')]) || 0,
   };
@@ -84,6 +119,8 @@ writeFileSync(OUT, `${JSON.stringify({
   licence: LICENCE,
   licenceUrl: LICENCE_URL,
   dataset,
+  /** Every user-agent the dataset counted, which is what a rank is out of. */
+  agents: all.length,
   retrieved: new Date().toISOString().slice(0, 10),
   rows,
 }, null, 2)}\n`);

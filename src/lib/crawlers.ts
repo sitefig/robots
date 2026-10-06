@@ -85,6 +85,8 @@ interface ListFile {
  */
 export interface World {
   total: number;
+  rank: number;
+  allowRank?: number;
   percent: string;
   disallowAll: number;
   allowOnly: number;
@@ -98,6 +100,8 @@ interface WorldFile {
   licence: string;
   licenceUrl: string;
   dataset: string;
+  /** How many user-agents the dataset holds, which a rank is out of. */
+  agents: number;
   retrieved: string;
   rows: Record<string, World>;
 }
@@ -147,7 +151,9 @@ function worldFile(): WorldFile | null {
 /** Where the web-scale figures come from, for the line that has to say so. */
 export function credit(): Omit<WorldFile, 'rows'> | null {
   const file = worldFile();
-  return file ? { source: file.source, credit: file.credit, licence: file.licence, licenceUrl: file.licenceUrl, dataset: file.dataset, retrieved: file.retrieved } : null;
+  if (!file) return null;
+  const { rows: _rows, ...rest } = file;
+  return rest;
 }
 
 /** The row for a crawler: its own token first, then the ones it falls back to. */
