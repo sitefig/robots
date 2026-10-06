@@ -5,7 +5,7 @@ description: What sus.bot collects, what it does not, and how to change your ana
 translationKey: privacy
 ---
 
-sus.bot is run by [Sitefig](https://sitefig.eu/), a company registered in Belgium. This page says what happens to information when you use [sus.bot](https://sus.bot/). If anything here is unclear or you want something removed, write to [receipt@sus.bot](mailto:receipt@sus.bot).
+sus.bot is run by [Sitefig](https://sitefig.eu/), a company registered in Luxembourg. This page says what happens to information when you use [sus.bot](https://sus.bot/). If anything here is unclear or you want something removed, write to [receipt@sus.bot](mailto:receipt@sus.bot).
 
 There is no account, no sign-up and no payment on this site.
 
@@ -36,7 +36,7 @@ Google acts as our processor for this and may process the data outside the EU. W
 
 ## Your rights
 
-Under the GDPR you can ask what we hold about you, ask for it to be corrected or deleted, object to it being processed, and complain to a supervisory authority. In Belgium that is the [Data Protection Authority](https://www.dataprotectionauthority.be/). Write to [receipt@sus.bot](mailto:receipt@sus.bot) and we will answer within a month.
+Under the GDPR you can ask what we hold about you, ask for it to be corrected or deleted, object to it being processed, and complain to a supervisory authority. In Luxembourg that is the [Commission nationale pour la protection des données](https://cnpd.public.lu/). Write to [receipt@sus.bot](mailto:receipt@sus.bot) and we will answer within a month.
 
 Because there is no account, we usually hold nothing that identifies you. If you allowed analytics, tell us roughly when you visited and we will ask Google to delete what it has for that browser.
 
