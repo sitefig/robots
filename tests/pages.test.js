@@ -3,6 +3,7 @@
 // invariants of the output, then render the Markdown layout and the sitemap
 // with made-up content pages.
 import { test } from 'node:test';
+import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import Eleventy from '@11ty/eleventy';
 import { loadLocales, activeLanguages, trackingFigures, analyticsTag } from '../src/lib/site.ts';
@@ -142,4 +143,27 @@ test('the press kit page links its files, and every page has the footer and the 
   }
   assert.ok(files['de/index.html'].includes(`>${dicts.de['page.footer.press']}</a>`), 'footer is translated');
   assert.ok(files['de/index.html'].includes('href="../press/"'), 'German pages link the press kit');
+});
+
+// ---------------------------------------------------------------- crawler pages
+
+test('every crawler in the engine config gets a page, and the report links to it', async () => {
+  const { crawlers, byCategory, measuredCount } = await import('../src/lib/crawlers.ts');
+  const list = crawlers();
+  assert.ok(list.length > 100, `only ${list.length} crawlers read from the engine config`);
+  for (const c of list) {
+    assert.ok(c.name && c.slug && c.category, `incomplete crawler: ${JSON.stringify(c)}`);
+    assert.ok(c.tokens.length > 0, `${c.name} has no tokens to match`);
+    assert.match(c.slug, /^[a-z0-9-]+$/, `${c.name} has an unusable slug: ${c.slug}`);
+  }
+  assert.equal(new Set(list.map((c) => c.slug)).size, list.length, 'two crawlers share a page address');
+  assert.equal(byCategory().reduce((n, g) => n + g.list.length, 0), list.length, 'a crawler is missing from the index');
+  assert.ok(measuredCount() > 100, 'the figures have almost no snapshots behind them');
+
+  // The crawler table links each name to its page, with its own copy of the
+  // slug rule, because the build-time module reads the disk. They have to agree.
+  const agents = await readFile(new URL('../src/client/components/agents.ts', import.meta.url), 'utf8');
+  const client = agents.match(/const slugFor = \(name: string\): string => (.+);/)[1];
+  const slugInClient = new Function('name', `return ${client.replace(/name\.toLowerCase/, 'String(name).toLowerCase')};`);
+  for (const c of list) assert.equal(slugInClient(c.name), c.slug, `the two slug rules disagree about ${c.name}`);
 });

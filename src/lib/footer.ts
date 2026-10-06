@@ -37,6 +37,7 @@ export const FOOTER: FooterGroup[] = [
   {
     heading: 'page.footer.resources',
     links: [
+      { label: 'page.footer.crawlers', to: { site: '/crawlers/' } },
       { label: 'page.nav.gallery', to: { url: LINKS.gallery } },
       { label: 'page.footer.history', to: { url: LINKS.diffs } },
       { label: 'page.footer.schema', to: { site: '/schema/report.schema.json' } },

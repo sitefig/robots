@@ -23,6 +23,15 @@ import { el, badge, replace, slot, meta, scrollable, verdictBadge, phone } from 
 import { current } from '../state.ts';
 import { LINKS } from '../config.ts';
 
+/**
+ * The address of a crawler's own page. The same rule as slugFor in
+ * src/lib/crawlers.ts, which builds those pages; tests/pages.test.js compares
+ * the two over all 134 names, because a page nobody can reach is worse than no
+ * link at all. It is duplicated rather than shared because that module reads the
+ * engine's configuration off disk and has no business in a browser bundle.
+ */
+const slugFor = (name: string): string => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
 // Rotating the phone re-decides what is on show. The listener is registered once
 // and calls the latest render's apply(), so re-running an analysis does not leave
 // listeners behind holding detached tables.
@@ -43,7 +52,7 @@ export function renderAgents(): void {
         el(
           'tr',
           { 'data-verdict': c.verdict, 'data-category': c.category, 'data-problem': !c.rootAllowed || c.verdict === 'blocked' ? 'true' : 'false' },
-          el('td', { title: c.note || null }, c.name),
+          el('td', { title: c.note || null }, el('a', { href: `/crawlers/${slugFor(c.name)}/` }, c.name)),
           el('td', { class: 'text-muted' }, c.categoryLabel),
           el('td', {}, c.groupUsed === null ? el('span', { class: 'text-muted' }, t('ui.none')) : el('code', {}, c.groupUsed)),
           el('td', { class: 'text-muted' }, c.allowRules + c.disallowRules ? t('ui.agents.ruleCounts', { disallow: c.disallowRules, allow: c.allowRules }) : el('span', { class: 'text-muted' }, t('ui.none'))),
