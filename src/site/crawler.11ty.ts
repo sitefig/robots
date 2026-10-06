@@ -1,12 +1,13 @@
 // One page per crawler, at /crawlers/<slug>/.
 //
-// Everything on it is a fact we already hold: the name, the tokens a robots.txt
-// has to name to address it, the user-agent string its operator publishes, the
-// address inside that string where the operator documents it, the note the engine
-// carries about it, and two figures from the tracking data. Nothing is inferred
-// about a crawler we have not measured, and no link is invented: 38 of the 134
-// publish a user-agent string with an address in it, and the rest simply do not
-// get one.
+// Everything on it is a fact we already hold or a fact somebody published: the
+// name, the tokens a robots.txt has to name to address it, the user-agent string
+// its operator publishes, the note the engine carries, two figures from our own
+// tracking, the web-scale figures from OpenRobotsTxt, and what the ai.robots.txt
+// list records about an AI crawler. Nothing is inferred about a crawler nobody
+// has measured, and no link is invented: a page gets a "Documented at" line when
+// the user-agent string carries an address or the list names one, and the rest
+// simply do not get one.
 //
 // English only, like /bot/ and /press/. The header and footer still follow the
 // language menu, which links each language's home page from here.
@@ -16,7 +17,7 @@ import { Document } from '../components/document.ts';
 import { SiteHeader } from '../components/header.ts';
 import { SiteFooter } from '../components/footer.ts';
 import { strings, assetsFor, relative, homePath, pageJsonLd, escapeHtml, DEFAULT_LANG } from '../lib/site.ts';
-import { crawlers, measuredCount, credit, type Crawler } from '../lib/crawlers.ts';
+import { crawlers, measuredCount, credit, listCredit, type Crawler } from '../lib/crawlers.ts';
 import type { SiteData } from '../../eleventy.config.ts';
 
 interface Data extends SiteData {
@@ -26,7 +27,7 @@ interface Data extends SiteData {
 export const data = {
   crawlerList: crawlers(),
   // Every page in the collections, not just the last of the pagination, so all
-  // 134 reach the sitemap. tests/pages.test.js counts them against the build.
+  // of them reach the sitemap. tests/pages.test.js counts them against the build.
   pagination: { data: 'crawlerList', size: 1, alias: 'crawler', addAllPagesToCollections: true },
   permalink: (d: Data) => `/crawlers/${d.crawler.slug}/index.html`,
   eleventyComputed: {
@@ -40,6 +41,20 @@ const HONOURS_DELAY = ['bingbot', 'msnbot', 'adidxbot', 'bingpreview'];
 
 const count = (n: number): string => n.toLocaleString('en-GB');
 
+const day = (iso: string): string => new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+/**
+ * What the list knows about whether a crawler reads robots.txt at all. Three of
+ * its answers are one word; a handful are a sentence, and those are shown as
+ * written rather than squeezed into one of the three.
+ */
+function honours(respect: string): string {
+  if (respect === 'yes') return 'Documented as honouring it';
+  if (respect === 'no') return 'Documented as ignoring it';
+  if (respect === 'unclear') return 'Nobody has documented whether it does';
+  return respect;
+}
+
 export function render(d: Data): string {
   const c = d.crawler;
   const path = `/crawlers/${c.slug}/`;
@@ -48,6 +63,7 @@ export function render(d: Data): string {
   const kind = s.text(`agents.category.${c.category}`);
   const tracked = measuredCount();
   const source = credit();
+  const list = c.listed ? listCredit() : null;
   const delay = c.tokens.some((token) => HONOURS_DELAY.includes(token));
   // A note in the configuration is either a dictionary key or the sentence
   // itself, which is how the engine reads it too: a key that is not in the
@@ -59,12 +75,6 @@ export function render(d: Data): string {
   // answers to, which is why they are listed under it.
   const block = `User-agent: ${c.tokens[0]}\nDisallow: /`;
 
-  // "an SEO tools crawler", "an AI training crawler", "a search crawler": an
-  // initialism takes the article its first letter sounds like, not the one it
-  // looks like.
-  const first = kind.split(/[\s/]/)[0];
-  const article = /^[aeiou]/i.test(kind) || (/^[A-Z]{2,}/.test(first) && 'AEFHILMNORSX'.includes(first[0])) ? 'an' : 'a';
-
   const facts: string[] = [
     `<div><dt>Kind</dt><dd>${escapeHtml(kind)}</dd></div>`,
     `<div><dt>Matches</dt><dd>${c.tokens.map((token) => `<code>${escapeHtml(token)}</code>`).join(' ')}</dd></div>`,
@@ -72,14 +82,20 @@ export function render(d: Data): string {
   ];
   if (c.board) facts.push(`<div><dt>Blocked by</dt><dd>${c.board.blocked} of ${tracked} (${c.board.percent}%)</dd></div>`);
   if (c.world) facts.push(`<div><dt>Named across the web</dt><dd>${count(c.world.total)} files (${escapeHtml(c.world.percent)})</dd></div>`);
-  if (c.info) facts.push(`<div><dt>Documented at</dt><dd><a href="${escapeHtml(c.info)}" rel="nofollow noopener">${escapeHtml(c.info.replace(/^https?:\/\//, ''))}</a></dd></div>`);
+  // The operator's own address comes out of the user-agent string where there
+  // is one, and otherwise out of the ai.robots.txt list, which records where a
+  // crawler is documented for the ones that publish no string.
+  const documented = c.info ?? c.listed?.infoUrl ?? c.listed?.operatorUrl;
+  if (c.listed?.operator) facts.push(`<div><dt>Operated by</dt><dd>${escapeHtml(c.listed.operator)}</dd></div>`);
+  if (c.listed) facts.push(`<div><dt>Honours robots.txt</dt><dd>${escapeHtml(honours(c.listed.respect))}</dd></div>`);
+  if (documented) facts.push(`<div><dt>Documented at</dt><dd><a href="${escapeHtml(documented)}" rel="nofollow noopener">${escapeHtml(documented.replace(/^https?:\/\//, ''))}</a></dd></div>`);
 
   const body = `${SiteHeader(ctx)}
   <main id="main" class="wrapper flow pt-8" data-space="l">
     <div class="flow max-w-prose" data-space="2xs">
       <p class="eyebrow font-mono"><a href="/crawlers/">All crawlers</a></p>
       <h1 class="text-3xl">${escapeHtml(c.name)}</h1>
-      <p class="text-lg text-muted">${escapeHtml(c.name)} is ${article} ${escapeHtml(kind)} crawler. sus.bot checks every robots.txt against it, and this page is what it knows about it.</p>
+      <p class="text-lg text-muted">${escapeHtml(c.name)} is a crawler in the ${escapeHtml(kind)} category. sus.bot checks every robots.txt against it, and this page is what it knows about it.</p>
     </div>
 
     <section class="panel flow" data-space="s" aria-labelledby="facts-heading">
@@ -105,6 +121,19 @@ ${facts.join('\n')}
            scrollable region has to be reachable without a pointer. The file panel
            in a report does the same. -->
       <pre class="raw" tabindex="0"><span class="raw__line">${escapeHtml(c.ua)}</span></pre>
+    </section>` : ''}
+
+    ${c.listed && list ? `<section class="flow" data-space="s" aria-labelledby="list-heading">
+      <h2 id="list-heading">What the ai.robots.txt list says about it</h2>
+      <p class="text-muted max-w-prose">${escapeHtml(list.credit)} is the list most of the AI blocks on the web are copied from, and it records what is known about each crawler.${c.listed.description ? ` Of this one: ${escapeHtml(c.listed.description)}` : ''}</p>
+      <dl class="defs">
+        ${c.listed.operator ? `<div><dt>Operator</dt><dd>${c.listed.operatorUrl ? `<a href="${escapeHtml(c.listed.operatorUrl)}" rel="nofollow noopener">${escapeHtml(c.listed.operator)}</a>` : escapeHtml(c.listed.operator)}</dd></div>` : ''}
+        ${c.listed.purpose ? `<div><dt>What it is for</dt><dd>${escapeHtml(c.listed.purpose)}</dd></div>` : ''}
+        <div><dt>Honours robots.txt</dt><dd>${c.listed.respectUrl ? `<a href="${escapeHtml(c.listed.respectUrl)}" rel="nofollow noopener">${escapeHtml(honours(c.listed.respect))}</a>` : escapeHtml(honours(c.listed.respect))}</dd></div>
+        ${c.listed.frequency ? `<div><dt>How often it comes back</dt><dd>${escapeHtml(c.listed.frequency)}</dd></div>` : ''}
+        ${c.listed.since ? `<div><dt>Added to the list</dt><dd>${escapeHtml(day(c.listed.since))}${c.listed.release ? ` (${escapeHtml(c.listed.release)})` : ''}</dd></div>` : ''}
+      </dl>
+      <p class="text-sm text-muted">From the <a href="${escapeHtml(list.source)}" rel="noopener">${escapeHtml(list.credit)}</a> list, used under the <a href="${escapeHtml(list.licenceUrl)}" rel="license noopener">${escapeHtml(list.licence)} licence</a>. ${escapeHtml(list.copyright)}.</p>
     </section>` : ''}
 
     <section class="flow" data-space="s" aria-labelledby="figures-heading">

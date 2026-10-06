@@ -14,7 +14,7 @@ import { Document } from '../components/document.ts';
 import { SiteHeader } from '../components/header.ts';
 import { SiteFooter } from '../components/footer.ts';
 import { strings, assetsFor, relative, homePath, pageJsonLd, escapeHtml, DEFAULT_LANG } from '../lib/site.ts';
-import { byCategory, crawlers, measuredCount, credit } from '../lib/crawlers.ts';
+import { byCategory, crawlers, measuredCount, credit, listCredit } from '../lib/crawlers.ts';
 import type { SiteData } from '../../eleventy.config.ts';
 
 export const data = { permalink: '/crawlers/index.html', translationKey: 'crawlers', lang: DEFAULT_LANG };
@@ -26,6 +26,7 @@ export function render(d: SiteData): string {
   const tracked = measuredCount();
   const all = crawlers();
   const source = credit();
+  const list = listCredit();
   // 15,524,330 is a number nobody reads in a table cell; 15.5M is.
   const compact = (n: number): string => (n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}k` : String(n));
 
@@ -79,8 +80,9 @@ ${rows}
 
     <div class="panel flow" data-space="xs">
       <p><strong>Named by</strong> counts the large sites that name a crawler in a <code>User-agent</code> line of their own, out of the ${tracked} we fetch every day. <strong>Shut out by</strong> counts the sites that block it from everything, and the leaderboard only covers the AI crawlers, so the rest of that column is empty rather than zero.</p>
-      <p><strong>Named across the web</strong> is how many robots.txt files name the crawler in ${source ? escapeHtml(source.credit) : 'the published'} dataset, which covers far more of the web than we fetch ourselves.</p>
+      <p><strong>Named across the web</strong> is how many robots.txt files name the crawler in ${source ? `${escapeHtml(source.credit)}'s` : 'the published'} dataset, which covers far more of the web than we fetch ourselves.</p>
       ${source ? `<p class="text-sm text-muted">Those figures are from <a href="${escapeHtml(source.source)}" rel="noopener">${escapeHtml(source.credit)}</a>, dataset ${escapeHtml(source.dataset)}, used under <a href="${escapeHtml(source.licenceUrl)}" rel="license noopener">${escapeHtml(source.licence)}</a>.</p>` : ''}
+      ${list ? `<p>The AI crawlers include every one on the <a href="${escapeHtml(list.source)}" rel="noopener">${escapeHtml(list.credit)}</a> list, which is where most of the AI blocks on the web are copied from, so a file that names one of them is read the way its author meant it. That list is used under the <a href="${escapeHtml(list.licenceUrl)}" rel="license noopener">${escapeHtml(list.licence)} licence</a>, and each page says what it records about the crawler.</p>` : ''}
       <p class="text-sm text-muted">Looking for ours? <a href="/bot/">susbot</a> fetches one file, <code>/robots.txt</code>, and reads nothing else.</p>
     </div>
 

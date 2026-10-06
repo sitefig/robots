@@ -430,6 +430,14 @@
       "avgCrawlDelay": 72,
       "crawlDelayCount": 356322
     },
+    "linguee": {
+      "total": 947262,
+      "percent": "0.07%",
+      "disallowAll": 946250,
+      "allowOnly": 99,
+      "avgCrawlDelay": 28,
+      "crawlDelayCount": 489
+    },
     "barkrowler": {
       "total": 871010,
       "percent": "0.06%",
@@ -574,6 +582,14 @@
       "avgCrawlDelay": 11,
       "crawlDelayCount": 56565
     },
+    "aihitbot": {
+      "total": 3585754,
+      "percent": "0.25%",
+      "disallowAll": 501050,
+      "allowOnly": 567,
+      "avgCrawlDelay": 162,
+      "crawlDelayCount": 1036
+    },
     "googleother": {
       "total": 3780815,
       "percent": "0.26%",
@@ -629,6 +645,14 @@
       "allowOnly": 1161,
       "avgCrawlDelay": 10,
       "crawlDelayCount": 58640
+    },
+    "iaskspider/2.0": {
+      "total": 488878,
+      "percent": "0.03%",
+      "disallowAll": 427588,
+      "allowOnly": 1609,
+      "avgCrawlDelay": 13,
+      "crawlDelayCount": 53806
     },
     "grapeshot": {
       "total": 438664,
@@ -686,6 +710,14 @@
       "avgCrawlDelay": 63,
       "crawlDelayCount": 647
     },
+    "panscient": {
+      "total": 328298,
+      "percent": "0.02%",
+      "disallowAll": 321189,
+      "allowOnly": 220,
+      "avgCrawlDelay": 71,
+      "crawlDelayCount": 839
+    },
     "img2dataset": {
       "total": 3458729,
       "percent": "0.24%",
@@ -702,6 +734,38 @@
       "avgCrawlDelay": 10,
       "crawlDelayCount": 54282
     },
+    "cotoyogi": {
+      "total": 305716,
+      "percent": "0.02%",
+      "disallowAll": 299368,
+      "allowOnly": 364,
+      "avgCrawlDelay": 16,
+      "crawlDelayCount": 5540
+    },
+    "sbintuitionsbot": {
+      "total": 305357,
+      "percent": "0.02%",
+      "disallowAll": 299064,
+      "allowOnly": 173,
+      "avgCrawlDelay": 71,
+      "crawlDelayCount": 783
+    },
+    "novaact": {
+      "total": 287343,
+      "percent": "0.02%",
+      "disallowAll": 281732,
+      "allowOnly": 645,
+      "avgCrawlDelay": 95,
+      "crawlDelayCount": 589
+    },
+    "googleagent-mariner": {
+      "total": 276773,
+      "percent": "0.02%",
+      "disallowAll": 270789,
+      "allowOnly": 1044,
+      "avgCrawlDelay": 77,
+      "crawlDelayCount": 415
+    },
     "facebookexternalhit": {
       "total": 2182188,
       "percent": "0.15%",
@@ -709,6 +773,30 @@
       "allowOnly": 1224441,
       "avgCrawlDelay": 40,
       "crawlDelayCount": 235710
+    },
+    "terracotta": {
+      "total": 270086,
+      "percent": "0.02%",
+      "disallowAll": 265100,
+      "allowOnly": 121,
+      "avgCrawlDelay": 52,
+      "crawlDelayCount": 1169
+    },
+    "cloudvertexbot": {
+      "total": 269782,
+      "percent": "0.02%",
+      "disallowAll": 264192,
+      "allowOnly": 344,
+      "avgCrawlDelay": 68,
+      "crawlDelayCount": 346
+    },
+    "lcc": {
+      "total": 264200,
+      "percent": "0.02%",
+      "disallowAll": 259702,
+      "allowOnly": 110,
+      "avgCrawlDelay": 135,
+      "crawlDelayCount": 117
     },
     "linkdexbot": {
       "total": 259974,
@@ -718,6 +806,14 @@
       "avgCrawlDelay": 177,
       "crawlDelayCount": 460
     },
+    "deepseekbot": {
+      "total": 267036,
+      "percent": "0.02%",
+      "disallowAll": 254895,
+      "allowOnly": 4975,
+      "avgCrawlDelay": 47,
+      "crawlDelayCount": 580
+    },
     "duckassistbot": {
       "total": 3672558,
       "percent": "0.25%",
@@ -725,6 +821,110 @@
       "allowOnly": 24471,
       "avgCrawlDelay": 24,
       "crawlDelayCount": 21807
+    },
+    "spider": {
+      "total": 260856,
+      "percent": "0.02%",
+      "disallowAll": 247190,
+      "allowOnly": 1475,
+      "avgCrawlDelay": 20,
+      "crawlDelayCount": 7782
+    },
+    "openai": {
+      "total": 249176,
+      "percent": "0.02%",
+      "disallowAll": 240112,
+      "allowOnly": 3140,
+      "avgCrawlDelay": 43,
+      "crawlDelayCount": 1337
+    },
+    "netestate": {
+      "total": 239453,
+      "percent": "0.02%",
+      "disallowAll": 238952,
+      "allowOnly": 15,
+      "avgCrawlDelay": 15,
+      "crawlDelayCount": 122
+    },
+    "chatglm-spider": {
+      "total": 240232,
+      "percent": "0.02%",
+      "disallowAll": 234716,
+      "allowOnly": 218,
+      "avgCrawlDelay": 209,
+      "crawlDelayCount": 174
+    },
+    "wrtnbot": {
+      "total": 233268,
+      "percent": "0.02%",
+      "disallowAll": 229284,
+      "allowOnly": 57,
+      "avgCrawlDelay": 83,
+      "crawlDelayCount": 229
+    },
+    "crawl4ai": {
+      "total": 233304,
+      "percent": "0.02%",
+      "disallowAll": 228624,
+      "allowOnly": 184,
+      "avgCrawlDelay": 134,
+      "crawlDelayCount": 116
+    },
+    "imagespider": {
+      "total": 232496,
+      "percent": "0.02%",
+      "disallowAll": 228125,
+      "allowOnly": 39,
+      "avgCrawlDelay": 121,
+      "crawlDelayCount": 171
+    },
+    "iaskbot": {
+      "total": 232139,
+      "percent": "0.02%",
+      "disallowAll": 227887,
+      "allowOnly": 244,
+      "avgCrawlDelay": 105,
+      "crawlDelayCount": 175
+    },
+    "laion-huggingface-processor": {
+      "total": 231832,
+      "percent": "0.02%",
+      "disallowAll": 227459,
+      "allowOnly": 43,
+      "avgCrawlDelay": 430,
+      "crawlDelayCount": 34
+    },
+    "kunatocrawler": {
+      "total": 230980,
+      "percent": "0.02%",
+      "disallowAll": 227160,
+      "allowOnly": 35,
+      "avgCrawlDelay": 144,
+      "crawlDelayCount": 107
+    },
+    "amazonbuyforme": {
+      "total": 230819,
+      "percent": "0.02%",
+      "disallowAll": 226781,
+      "allowOnly": 147,
+      "avgCrawlDelay": 298,
+      "crawlDelayCount": 51
+    },
+    "twinagent": {
+      "total": 229383,
+      "percent": "0.02%",
+      "disallowAll": 225490,
+      "allowOnly": 56,
+      "avgCrawlDelay": 144,
+      "crawlDelayCount": 107
+    },
+    "manus-user": {
+      "total": 229413,
+      "percent": "0.02%",
+      "disallowAll": 225284,
+      "allowOnly": 233,
+      "avgCrawlDelay": 375,
+      "crawlDelayCount": 39
     },
     "perplexity-user": {
       "total": 452068,
@@ -749,6 +949,30 @@
       "allowOnly": 198673,
       "avgCrawlDelay": 17,
       "crawlDelayCount": 77361
+    },
+    "datenbank": {
+      "total": 217987,
+      "percent": "0.02%",
+      "disallowAll": 217985,
+      "allowOnly": 0,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "qualifiedbot": {
+      "total": 208817,
+      "percent": "0.01%",
+      "disallowAll": 203755,
+      "allowOnly": 259,
+      "avgCrawlDelay": 120,
+      "crawlDelayCount": 455
+    },
+    "linerbot": {
+      "total": 203463,
+      "percent": "0.01%",
+      "disallowAll": 198816,
+      "allowOnly": 244,
+      "avgCrawlDelay": 52,
+      "crawlDelayCount": 478
     },
     "semrushbot-ocob": {
       "total": 204027,
@@ -798,6 +1022,14 @@
       "avgCrawlDelay": 10,
       "crawlDelayCount": 81235
     },
+    "meta-webindexer": {
+      "total": 232224,
+      "percent": "0.02%",
+      "disallowAll": 160091,
+      "allowOnly": 1313,
+      "avgCrawlDelay": 21,
+      "crawlDelayCount": 64145
+    },
     "tiktokspider": {
       "total": 3251424,
       "percent": "0.23%",
@@ -805,6 +1037,14 @@
       "allowOnly": 915,
       "avgCrawlDelay": 200,
       "crawlDelayCount": 17998
+    },
+    "wpbot": {
+      "total": 159098,
+      "percent": "0.01%",
+      "disallowAll": 154478,
+      "allowOnly": 142,
+      "avgCrawlDelay": 277,
+      "crawlDelayCount": 616
     },
     "mistralai-user": {
       "total": 180048,
@@ -822,6 +1062,14 @@
       "avgCrawlDelay": 21,
       "crawlDelayCount": 13574
     },
+    "bigsur.ai": {
+      "total": 130519,
+      "percent": "0.01%",
+      "disallowAll": 126081,
+      "allowOnly": 126,
+      "avgCrawlDelay": 54,
+      "crawlDelayCount": 461
+    },
     "screaming": {
       "total": 126404,
       "percent": "0.01%",
@@ -829,6 +1077,22 @@
       "allowOnly": 50,
       "avgCrawlDelay": 21,
       "crawlDelayCount": 81
+    },
+    "devin": {
+      "total": 130024,
+      "percent": "0.01%",
+      "disallowAll": 125129,
+      "allowOnly": 280,
+      "avgCrawlDelay": 70,
+      "crawlDelayCount": 453
+    },
+    "mycentralaiscraperbot": {
+      "total": 3206808,
+      "percent": "0.22%",
+      "disallowAll": 124956,
+      "allowOnly": 201,
+      "avgCrawlDelay": 12,
+      "crawlDelayCount": 5261
     },
     "phindbot": {
       "total": 142594,
@@ -846,6 +1110,14 @@
       "avgCrawlDelay": 46,
       "crawlDelayCount": 10109
     },
+    "addsearchbot": {
+      "total": 127530,
+      "percent": "0.01%",
+      "disallowAll": 121004,
+      "allowOnly": 493,
+      "avgCrawlDelay": 36,
+      "crawlDelayCount": 891
+    },
     "ahrefssiteaudit": {
       "total": 4360714,
       "percent": "0.30%",
@@ -853,6 +1125,22 @@
       "allowOnly": 50248,
       "avgCrawlDelay": 10,
       "crawlDelayCount": 4128688
+    },
+    "isscyberriskcrawler": {
+      "total": 172639,
+      "percent": "0.01%",
+      "disallowAll": 117269,
+      "allowOnly": 368,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 53628
+    },
+    "yak": {
+      "total": 121929,
+      "percent": "0.01%",
+      "disallowAll": 116147,
+      "allowOnly": 171,
+      "avgCrawlDelay": 87,
+      "crawlDelayCount": 549
     },
     "adsbot-google": {
       "total": 15347857,
@@ -902,6 +1190,22 @@
       "avgCrawlDelay": 19,
       "crawlDelayCount": 37040
     },
+    "google-notebooklm": {
+      "total": 652912,
+      "percent": "0.05%",
+      "disallowAll": 97578,
+      "allowOnly": 550863,
+      "avgCrawlDelay": 129,
+      "crawlDelayCount": 122
+    },
+    "crawlspace": {
+      "total": 101316,
+      "percent": "0.01%",
+      "disallowAll": 96277,
+      "allowOnly": 313,
+      "avgCrawlDelay": 17,
+      "crawlDelayCount": 5667
+    },
     "mediapartners-google": {
       "total": 21006990,
       "percent": "1.45%",
@@ -909,6 +1213,22 @@
       "allowOnly": 492267,
       "avgCrawlDelay": 23,
       "crawlDelayCount": 147001
+    },
+    "bravebot": {
+      "total": 125731,
+      "percent": "0.01%",
+      "disallowAll": 94647,
+      "allowOnly": 5191,
+      "avgCrawlDelay": 20,
+      "crawlDelayCount": 19153
+    },
+    "amazon-kendra": {
+      "total": 94179,
+      "percent": "0.01%",
+      "disallowAll": 89814,
+      "allowOnly": 437,
+      "avgCrawlDelay": 52,
+      "crawlDelayCount": 309
     },
     "xovibot": {
       "total": 89621,
@@ -926,6 +1246,62 @@
       "avgCrawlDelay": 18,
       "crawlDelayCount": 72044
     },
+    "anomura": {
+      "total": 88163,
+      "percent": "0.01%",
+      "disallowAll": 84302,
+      "allowOnly": 92,
+      "avgCrawlDelay": 128,
+      "crawlDelayCount": 125
+    },
+    "tavilybot": {
+      "total": 87894,
+      "percent": "0.01%",
+      "disallowAll": 83662,
+      "allowOnly": 236,
+      "avgCrawlDelay": 138,
+      "crawlDelayCount": 111
+    },
+    "cloudflare-autorag": {
+      "total": 87523,
+      "percent": "0.01%",
+      "disallowAll": 83538,
+      "allowOnly": 160,
+      "avgCrawlDelay": 263,
+      "crawlDelayCount": 58
+    },
+    "linkupbot": {
+      "total": 87089,
+      "percent": "0.01%",
+      "disallowAll": 82735,
+      "allowOnly": 142,
+      "avgCrawlDelay": 50,
+      "crawlDelayCount": 474
+    },
+    "channel3bot": {
+      "total": 85446,
+      "percent": "0.01%",
+      "disallowAll": 81564,
+      "allowOnly": 84,
+      "avgCrawlDelay": 144,
+      "crawlDelayCount": 107
+    },
+    "klaviyoaibot": {
+      "total": 85398,
+      "percent": "0.01%",
+      "disallowAll": 81446,
+      "allowOnly": 62,
+      "avgCrawlDelay": 386,
+      "crawlDelayCount": 39
+    },
+    "atlassian-bot": {
+      "total": 86515,
+      "percent": "0.01%",
+      "disallowAll": 81386,
+      "allowOnly": 632,
+      "avgCrawlDelay": 280,
+      "crawlDelayCount": 55
+    },
     "yandeximages": {
       "total": 264932,
       "percent": "0.02%",
@@ -933,6 +1309,54 @@
       "allowOnly": 107301,
       "avgCrawlDelay": 53,
       "crawlDelayCount": 5934
+    },
+    "zanistabot": {
+      "total": 85131,
+      "percent": "0.01%",
+      "disallowAll": 81221,
+      "allowOnly": 47,
+      "avgCrawlDelay": 430,
+      "crawlDelayCount": 34
+    },
+    "poggio-citations": {
+      "total": 84716,
+      "percent": "0.01%",
+      "disallowAll": 80829,
+      "allowOnly": 46,
+      "avgCrawlDelay": 430,
+      "crawlDelayCount": 34
+    },
+    "ai2bot-deepresearcheval": {
+      "total": 85399,
+      "percent": "0.01%",
+      "disallowAll": 80826,
+      "allowOnly": 119,
+      "avgCrawlDelay": 349,
+      "crawlDelayCount": 42
+    },
+    "amzn-user": {
+      "total": 83319,
+      "percent": "0.01%",
+      "disallowAll": 78864,
+      "allowOnly": 321,
+      "avgCrawlDelay": 79,
+      "crawlDelayCount": 197
+    },
+    "azureai-searchbot": {
+      "total": 80660,
+      "percent": "0.01%",
+      "disallowAll": 76662,
+      "allowOnly": 214,
+      "avgCrawlDelay": 326,
+      "crawlDelayCount": 45
+    },
+    "kagi-fetcher": {
+      "total": 80232,
+      "percent": "0.01%",
+      "disallowAll": 76367,
+      "allowOnly": 118,
+      "avgCrawlDelay": 408,
+      "crawlDelayCount": 36
     },
     "serankingbacklinksbot": {
       "total": 90087,
@@ -942,6 +1366,22 @@
       "avgCrawlDelay": 241,
       "crawlDelayCount": 14781
     },
+    "factset_spyderbot": {
+      "total": 78806,
+      "percent": "0.01%",
+      "disallowAll": 73326,
+      "allowOnly": 267,
+      "avgCrawlDelay": 16,
+      "crawlDelayCount": 5460
+    },
+    "yandexadditional": {
+      "total": 72062,
+      "percent": "0.00%",
+      "disallowAll": 66252,
+      "allowOnly": 937,
+      "avgCrawlDelay": 15,
+      "crawlDelayCount": 5539
+    },
     "firecrawlagent": {
       "total": 80462,
       "percent": "0.01%",
@@ -949,6 +1389,14 @@
       "allowOnly": 8322,
       "avgCrawlDelay": 26,
       "crawlDelayCount": 2274
+    },
+    "awario": {
+      "total": 65651,
+      "percent": "0.00%",
+      "disallowAll": 64143,
+      "allowOnly": 176,
+      "avgCrawlDelay": 86,
+      "crawlDelayCount": 336
     },
     "amazonadbot": {
       "total": 117571,
@@ -958,6 +1406,30 @@
       "avgCrawlDelay": 37,
       "crawlDelayCount": 683
     },
+    "yandexadditionalbot": {
+      "total": 68258,
+      "percent": "0.00%",
+      "disallowAll": 62528,
+      "allowOnly": 567,
+      "avgCrawlDelay": 15,
+      "crawlDelayCount": 5467
+    },
+    "operator": {
+      "total": 101843,
+      "percent": "0.01%",
+      "disallowAll": 61934,
+      "allowOnly": 816,
+      "avgCrawlDelay": 6,
+      "crawlDelayCount": 35101
+    },
+    "quillbot.com": {
+      "total": 65065,
+      "percent": "0.00%",
+      "disallowAll": 60212,
+      "allowOnly": 267,
+      "avgCrawlDelay": 105,
+      "crawlDelayCount": 412
+    },
     "pinterestbot": {
       "total": 210320,
       "percent": "0.01%",
@@ -966,6 +1438,94 @@
       "avgCrawlDelay": 47,
       "crawlDelayCount": 83228
     },
+    "echoboxbot": {
+      "total": 64785,
+      "percent": "0.00%",
+      "disallowAll": 59231,
+      "allowOnly": 368,
+      "avgCrawlDelay": 75,
+      "crawlDelayCount": 516
+    },
+    "poseidon research crawler": {
+      "total": 60925,
+      "percent": "0.00%",
+      "disallowAll": 56246,
+      "allowOnly": 156,
+      "avgCrawlDelay": 88,
+      "crawlDelayCount": 322
+    },
+    "datenbank crawler": {
+      "total": 58409,
+      "percent": "0.00%",
+      "disallowAll": 53486,
+      "allowOnly": 108,
+      "avgCrawlDelay": 86,
+      "crawlDelayCount": 330
+    },
+    "andibot": {
+      "total": 68602,
+      "percent": "0.00%",
+      "disallowAll": 51241,
+      "allowOnly": 10362,
+      "avgCrawlDelay": 27,
+      "crawlDelayCount": 2319
+    },
+    "netestate imprint crawler": {
+      "total": 52417,
+      "percent": "0.00%",
+      "disallowAll": 51049,
+      "allowOnly": 104,
+      "avgCrawlDelay": 108,
+      "crawlDelayCount": 253
+    },
+    "bedrockbot": {
+      "total": 56431,
+      "percent": "0.00%",
+      "disallowAll": 50655,
+      "allowOnly": 845,
+      "avgCrawlDelay": 88,
+      "crawlDelayCount": 483
+    },
+    "thinkbot": {
+      "total": 53503,
+      "percent": "0.00%",
+      "disallowAll": 48871,
+      "allowOnly": 151,
+      "avgCrawlDelay": 89,
+      "crawlDelayCount": 520
+    },
+    "echobot bot": {
+      "total": 52244,
+      "percent": "0.00%",
+      "disallowAll": 47816,
+      "allowOnly": 147,
+      "avgCrawlDelay": 107,
+      "crawlDelayCount": 257
+    },
+    "linguee bot": {
+      "total": 51632,
+      "percent": "0.00%",
+      "disallowAll": 46187,
+      "allowOnly": 113,
+      "avgCrawlDelay": 52,
+      "crawlDelayCount": 638
+    },
+    "chatgpt agent": {
+      "total": 48267,
+      "percent": "0.00%",
+      "disallowAll": 42995,
+      "allowOnly": 648,
+      "avgCrawlDelay": 101,
+      "crawlDelayCount": 271
+    },
+    "wardbot": {
+      "total": 38390,
+      "percent": "0.00%",
+      "disallowAll": 34063,
+      "allowOnly": 108,
+      "avgCrawlDelay": 86,
+      "crawlDelayCount": 328
+    },
     "adidxbot": {
       "total": 325270,
       "percent": "0.02%",
@@ -973,6 +1533,14 @@
       "allowOnly": 25267,
       "avgCrawlDelay": 9,
       "crawlDelayCount": 204384
+    },
+    "shapbot": {
+      "total": 34995,
+      "percent": "0.00%",
+      "disallowAll": 30869,
+      "allowOnly": 57,
+      "avgCrawlDelay": 64,
+      "crawlDelayCount": 335
     },
     "linkedinbot": {
       "total": 316836,
@@ -997,6 +1565,14 @@
       "allowOnly": 104891,
       "avgCrawlDelay": 7,
       "crawlDelayCount": 62563
+    },
+    "google-firebase": {
+      "total": 30077,
+      "percent": "0.00%",
+      "disallowAll": 25748,
+      "allowOnly": 203,
+      "avgCrawlDelay": 57,
+      "crawlDelayCount": 226
     },
     "googlebot-video": {
       "total": 830741,
@@ -1062,6 +1638,30 @@
       "avgCrawlDelay": 10,
       "crawlDelayCount": 177730
     },
+    "buddybot": {
+      "total": 11694,
+      "percent": "0.00%",
+      "disallowAll": 7868,
+      "allowOnly": 79,
+      "avgCrawlDelay": 130,
+      "crawlDelayCount": 123
+    },
+    "notebooklm": {
+      "total": 10762,
+      "percent": "0.00%",
+      "disallowAll": 6758,
+      "allowOnly": 177,
+      "avgCrawlDelay": 112,
+      "crawlDelayCount": 139
+    },
+    "laiondownloader": {
+      "total": 10267,
+      "percent": "0.00%",
+      "disallowAll": 6497,
+      "allowOnly": 28,
+      "avgCrawlDelay": 143,
+      "crawlDelayCount": 108
+    },
     "whatsapp": {
       "total": 55387,
       "percent": "0.00%",
@@ -1077,6 +1677,14 @@
       "allowOnly": 5,
       "avgCrawlDelay": 99,
       "crawlDelayCount": 81
+    },
+    "newsai": {
+      "total": 17278,
+      "percent": "0.00%",
+      "disallowAll": 5339,
+      "allowOnly": 10,
+      "avgCrawlDelay": 294,
+      "crawlDelayCount": 11875
     },
     "qwantbot": {
       "total": 22740,
@@ -1102,6 +1710,134 @@
       "avgCrawlDelay": 11,
       "crawlDelayCount": 37680
     },
+    "apifybot": {
+      "total": 7995,
+      "percent": "0.00%",
+      "disallowAll": 3547,
+      "allowOnly": 85,
+      "avgCrawlDelay": 141,
+      "crawlDelayCount": 107
+    },
+    "aranet-searchbot": {
+      "total": 7044,
+      "percent": "0.00%",
+      "disallowAll": 3451,
+      "allowOnly": 56,
+      "avgCrawlDelay": 611,
+      "crawlDelayCount": 24
+    },
+    "apifywebsitecontentcrawler": {
+      "total": 7235,
+      "percent": "0.00%",
+      "disallowAll": 2861,
+      "allowOnly": 65,
+      "avgCrawlDelay": 603,
+      "crawlDelayCount": 24
+    },
+    "echobot": {
+      "total": 2245,
+      "percent": "0.00%",
+      "disallowAll": 2194,
+      "allowOnly": 42,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 75
+    },
+    "google-agent": {
+      "total": 6286,
+      "percent": "0.00%",
+      "disallowAll": 1713,
+      "allowOnly": 558,
+      "avgCrawlDelay": 74,
+      "crawlDelayCount": 211
+    },
+    "lightpanda": {
+      "total": 5057,
+      "percent": "0.00%",
+      "disallowAll": 1559,
+      "allowOnly": 0,
+      "avgCrawlDelay": 11,
+      "crawlDelayCount": 77
+    },
+    "erniebot": {
+      "total": 1448,
+      "percent": "0.00%",
+      "disallowAll": 1187,
+      "allowOnly": 181,
+      "avgCrawlDelay": 13,
+      "crawlDelayCount": 12
+    },
+    "claude-code": {
+      "total": 4781,
+      "percent": "0.00%",
+      "disallowAll": 1010,
+      "allowOnly": 173,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "nagetbot": {
+      "total": 990,
+      "percent": "0.00%",
+      "disallowAll": 947,
+      "allowOnly": 5,
+      "avgCrawlDelay": 2400,
+      "crawlDelayCount": 3
+    },
+    "code": {
+      "total": 4315,
+      "percent": "0.00%",
+      "disallowAll": 864,
+      "allowOnly": 1,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "henkbot": {
+      "total": 732,
+      "percent": "0.00%",
+      "disallowAll": 724,
+      "allowOnly": 3,
+      "avgCrawlDelay": 8,
+      "crawlDelayCount": 1
+    },
+    "trae": {
+      "total": 4197,
+      "percent": "0.00%",
+      "disallowAll": 707,
+      "allowOnly": 2,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "opencode": {
+      "total": 4196,
+      "percent": "0.00%",
+      "disallowAll": 706,
+      "allowOnly": 2,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "google-gemini-cli": {
+      "total": 4124,
+      "percent": "0.00%",
+      "disallowAll": 671,
+      "allowOnly": 3,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "poseidon": {
+      "total": 675,
+      "percent": "0.00%",
+      "disallowAll": 671,
+      "allowOnly": 1,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 73
+    },
+    "amazon-qbusiness": {
+      "total": 656,
+      "percent": "0.00%",
+      "disallowAll": 590,
+      "allowOnly": 39,
+      "avgCrawlDelay": 13,
+      "crawlDelayCount": 18
+    },
     "novellum": {
       "total": 1093,
       "percent": "0.00%",
@@ -1109,6 +1845,126 @@
       "allowOnly": 87,
       "avgCrawlDelay": 8,
       "crawlDelayCount": 36
+    },
+    "qwenbot": {
+      "total": 748,
+      "percent": "0.00%",
+      "disallowAll": 343,
+      "allowOnly": 301,
+      "avgCrawlDelay": 2,
+      "crawlDelayCount": 21
+    },
+    "diffbot-user": {
+      "total": 320,
+      "percent": "0.00%",
+      "disallowAll": 318,
+      "allowOnly": 2,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "oai-adsbot": {
+      "total": 674,
+      "percent": "0.00%",
+      "disallowAll": 203,
+      "allowOnly": 279,
+      "avgCrawlDelay": 9,
+      "crawlDelayCount": 21
+    },
+    "kimibot": {
+      "total": 522,
+      "percent": "0.00%",
+      "disallowAll": 158,
+      "allowOnly": 216,
+      "avgCrawlDelay": 2,
+      "crawlDelayCount": 28
+    },
+    "tongyibot": {
+      "total": 294,
+      "percent": "0.00%",
+      "disallowAll": 154,
+      "allowOnly": 106,
+      "avgCrawlDelay": 5,
+      "crawlDelayCount": 7
+    },
+    "yiyanbot": {
+      "total": 169,
+      "percent": "0.00%",
+      "disallowAll": 141,
+      "allowOnly": 17,
+      "avgCrawlDelay": 10,
+      "crawlDelayCount": 1
+    },
+    "cursor": {
+      "total": 119,
+      "percent": "0.00%",
+      "disallowAll": 103,
+      "allowOnly": 15,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "googleagent-urlcontext": {
+      "total": 151,
+      "percent": "0.00%",
+      "disallowAll": 80,
+      "allowOnly": 31,
+      "avgCrawlDelay": 1050,
+      "crawlDelayCount": 7
+    },
+    "doubaobot": {
+      "total": 409,
+      "percent": "0.00%",
+      "disallowAll": 40,
+      "allowOnly": 198,
+      "avgCrawlDelay": 2,
+      "crawlDelayCount": 34
+    },
+    "mistralai-index": {
+      "total": 268,
+      "percent": "0.00%",
+      "disallowAll": 23,
+      "allowOnly": 91,
+      "avgCrawlDelay": 6,
+      "crawlDelayCount": 7
+    },
+    "aiwebindex": {
+      "total": 14,
+      "percent": "0.00%",
+      "disallowAll": 14,
+      "allowOnly": 0,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "agentdatabot": {
+      "total": 7,
+      "percent": "0.00%",
+      "disallowAll": 7,
+      "allowOnly": 0,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "mozilla-tabstack": {
+      "total": 3,
+      "percent": "0.00%",
+      "disallowAll": 1,
+      "allowOnly": 0,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "bixelbot": {
+      "total": 1,
+      "percent": "0.00%",
+      "disallowAll": 1,
+      "allowOnly": 0,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
+    },
+    "kimi-searchbot": {
+      "total": 2,
+      "percent": "0.00%",
+      "disallowAll": 0,
+      "allowOnly": 0,
+      "avgCrawlDelay": 0,
+      "crawlDelayCount": 0
     }
   }
 }

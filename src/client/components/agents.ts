@@ -1,7 +1,7 @@
 // Crawler access: one row per known crawler with the group it uses, its
 // rules and verdict, filterable by crawler category.
 //
-// There are 134 crawlers, which is a table nobody scrolls to the end of, so only
+// There are 246 crawlers, which is a table nobody scrolls to the end of, so only
 // the first 50 rows of whatever is showing are rendered visible and a button
 // reveals the rest. The cap and the category filter have to agree, which is why
 // one function decides every row's visibility rather than each of them setting
@@ -23,14 +23,12 @@ import { el, badge, replace, slot, meta, scrollable, verdictBadge, phone } from 
 import { current } from '../state.ts';
 import { LINKS } from '../config.ts';
 
-/**
- * The address of a crawler's own page. The same rule as slugFor in
- * src/lib/crawlers.ts, which builds those pages; tests/pages.test.js compares
- * the two over all 134 names, because a page nobody can reach is worse than no
- * link at all. It is duplicated rather than shared because that module reads the
- * engine's configuration off disk and has no business in a browser bundle.
- */
-const slugFor = (name: string): string => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+// Each crawler has a page of its own at /crawlers/<slug>/, built from the same
+// configuration this table comes from, but nothing links them yet: the pages are
+// in the sitemap and that is all. When they are linked from here, the slug rule
+// has to be duplicated in this module (it cannot import the build-time one,
+// which reads the engine's configuration off disk) and tests/pages.test.js has
+// to compare the two.
 
 // Rotating the phone re-decides what is on show. The listener is registered once
 // and calls the latest render's apply(), so re-running an analysis does not leave
@@ -52,7 +50,7 @@ export function renderAgents(): void {
         el(
           'tr',
           { 'data-verdict': c.verdict, 'data-category': c.category, 'data-problem': !c.rootAllowed || c.verdict === 'blocked' ? 'true' : 'false' },
-          el('td', { title: c.note || null }, el('a', { href: `/crawlers/${slugFor(c.name)}/` }, c.name)),
+          el('td', { title: c.note || null }, c.name),
           el('td', { class: 'text-muted' }, c.categoryLabel),
           el('td', {}, c.groupUsed === null ? el('span', { class: 'text-muted' }, t('ui.none')) : el('code', {}, c.groupUsed)),
           el('td', { class: 'text-muted' }, c.allowRules + c.disallowRules ? t('ui.agents.ruleCounts', { disallow: c.disallowRules, allow: c.allowRules }) : el('span', { class: 'text-muted' }, t('ui.none'))),

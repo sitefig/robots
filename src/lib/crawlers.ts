@@ -41,6 +41,40 @@ export interface Crawler {
   board?: { blocked: number; percent: number; restricted: number; open: number };
   /** What the whole web does, from OpenRobotsTxt's published dataset. */
   world?: World;
+  /** What the ai.robots.txt list records about it, where it is on that list. */
+  listed?: Listed;
+}
+
+/**
+ * One crawler as the ai.robots.txt list has it: who runs it, what they say it
+ * is for, whether it is documented as honouring robots.txt, and where to read
+ * about it. MIT licensed, so the page that shows it names the list; `aiList()`
+ * carries the words for that.
+ */
+export interface Listed {
+  name: string;
+  operator?: string;
+  operatorUrl?: string;
+  purpose?: string;
+  /** "yes", "no", "unclear", or whatever sentence the list gives instead. */
+  respect: string;
+  respectUrl?: string;
+  frequency?: string;
+  description?: string;
+  infoUrl?: string;
+  /** The day the list added it, where its releases feed still reaches back. */
+  since?: string;
+  release?: string;
+}
+
+interface ListFile {
+  source: string;
+  credit: string;
+  licence: string;
+  licenceUrl: string;
+  copyright: string;
+  retrieved: string;
+  rows: Record<string, Listed>;
 }
 
 /**
@@ -69,6 +103,36 @@ interface WorldFile {
 }
 
 let world: WorldFile | null = null;
+let aiList: ListFile | null = null;
+
+function listFile(): ListFile | null {
+  if (aiList) return aiList;
+  try {
+    aiList = JSON.parse(readFileSync(new URL('../data/airobots.json', import.meta.url), 'utf8')) as ListFile;
+  } catch {
+    aiList = null;
+  }
+  return aiList;
+}
+
+/** Where the AI crawler facts come from, for the line that has to say so. */
+export function listCredit(): Omit<ListFile, 'rows'> | null {
+  const file = listFile();
+  if (!file) return null;
+  const { rows: _rows, ...rest } = file;
+  return rest;
+}
+
+/** The list's entry for a crawler, matched on the strings it answers to. */
+function listedRow(name: string, tokens: string[]): Listed | undefined {
+  const rows = listFile()?.rows;
+  if (!rows) return undefined;
+  for (const key of [name, ...tokens]) {
+    const row = rows[key.toLowerCase()];
+    if (row) return row;
+  }
+  return undefined;
+}
 
 function worldFile(): WorldFile | null {
   if (world) return world;
@@ -233,6 +297,7 @@ export function crawlers(): Crawler[] {
     named: named.get(slugFor(e.name)) ?? 0,
     board: board.get(e.name.toLowerCase()),
     world: worldRow(e.tokens),
+    listed: listedRow(e.name, e.tokens),
   }));
   return cache;
 }

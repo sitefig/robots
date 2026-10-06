@@ -147,7 +147,7 @@ test('the press kit page links its files, and every page has the footer and the 
 
 // ---------------------------------------------------------------- crawler pages
 
-test('every crawler in the engine config gets a page, and the report links to it', async () => {
+test('every crawler in the engine config gets a page', async () => {
   const { crawlers, byCategory, measuredCount } = await import('../src/lib/crawlers.ts');
   const list = crawlers();
   assert.ok(list.length > 100, `only ${list.length} crawlers read from the engine config`);
@@ -160,10 +160,6 @@ test('every crawler in the engine config gets a page, and the report links to it
   assert.equal(byCategory().reduce((n, g) => n + g.list.length, 0), list.length, 'a crawler is missing from the index');
   assert.ok(measuredCount() > 100, 'the figures have almost no snapshots behind them');
 
-  // The crawler table links each name to its page, with its own copy of the
-  // slug rule, because the build-time module reads the disk. They have to agree.
-  const agents = await readFile(new URL('../src/client/components/agents.ts', import.meta.url), 'utf8');
-  const client = agents.match(/const slugFor = \(name: string\): string => (.+);/)[1];
-  const slugInClient = new Function('name', `return ${client.replace(/name\.toLowerCase/, 'String(name).toLowerCase')};`);
-  for (const c of list) assert.equal(slugInClient(c.name), c.slug, `the two slug rules disagree about ${c.name}`);
+  // Nothing on the site links these pages yet, on purpose: they are in the
+  // sitemap and nowhere else, which the sitemap test above counts.
 });
