@@ -39,11 +39,15 @@ jobs:
     # Chrome (both themes), html-validate's WCAG preset, and pa11y's
     # HTML_CodeSniffer. Builds the WASM engine and the Eleventy site first.
     runs-on: ubuntu-latest
-    # 25 was not enough once the crawler pages arrived: axe now visits one page
-    # per shape rather than all 246 (see shapes() in tests/a11y/lib.mjs), which
-    # brought it back to about ten minutes, and this leaves room for a slow
-    # runner rather than another timeout reported as a cancelled job.
-    timeout-minutes: 35
+    # 25 was not enough once the crawler pages arrived. Two things grew: the
+    # pages themselves, which shapes() in tests/a11y/lib.mjs now samples one per
+    # shape instead of all 246, and every interactive state, because the crawler
+    # table in a report is 246 rows for axe to walk through, twice a language and
+    # twice a theme. That is the slow half and it is the product, not the test,
+    # so the budget moves instead: the job takes about 30 minutes now, and a
+    # timeout here is reported as a cancelled run rather than a failure, which is
+    # easy to mistake for a superseded one.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
