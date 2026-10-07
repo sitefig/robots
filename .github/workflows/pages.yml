@@ -12,6 +12,7 @@ on:
     # Files that never reach the site do not trigger a build.
     paths-ignore:
       - 'README.md'
+      - 'susbot-banner.png'   # the README's banner; it is not part of the site
       - 'CLAUDE.md'
       - 'LICENSE.md'
       - '.github/workflows/test.yml'

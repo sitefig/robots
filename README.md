@@ -1,3 +1,5 @@
+[![sus.bot, the robots.txt inspector: who gets into your site? Googlebot allowed, GPTBot blocked, ClaudeBot partial, CCBot blocked, Bytespider matched by no rule.](susbot-banner.png)](https://sus.bot/)
+
 # sus.bot
 
 **Every site on the web publishes, at `/robots.txt`, exactly which crawlers it lets in. Yours, and your competitors'.** sus.bot reads that file and says what it means: which AI companies are being fed for free, which search engines are being turned away by accident, and what the file gives away about the systems behind it.
@@ -10,7 +12,7 @@ cargo install susbot && susbot https://a-competitor.example
 
 ## What a business learns in one check
 
-- **Who is training on your content.** One line per AI crawler, marked Allowed, Restricted or Blocked: GPTBot, ClaudeBot, CCBot, Google-Extended, Applebot-Extended, Bytespider, meta-externalagent, Amazonbot and the rest of a list of 134. If you believe you blocked them, this is where you find out whether the rule does that.
+- **Who is training on your content.** One line per AI crawler, marked Allowed, Restricted or Blocked: GPTBot, ClaudeBot, CCBot, Google-Extended, Applebot-Extended, Bytespider, meta-externalagent, Amazonbot and the rest of a list of 246, every AI crawler on the ai.robots.txt list among them. If you believe you blocked them, this is where you find out whether the rule does that.
 - **What your competitors allow.** Their file is public, so the same check works on any domain. Run it across a set of them and you see who lets the AI crawlers in, which SEO tools they pay for, what platform they run on, and what they changed last month.
 - **Where you are losing search traffic.** The trailing-slash trap, where `Disallow: /shop` also blocks `/shopping`. Blocking every URL with a query string, which removes your paginated and filtered pages. Blocking scripts, styles or images, which stops search engines rendering the page at all.
 - **What the file gives away.** Disallow lines are a map: admin panels, staging hosts, backups, cloud buckets with their names, internal APIs, and the emails, ticket numbers and dates left in comments. Attackers read robots.txt first; this shows you what they find.
