@@ -1,7 +1,7 @@
 // Shared helpers for the accessibility checkers: the page list, a local
 // static server and a headless Chrome. They check the built site in _site/
 // (npm run build:site); A11Y_SITE overrides the folder.
-import { readdirSync, existsSync, readFileSync } from 'node:fs';
+import { readdirSync, existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -25,32 +25,6 @@ export function pages() {
   };
   walk('');
   return out.sort((a, b) => (a.file === 'index.html' ? -1 : b.file === 'index.html' ? 1 : a.file.localeCompare(b.file)));
-}
-
-/**
- * The same list, with the crawler pages collapsed to one page per shape.
- *
- * There are 246 of them and they are one template filled in 246 times, so
- * driving a browser over every one costs twenty minutes to prove the same thing
- * again and again, which is what took the accessibility job past CI's budget.
- * What axe can see is which optional sections a page carries, so group them by
- * that and keep the first of each group: every arrangement of the template is
- * still checked, and a new section means a new group rather than a silent gap.
- * html-validate reads all 246 either way, in seconds, and so does the sitemap
- * test.
- */
-export function shapes() {
-  const seen = new Set();
-  return pages().filter((p) => {
-    if (!/^crawlers\/[^/]+\/index\.html$/.test(p.file)) return true;
-    const html = readFileSync(`${sitePath}${p.file}`, 'utf8');
-    const signature = ['ua-heading', 'list-heading', 'world-heading', 'figures-heading', 'class="callout"', '<dt>Blocked by<', '<dt>Documented at<', '<dt>Operated by<', '<dt>Given a Crawl-delay<', 'honours <code>Crawl-delay']
-      .map((mark) => (html.includes(mark) ? '1' : '0'))
-      .join('');
-    if (seen.has(signature)) return false;
-    seen.add(signature);
-    return true;
-  });
 }
 
 export function requireWasm() {

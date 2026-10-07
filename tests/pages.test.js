@@ -145,21 +145,3 @@ test('the press kit page links its files, and every page has the footer and the 
   assert.ok(files['de/index.html'].includes('href="../press/"'), 'German pages link the press kit');
 });
 
-// ---------------------------------------------------------------- crawler pages
-
-test('every crawler in the engine config gets a page', async () => {
-  const { crawlers, byCategory, measuredCount } = await import('../src/lib/crawlers.ts');
-  const list = crawlers();
-  assert.ok(list.length > 100, `only ${list.length} crawlers read from the engine config`);
-  for (const c of list) {
-    assert.ok(c.name && c.slug && c.category, `incomplete crawler: ${JSON.stringify(c)}`);
-    assert.ok(c.tokens.length > 0, `${c.name} has no tokens to match`);
-    assert.match(c.slug, /^[a-z0-9-]+$/, `${c.name} has an unusable slug: ${c.slug}`);
-  }
-  assert.equal(new Set(list.map((c) => c.slug)).size, list.length, 'two crawlers share a page address');
-  assert.equal(byCategory().reduce((n, g) => n + g.list.length, 0), list.length, 'a crawler is missing from the index');
-  assert.ok(measuredCount() > 100, 'the figures have almost no snapshots behind them');
-
-  // Nothing on the site links these pages yet, on purpose: they are in the
-  // sitemap and nowhere else, which the sitemap test above counts.
-});

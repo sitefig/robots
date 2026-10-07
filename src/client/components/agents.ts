@@ -23,13 +23,6 @@ import { el, badge, replace, slot, meta, scrollable, verdictBadge, phone } from 
 import { current } from '../state.ts';
 import { LINKS } from '../config.ts';
 
-// Each crawler has a page of its own at /crawlers/<slug>/, built from the same
-// configuration this table comes from, but nothing links them yet: the pages are
-// in the sitemap and that is all. When they are linked from here, the slug rule
-// has to be duplicated in this module (it cannot import the build-time one,
-// which reads the engine's configuration off disk) and tests/pages.test.js has
-// to compare the two.
-
 // Rotating the phone re-decides what is on show. The listener is registered once
 // and calls the latest render's apply(), so re-running an analysis does not leave
 // listeners behind holding detached tables.
