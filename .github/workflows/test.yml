@@ -39,7 +39,7 @@ jobs:
     # Chrome (both themes), html-validate's WCAG preset, and pa11y's
     # HTML_CodeSniffer. Builds the WASM engine and the Eleventy site first.
     runs-on: ubuntu-latest
-timeout-minutes: 25
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
