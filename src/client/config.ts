@@ -1,9 +1,12 @@
 // Runtime configuration. This is the only file that needs editing to deploy.
 
-// URL of the deployed Cloudflare Worker (sitefig/robots-worker, private).
-// Leave the placeholder
-// and the site still works for sites that send CORS headers, plus paste mode.
-export const WORKER_URL = 'https://robots-proxy.sitefig.workers.dev';
+// URL of the deployed Cloudflare Worker (sitefig/robots-worker, private). This
+// site uses the free one, `robots-proxy-free`, which is the deployment on the
+// Workers Free plan with the per-IP and global rate limits; the accounts app has
+// its own, `robots-proxy-accounts`, and the two must not be mixed up, because
+// only this one is guaranteed never to bill. Leave the placeholder and the site
+// still works for sites that send CORS headers, plus paste mode.
+export const WORKER_URL = 'https://robots-proxy-free.sitefig.workers.dev';
 
 // Public URL of the site with a trailing slash. Used by the site build for
 // the absolute hreflang, canonical and sitemap.xml URLs on every language page.
