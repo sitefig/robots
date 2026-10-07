@@ -8,9 +8,12 @@
 //   the whole site, immediately and permanently.
 // - Refusing has to be as easy as agreeing. The EDPB's cookie banner taskforce
 //   went after exactly this: one bright button for yes and a grey link for no.
-//   Both buttons here are the same element, the same size, the same colour, and
-//   "No analytics" comes first in the markup. Neither is the signal yellow,
-//   which everywhere else marks the action we want you to take.
+//   Both buttons here are the same element, the same size, the same type and the
+//   same ink, "No cookies" comes first in the markup and sits at the left edge
+//   where reading starts, and neither is the signal yellow that marks the action
+//   we want you to take everywhere else. The refusal carries no border, which is
+//   a quieter frame and not a quieter choice: same words, same hit area, same
+//   focus ring, one press either way.
 // - Silence is not consent, so nothing is loaded and nothing is sent until
 //   somebody presses a button. Escape counts as refusing, not as postponing.
 // - Withdrawing has to be as easy as giving, hence the footer link that reopens
@@ -34,8 +37,8 @@ export function ConsentDialog(ctx: PageContext): string {
         <p class="text-sm text-muted">${e('ui.consent.never')}</p>
       </div>
       <p class="text-sm"><a href="${privacy}">${e('ui.consent.privacy')}</a></p>
-      <div class="cluster consent__actions" data-space="xs">
-        <button type="button" class="button" id="consent-reject">${e('ui.consent.reject')}</button>
+      <div class="cluster consent__actions" data-space="xs" data-justify="between">
+        <button type="button" class="button" data-variant="quiet" id="consent-reject">${e('ui.consent.reject')}</button>
         <button type="button" class="button" id="consent-accept">${e('ui.consent.accept')}</button>
       </div>
     </div>

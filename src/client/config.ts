@@ -36,6 +36,9 @@ export const LINKS = {
   engine: 'https://github.com/sitefig/robots-engine',
   gallery: 'https://github.com/sitefig/robots-engine/tree/main/data/famous-100',
   diffs: 'https://github.com/sitefig/robots-engine/commits/main/data/famous-100',
+  // Every crawler, one page each, with what the whole web does about it. Its own
+  // site, built from the Common Crawl robots.txt analysis, not from this repo.
+  crawlers: 'https://www.opencrawlers.com/',
   extension: '',
 };
 

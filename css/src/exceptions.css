@@ -35,6 +35,15 @@
   background: #ffe352;
 }
 
+/* The refusal in the analytics dialog: no border, so the pair does not read as
+   two equal offers competing for a press, but the same element underneath with
+   the same size, type and hit area, because refusing has to cost no more effort
+   than agreeing. The hover fill and the focus ring still show it is a button. */
+.button[data-variant="quiet"] {
+  border-color: transparent;
+  background: transparent;
+}
+
 .seg > button[aria-pressed="true"],
 .chip[aria-pressed="true"] {
   background: var(--color-ink);
