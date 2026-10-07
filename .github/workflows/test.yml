@@ -39,7 +39,13 @@ jobs:
     # Chrome (both themes), html-validate's WCAG preset, and pa11y's
     # HTML_CodeSniffer. Builds the WASM engine and the Eleventy site first.
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # 25 was the budget while the engine knew 134 crawlers. It knows 246 now, and
+    # the crawler table in a report is one row each, which axe walks in every
+    # interactive state, twice a language and twice a theme. Two runs were
+    # cancelled at 25 minutes before this went up; a timeout here reads as a
+    # cancelled run rather than a failure, which is easy to mistake for a
+    # superseded one, so leave room.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
