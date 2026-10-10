@@ -1,0 +1,578 @@
+{
+  "engine": "2.2.1",
+  "findings": [
+    {
+      "id": "fetch.warn.contentType",
+      "family": "fetch",
+      "level": "warning",
+      "message": "Crawlers may ignore the whole file, because it is served as {type}. Serve it as text/plain."
+    },
+    {
+      "id": "fetch.warn.contentTypeMissing",
+      "family": "fetch",
+      "level": "warning",
+      "message": "Crawlers may ignore the whole file, because it is served without a Content-Type header. Serve it as text/plain."
+    },
+    {
+      "id": "fetch.warn.forbidden",
+      "family": "fetch",
+      "level": "info",
+      "message": "Crawlers read every page and follow none of your rules, because robots.txt answered {status} and they treat that as \"no restrictions\"."
+    },
+    {
+      "id": "fetch.warn.htmlBody",
+      "family": "fetch",
+      "level": "error",
+      "message": "Crawlers find no rules and read every page, because /robots.txt serves an HTML page with status 200. They treat that like a missing robots.txt."
+    },
+    {
+      "id": "fetch.warn.notRobotsPath",
+      "family": "fetch",
+      "level": "warning",
+      "message": "Crawlers read the content of {path} as your robots.txt, because the redirect ended there and not at /robots.txt."
+    },
+    {
+      "id": "fetch.warn.rateLimited",
+      "family": "fetch",
+      "level": "warning",
+      "message": "Google stops crawling the whole site while this lasts, because robots.txt answered 429 Too Many Requests and Google treats that like a server error."
+    },
+    {
+      "id": "fetch.warn.redirectLimit",
+      "family": "fetch",
+      "level": "error",
+      "message": "Google treats this site as having no robots.txt, so no page is restricted. The file sits behind more than five redirects, and RFC 9309 lets crawlers give up at that point."
+    },
+    {
+      "id": "fetch.warn.redirectOtherHost",
+      "family": "fetch",
+      "level": "warning",
+      "message": "{from} is governed by the rules of {to}, because robots.txt redirects to that host and crawlers apply the file they land on."
+    },
+    {
+      "id": "fetch.warn.redirectSameSite",
+      "family": "fetch",
+      "level": "info",
+      "message": "Crawlers still reach the file. robots.txt redirects to {host}, and crawlers follow a www or https redirect like this one."
+    },
+    {
+      "id": "fetch.warn.serverError",
+      "family": "fetch",
+      "level": "error",
+      "message": "Google stops crawling the whole site while this lasts, because robots.txt answered {status} and Google treats a server error as \"block everything\"."
+    },
+    {
+      "id": "lint.absoluteUrl",
+      "family": "lint",
+      "level": "warning",
+      "message": "\"{rule}\" matches no URL, because a rule must be a path and this is a full address. The line also publishes the hostname.",
+      "variants": {
+        "disallow": "{outcome} This line was meant to block it, but \"{rule}\" is a full address and a rule must be a path, so it matches no URL. Write \"{path}\". The line also publishes the hostname.",
+        "allow": "{outcome} This line was meant to open it, but \"{rule}\" is a full address and a rule must be a path, so it matches no URL. Write \"{path}\". The line also publishes the hostname."
+      }
+    },
+    {
+      "id": "lint.commentedRule",
+      "family": "lint",
+      "level": "info",
+      "message": "This line does nothing, because it is a \"{directive}\" rule that has been commented out."
+    },
+    {
+      "id": "lint.legacyBadBots",
+      "family": "lint",
+      "level": "info",
+      "message": "This block list stops no crawler, because the {n} old scrapers and e-mail harvesters it names never obeyed robots.txt. Block them at the server if you need to."
+    },
+    {
+      "id": "parser.aiDirective",
+      "family": "parser",
+      "level": "info",
+      "message": "This line blocks no AI crawler that follows the standard, because \"{field}\" is a proposed extension and not part of RFC 9309. Name the AI crawlers you want to block in User-agent groups."
+    },
+    {
+      "id": "parser.bareUrl",
+      "family": "parser",
+      "level": "error",
+      "message": "Crawlers ignore this line, because it holds only a URL. If this is your sitemap, write \"Sitemap: {url}\"."
+    },
+    {
+      "id": "parser.bom",
+      "family": "parser",
+      "level": "info",
+      "message": "A crawler with a strict parser may misread the first line, because the file starts with a UTF-8 byte-order mark. Save the file without one."
+    },
+    {
+      "id": "parser.cleanParamInfo",
+      "family": "parser",
+      "level": "info",
+      "message": "Only Yandex follows this line: it leaves out the listed query parameters when it crawls. Every other crawler ignores Clean-param."
+    },
+    {
+      "id": "parser.cleanParamMalformed",
+      "family": "parser",
+      "level": "warning",
+      "message": "Yandex ignores this Clean-param line, because it is malformed. Write \"Clean-param: p1&p2 /path-prefix\", with parameter names made of letters, digits, \"_\", \"-\" and \".\"."
+    },
+    {
+      "id": "parser.cleanParamTooLong",
+      "family": "parser",
+      "level": "warning",
+      "message": "Yandex ignores this Clean-param line, because it is longer than the {max} characters Yandex accepts."
+    },
+    {
+      "id": "parser.contentSignal",
+      "family": "parser",
+      "level": "info",
+      "message": "Only crawlers that support Content-Signal follow this line, which states how the site may be used ({value}). It is Cloudflare's extension, not part of RFC 9309."
+    },
+    {
+      "id": "parser.contentSignalInvalid",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers cannot read this Content-Signal line, because it is malformed at {parts}. Each entry is search, ai-input or ai-train, set to yes or no."
+    },
+    {
+      "id": "parser.crawlDelayBeforeAgent",
+      "family": "parser",
+      "level": "error",
+      "message": "No crawler slows down for this Crawl-delay line, because it comes before any User-agent line and is ignored."
+    },
+    {
+      "id": "parser.crawlDelayDuplicate",
+      "family": "parser",
+      "level": "info",
+      "message": "Crawlers ignore this Crawl-delay, because the group already has one and the first one is kept."
+    },
+    {
+      "id": "parser.crawlDelayHigh",
+      "family": "parser",
+      "level": "warning",
+      "message": "Bing can crawl only about {pages} pages a day, because Crawl-delay is {seconds} seconds. A large site will not be crawled in full."
+    },
+    {
+      "id": "parser.crawlDelayNaN",
+      "family": "parser",
+      "level": "warning",
+      "message": "No crawler slows down for this line, because \"{value}\" is not a number."
+    },
+    {
+      "id": "parser.crawlDelayNonStandard",
+      "family": "parser",
+      "level": "info",
+      "message": "Only Bing slows down for Crawl-delay. Google and Yandex ignore it, because it is not part of RFC 9309."
+    },
+    {
+      "id": "parser.emptyAllow",
+      "family": "parser",
+      "level": "info",
+      "message": "This line changes nothing, because an Allow without a path matches no URL."
+    },
+    {
+      "id": "parser.emptyDisallow",
+      "family": "parser",
+      "level": "info",
+      "message": "This line blocks nothing, because a Disallow without a path leaves every URL open."
+    },
+    {
+      "id": "parser.emptyGroup",
+      "family": "parser",
+      "level": "info",
+      "message": "The crawlers this group names may read every page, because the group has no rules.",
+      "variants": {
+        "merged": "This group adds no rules. The crawlers it names follow the rules of their other groups in this file."
+      }
+    },
+    {
+      "id": "parser.emptyUserAgent",
+      "family": "parser",
+      "level": "error",
+      "message": "The rules under this line apply to no crawler, because the User-agent line names none.",
+      "variants": {
+        "others": "This line adds no crawler to the group, because the User-agent value is empty. The rules under it apply to {names}.",
+        "star": "This line adds no crawler to the group, because the User-agent value is empty. The rules under it apply to every crawler without its own rules."
+      }
+    },
+    {
+      "id": "parser.fullwidthColon",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers skip this line, because it uses a full-width colon instead of \":\". Crawlers only accept the plain colon."
+    },
+    {
+      "id": "parser.gluedComment",
+      "family": "parser",
+      "level": "error",
+      "message": "Crawlers ignore this \"{directive}\" line, because a line break is missing before it and it has become part of a comment.",
+      "variants": {
+        "disallow": "{outcome} This line was meant to block it, but a line break is missing before \"{directive}\", so the rule has become part of a comment and crawlers ignore it.",
+        "allow": "{outcome} This line was meant to open it, but a line break is missing before \"{directive}\", so the rule has become part of a comment and crawlers ignore it."
+      }
+    },
+    {
+      "id": "parser.hashInValue",
+      "family": "parser",
+      "level": "warning",
+      "message": "{outcome} This line was written as \"{value}\", but \"#\" starts a comment, so crawlers read the rule as \"{truncated}\". Remove the fragment; URL fragments are never sent to the server.",
+      "variants": {
+        "sitemap": "Crawlers read this sitemap address as \"{truncated}\", not \"{value}\", because \"#\" starts a comment and cuts the line short. Remove the fragment; URL fragments are never sent to the server."
+      }
+    },
+    {
+      "id": "parser.homoglyph",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers skip this line, because \"{field}\" is written with a letter from another alphabet that only looks the same. Retype it in plain Latin letters."
+    },
+    {
+      "id": "parser.hostDuplicate",
+      "family": "parser",
+      "level": "info",
+      "message": "This Host line is ignored, because the file already has one and the first one is kept."
+    },
+    {
+      "id": "parser.hostObsolete",
+      "family": "parser",
+      "level": "info",
+      "message": "No crawler reads this Host line. Host was a Yandex-only directive for naming the main mirror, and Yandex dropped it in 2018. Redirect to the preferred hostname instead."
+    },
+    {
+      "id": "parser.htmlFragment",
+      "family": "parser",
+      "level": "error",
+      "message": "Crawlers cannot read the lines with HTML markup (\"{tag}\"), and the markup can break the rule next to it. It usually comes from a theme, a plugin or a cache layer."
+    },
+    {
+      "id": "parser.invalidToken",
+      "family": "parser",
+      "level": "warning",
+      "message": "The rules under this line apply to no crawler, because \"{value}\" is not a valid crawler name.",
+      "variants": {
+        "others": "This line adds no crawler to the group, because \"{value}\" is not a valid crawler name. The rules under it apply to {names}.",
+        "star": "This line adds no crawler to the group, because \"{value}\" is not a valid crawler name. The rules under it apply to every crawler without its own rules."
+      }
+    },
+    {
+      "id": "parser.invisibleChar",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers skip this line, because an invisible character sits in front of the directive name and they read the name as unknown. Retype the line."
+    },
+    {
+      "id": "parser.junkBeforeField",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers ignore this \"{field}\" line, because \"{junk}\" sits before the directive name and they read it as part of the name. Remove what comes before the name."
+    },
+    {
+      "id": "parser.longLine",
+      "family": "parser",
+      "level": "info",
+      "message": "Crawlers may cut this line short and lose the end of the rule, because it is {chars} characters long. A line that long is generated, not written."
+    },
+    {
+      "id": "parser.metaRobots",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers ignore this line, because \"{field}\" is a meta robots value and not a robots.txt directive. Use a meta robots tag or the X-Robots-Tag header instead."
+    },
+    {
+      "id": "parser.misspelling",
+      "family": "parser",
+      "level": "info",
+      "message": "Crawlers other than Google may skip this line, because \"{raw}\" is a misspelling of \"{field}\". Google reads it as \"{field}\"."
+    },
+    {
+      "id": "parser.noRules",
+      "family": "parser",
+      "level": "info",
+      "message": "Every crawler may read every page, because the file holds no rules."
+    },
+    {
+      "id": "parser.noSitemap",
+      "family": "parser",
+      "level": "info",
+      "message": "Crawlers have to find new pages by following links, because the file lists no sitemap. A Sitemap line is optional, but it helps them."
+    },
+    {
+      "id": "parser.noindex",
+      "family": "parser",
+      "level": "warning",
+      "message": "This line keeps no page out of search results, because no major search engine supports Noindex in robots.txt. Use a robots meta tag or the X-Robots-Tag header instead."
+    },
+    {
+      "id": "parser.nonAsciiPath",
+      "family": "parser",
+      "level": "info",
+      "message": "Not every crawler matches this rule, because \"{value}\" contains non-ASCII characters. RFC 9309 matches percent-encoded paths; most crawlers encode the path for you, but not all."
+    },
+    {
+      "id": "parser.nonStandardDirective",
+      "family": "parser",
+      "level": "info",
+      "message": "Crawlers ignore this line today. \"{field}\" is not part of RFC 9309, although crawlers once honoured it."
+    },
+    {
+      "id": "parser.notFieldValue",
+      "family": "parser",
+      "level": "error",
+      "message": "Crawlers ignore this line, because it is not written as \"directive: value\".",
+      "variants": {
+        "hint": "Crawlers ignore this line, because the \":\" between the directive and its value is missing. Did you mean \"{field}\"?"
+      }
+    },
+    {
+      "id": "parser.pathNoSlash",
+      "family": "parser",
+      "level": "warning",
+      "message": "{outcome} This line was meant to block it, but \"{value}\" does not start with \"/\", so it matches no URL. Write \"/{value}\".",
+      "variants": {
+        "disallow": "{outcome} This line was meant to block it, but \"{value}\" does not start with \"/\", so it matches no URL. Write \"/{value}\".",
+        "allow": "{outcome} This line was meant to open it, but \"{value}\" does not start with \"/\", so it matches no URL. Write \"/{value}\"."
+      }
+    },
+    {
+      "id": "parser.placeholder",
+      "family": "parser",
+      "level": "warning",
+      "message": "This line may not apply to your site, because \"{value}\" still contains the template placeholder \"{placeholder}\". Replace it with your own value."
+    },
+    {
+      "id": "parser.pluginOutput",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers meet lines they cannot read, because a caching or minification plugin has added its output to robots.txt. Exclude /robots.txt from that plugin."
+    },
+    {
+      "id": "parser.regexSyntax",
+      "family": "parser",
+      "level": "warning",
+      "message": "This rule does not match the URLs it was written for, because \"{value}\" uses regular-expression syntax. robots.txt only understands \"*\" and \"$\", and every other character is matched literally."
+    },
+    {
+      "id": "parser.ruleBeforeAgent",
+      "family": "parser",
+      "level": "error",
+      "message": "Crawlers ignore this {directive} line, because it comes before any User-agent line.",
+      "variants": {
+        "disallow": "{outcome} This line was meant to block it, but it comes before any User-agent line, so crawlers ignore it.",
+        "allow": "{outcome} This line was meant to open it, but it comes before any User-agent line, so crawlers ignore it."
+      }
+    },
+    {
+      "id": "parser.serverErrorOutput",
+      "family": "parser",
+      "level": "error",
+      "message": "robots.txt shows a server error message to every visitor, such as a PHP warning or a stack trace. It can reveal file paths on the server, and it breaks the rules around it."
+    },
+    {
+      "id": "parser.sitemapInvalid",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers cannot find this sitemap, because \"{value}\" is not a full address that starts with http:// or https://."
+    },
+    {
+      "id": "parser.spaceInPath",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers may not match this rule, because \"{value}\" contains a space and URLs never contain raw spaces. Write %20, or split the rule in two."
+    },
+    {
+      "id": "parser.starBlocksAll",
+      "family": "parser",
+      "level": "warning",
+      "message": "The whole site is blocked for every crawler without its own group, because the \"*\" group disallows it."
+    },
+    {
+      "id": "parser.tokenRepeated",
+      "family": "parser",
+      "level": "info",
+      "message": "Older crawlers may follow only part of the rules for \"{token}\", because the name appears in {n} groups. RFC 9309 merges the groups, but older crawlers may use only the first."
+    },
+    {
+      "id": "parser.tokenTail",
+      "family": "parser",
+      "level": "info",
+      "message": "These rules apply to \"{token}\", not to \"{value}\". Crawlers read only the name and ignore what follows it."
+    },
+    {
+      "id": "parser.tooLarge",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers stop reading this file after the first 500 KiB, so every rule after that point is ignored. The file is {kib} KiB."
+    },
+    {
+      "id": "parser.unknownDirective",
+      "family": "parser",
+      "level": "warning",
+      "message": "Crawlers ignore this line, because \"{field}\" is not a directive they know."
+    },
+    {
+      "id": "parser.wildcardOnly",
+      "family": "parser",
+      "level": "warning",
+      "message": "Google reads this line as \"block the whole site\", while other crawlers read \"{value}\" as a literal path. \"Disallow: {value}\" is not RFC 9309. Write \"Disallow: /\" if you mean the whole site."
+    },
+    {
+      "id": "seo.assetBlock",
+      "family": "seo",
+      "level": "warning",
+      "message": "Every crawler without its own rules is cut off from the scripts or styles your pages need, because \"Disallow: {path}\" blocks them. A search engine that cannot load them cannot render the page the way visitors see it."
+    },
+    {
+      "id": "seo.caseSensitive",
+      "family": "seo",
+      "level": "info",
+      "message": "{outcome} This line covers only URLs written exactly as \"{path}\", because paths are case-sensitive. Check the casing of the site's real URLs."
+    },
+    {
+      "id": "seo.cssJsBlock",
+      "family": "seo",
+      "level": "warning",
+      "message": "Every crawler without its own rules is cut off from CSS or JavaScript files, because \"Disallow: {path}\" blocks them. A search engine renders the page before it judges it, and a page without its assets looks broken."
+    },
+    {
+      "id": "seo.duplicate",
+      "family": "seo",
+      "level": "info",
+      "message": "This line changes nothing, because \"{rule}\" repeats line {line}{scope}."
+    },
+    {
+      "id": "seo.imageBlock",
+      "family": "seo",
+      "level": "info",
+      "message": "Every crawler without its own rules is cut off from the images under this rule, because \"Disallow: {path}\" blocks them. An image search engine among them cannot show those images."
+    },
+    {
+      "id": "seo.mergedScope",
+      "family": "seo",
+      "level": "varies",
+      "message": " (rules for \"{token}\" are merged across groups)"
+    },
+    {
+      "id": "seo.overridden",
+      "family": "seo",
+      "level": "warning",
+      "message": "{path} stays open, because \"{winner}\" on line {line} wins over \"{rule}\" on every URL it matches{scope}.",
+      "variants": {
+        "disallow": "{path} stays open, because \"{winner}\" on line {line} wins over \"{rule}\" on every URL it matches{scope}.",
+        "allow": "{path} stays blocked, because \"{winner}\" on line {line} wins over \"{rule}\" on every URL it matches{scope}."
+      }
+    },
+    {
+      "id": "seo.queryStringBlock",
+      "family": "seo",
+      "level": "warning",
+      "message": "Paginated, filtered and tracked landing pages are blocked for every crawler without its own rules, because \"Disallow: {path}\" matches every URL with a query string."
+    },
+    {
+      "id": "seo.redundant",
+      "family": "seo",
+      "level": "info",
+      "message": "This line changes nothing, because every URL \"{rule}\" matches is already covered by \"{winner}\" on line {line}{scope}."
+    },
+    {
+      "id": "seo.selfBlock",
+      "family": "seo",
+      "level": "warning",
+      "message": "Crawlers other than Google may stop reading your rules altogether, because \"Disallow: {path}\" also matches /robots.txt. Google fetches robots.txt regardless."
+    },
+    {
+      "id": "seo.trailingSlash",
+      "family": "seo",
+      "level": "varies",
+      "message": "URLs such as {path}s, {path}-old and {path}2 are open too, because \"{path}\" is a prefix and matches every URL that starts with it. Write \"{path}/\" for the directory, or \"{path}$\" for only that URL.",
+      "variants": {
+        "allow": "URLs such as {path}s, {path}-old and {path}2 are open too, because \"{path}\" is a prefix and matches every URL that starts with it. Write \"{path}/\" for the directory, or \"{path}$\" for only that URL.",
+        "disallow": "URLs such as {path}s, {path}-old and {path}2 are blocked too, because \"{path}\" is a prefix and matches every URL that starts with it. Write \"{path}/\" for the directory, or \"{path}$\" for only that URL."
+      }
+    },
+    {
+      "id": "sitemap.crossDomain",
+      "family": "sitemap",
+      "level": "warning",
+      "message": "Search engines may ignore this sitemap, because it is hosted on {host} and not on {site}. Google accepts it only when both sites are verified by the same owner in Search Console (cross-site submission)."
+    },
+    {
+      "id": "sitemap.duplicate",
+      "family": "sitemap",
+      "level": "info",
+      "message": "This line adds nothing, because the same sitemap is already listed on line {line}."
+    },
+    {
+      "id": "sitemap.httpsOnHttp",
+      "family": "sitemap",
+      "level": "info",
+      "message": "Crawlers fetch this sitemap over https, while the site was reached over http. This is fine if the site redirects to https; otherwise list the sitemap with the protocol the site uses."
+    },
+    {
+      "id": "sitemap.otherSubdomain",
+      "family": "sitemap",
+      "level": "info",
+      "message": "Crawlers accept this sitemap. It sits on another host of the same domain ({host}), and listing it here is what allows it to contain {site} URLs."
+    },
+    {
+      "id": "sitemap.protocolMismatch",
+      "family": "sitemap",
+      "level": "warning",
+      "message": "Crawlers hit a redirect or an insecure copy every time they fetch this sitemap, because the site is served over https and the sitemap is listed as http. Use {url}."
+    }
+  ],
+  "security": [
+    {
+      "id": "admin",
+      "label": "Admin / internal",
+      "advice": "Protect with authentication and send an X-Robots-Tag: noindex header. Listing it here only advertises where the login is."
+    },
+    {
+      "id": "staging",
+      "label": "Staging / dev",
+      "advice": "Take staging and test environments off the public internet, or restrict them by IP or login. Use a noindex header rather than robots.txt."
+    },
+    {
+      "id": "backups",
+      "label": "Backups & archives",
+      "advice": "Backups and archives should not be reachable over HTTP at all. Move them outside the web root and verify the URL returns 404."
+    },
+    {
+      "id": "secrets",
+      "label": "Secrets & config",
+      "advice": "Configuration files, version-control folders and credentials must never be web-accessible. Block them at the server and check they return 403 or 404."
+    },
+    {
+      "id": "api",
+      "label": "Private APIs & debug",
+      "advice": "Internal APIs and debug endpoints need authentication or a network allowlist. Crawlers are not the threat here; scripted scanners are."
+    },
+    {
+      "id": "data",
+      "label": "User data & uploads",
+      "advice": "Turn off directory listing and make sure private files require a login. A Disallow only asks polite crawlers to look away."
+    },
+    {
+      "id": "version",
+      "label": "Version disclosure",
+      "advice": "These files name the software and its version, which is what an attacker looks up first. Delete them from the server instead of hiding them here."
+    },
+    {
+      "id": "maintenance",
+      "label": "Maintenance scripts",
+      "advice": "Installers and update scripts must not be reachable after setup. Remove them, or restrict them by IP address."
+    },
+    {
+      "id": "server",
+      "label": "Server internals",
+      "advice": "These paths belong to the server, not the site. If nothing runs there, remove the rule; it only points at them."
+    }
+  ],
+  "recon": [
+    "stack",
+    "generators",
+    "tech",
+    "cloud",
+    "hosts",
+    "api",
+    "data",
+    "extensions",
+    "comments"
+  ]
+}

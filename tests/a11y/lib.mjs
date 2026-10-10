@@ -1,7 +1,7 @@
 // Shared helpers for the accessibility checkers: the page list, a local
 // static server and a headless Chrome. They check the built site in _site/
 // (npm run build:site); A11Y_SITE overrides the folder.
-import { readdirSync, existsSync } from 'node:fs';
+import { readdirSync, existsSync, readFileSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -25,6 +25,31 @@ export function pages() {
   };
   walk('');
   return out.sort((a, b) => (a.file === 'index.html' ? -1 : b.file === 'index.html' ? 1 : a.file.localeCompare(b.file)));
+}
+
+/**
+ * The same list, with the generated pages collapsed to one page per shape.
+ *
+ * There are 97 documentation pages and they are one template filled in 97
+ * times, so driving a browser over every one costs twenty minutes to prove the
+ * same thing again and again, and the accessibility job has a budget. What axe
+ * can see is which optional sections a page carries, so group them by that and
+ * keep the first of each group: every arrangement the template can produce is
+ * still checked, and a new section makes a new group rather than a silent gap.
+ * html-validate reads all of them either way, in seconds, and so do the tests.
+ */
+const MARKS = ['says-heading', 'stories-heading', 'also-heading', 'What triggers it', 'What to write instead', 'class="callout"'];
+
+export function shapes() {
+  const seen = new Set();
+  return pages().filter((p) => {
+    if (!/^docs\/[^/]+\/[^/]+\/index\.html$/.test(p.file)) return true;
+    const html = readFileSync(`${sitePath}${p.file}`, 'utf8');
+    const signature = MARKS.map((mark) => (html.includes(mark) ? '1' : '0')).join('');
+    if (seen.has(signature)) return false;
+    seen.add(signature);
+    return true;
+  });
 }
 
 export function requireWasm() {

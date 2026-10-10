@@ -58,7 +58,12 @@ test('every home page lists every language as hreflang alternate plus x-default'
 });
 
 test('pages are translated and contain no unresolved placeholders', () => {
-  for (const [rel, page] of Object.entries(files)) assert.ok(!/\$\{|\{\{|\{tracked\}/.test(page), `${rel} has an unresolved placeholder`);
+  for (const [rel, page] of Object.entries(files)) {
+    // The documentation page about unreplaced placeholders shows one on
+    // purpose, which is the only {{ on the site that is meant to be there.
+    const pattern = rel === 'docs/parser/placeholder/index.html' ? /\$\{|\{tracked\}/ : /\$\{|\{\{|\{tracked\}/;
+    assert.ok(!pattern.test(page), `${rel} has an unresolved placeholder`);
+  }
   assert.ok(files['de/index.html'].includes(`<title>${dicts.de['page.title']}</title>`));
   assert.ok(files['de/index.html'].includes(dicts.de['page.analyse']));
 });
@@ -66,9 +71,11 @@ test('pages are translated and contain no unresolved placeholders', () => {
 test('sitemap lists every home page with all its alternates', () => {
   const xml = files['sitemap.xml'];
   for (const code of active) assert.ok(xml.includes(`<loc>${code === DEFAULT_LANG ? SITE_URL : `${SITE_URL}${code}/`}</loc>`), code);
-  const pages = Object.keys(files).filter((rel) => rel.endsWith('index.html')).length;
+  // The documentation pages have a sitemap of their own, see below.
+  const pages = Object.keys(files).filter((rel) => rel.endsWith('index.html') && !rel.startsWith('docs/')).length;
   assert.equal((xml.match(/<url>/g) || []).length, pages, 'one <url> per built page');
   assert.ok(xml.includes(`<loc>${SITE_URL}press/</loc>`));
+  assert.ok(!xml.includes(`${SITE_URL}docs/`), 'the docs belong in /docs/sitemap.xml, not in this one');
 });
 
 test('nothing is sold before there is a report', () => {
@@ -145,3 +152,60 @@ test('the press kit page links its files, and every page has the footer and the 
   assert.ok(files['de/index.html'].includes('href="../press/"'), 'German pages link the press kit');
 });
 
+
+// ---------------------------------------------------------------- documentation
+
+test('every check the engine can report has a documentation page', async () => {
+  const { catalogue } = await import('../tools/findings.ts');
+  const committed = JSON.parse(await readFile(new URL('../src/data/findings.json', import.meta.url), 'utf8'));
+  const fresh = catalogue();
+  // The committed catalogue is what the pages build from; if the engine has
+  // moved, `node tools/findings.ts` has to run before anything else is believed.
+  assert.deepEqual(
+    fresh.findings.map((f) => f.id),
+    committed.findings.map((f) => f.id),
+    'src/data/findings.json is out of step with the engine: run node tools/findings.ts',
+  );
+
+  const { docPages, catalogueIds } = await import('../src/lib/docs.ts');
+  const pages = docPages();
+  const missing = catalogueIds().filter((id) => !pages.some((p) => p.id === id));
+  assert.deepEqual(missing, [], `these have no page in src/data/docs: ${missing.join(', ')}`);
+  assert.equal(new Set(pages.map((p) => p.path)).size, pages.length, 'two pages share an address');
+  for (const p of pages) {
+    assert.ok(p.doc.title && p.doc.summary && p.doc.what && p.doc.why && p.doc.fix, `${p.id} is missing a field`);
+    assert.ok(files[`${p.path.slice(1)}index.html`], `${p.id} did not build`);
+    for (const id of p.doc.also ?? []) assert.ok(pages.some((o) => o.id === id), `${p.id} links ${id}, which has no page`);
+  }
+});
+
+test('every documentation page carries a story, and every story says it is invented', async () => {
+  const { docPages, socialSource } = await import('../src/lib/docs.ts');
+  const social = socialSource();
+  const pages = docPages();
+  const bare = pages.filter((p) => p.stories.length === 0).map((p) => p.id);
+  assert.deepEqual(bare, [], `no social proof for: ${bare.join(', ')}`);
+  for (const p of pages) {
+    for (const story of p.stories) {
+      // Until a real feed replaces them, every story is marked as invented in
+      // the data and labelled as invented on the page. The page template keys
+      // the warning off the file-level flag, so the two have to agree.
+      assert.equal(story.sample, true, `${story.id} is not marked as a sample`);
+      assert.equal(social.sample, true, 'the feed says it is real but the stories are still invented');
+      assert.ok(story.source.url?.includes('.invalid/') ?? true, `${story.id} points at a domain that could resolve`);
+    }
+    const html = files[`${p.path.slice(1)}index.html`];
+    assert.ok(html.includes('made up'), `${p.id} shows stories without saying they are invented`);
+  }
+});
+
+test('the documentation has its own sitemap, and robots.txt points at it', async () => {
+  const { docPages } = await import('../src/lib/docs.ts');
+  const xml = files['docs/sitemap.xml'];
+  assert.ok(xml, 'no /docs/sitemap.xml was built');
+  assert.equal((xml.match(/<url>/g) || []).length, docPages().length + 1, 'one <url> per documentation page, plus the index');
+  for (const p of docPages()) assert.ok(xml.includes(`<loc>${SITE_URL}${p.path.slice(1)}</loc>`), p.id);
+  const robots = await readFile(new URL('../src/site/robots.txt', import.meta.url), 'utf8');
+  assert.ok(robots.includes(`Sitemap: ${SITE_URL}sitemap.xml`), 'robots.txt lost the site sitemap');
+  assert.ok(robots.includes(`Sitemap: ${SITE_URL}docs/sitemap.xml`), 'robots.txt does not list the documentation sitemap');
+});

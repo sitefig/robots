@@ -5,3 +5,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://sus.bot/sitemap.xml
+# One page per thing a check can report, listed separately so this set can be
+# fetched on its own: https://sus.bot/docs/
+Sitemap: https://sus.bot/docs/sitemap.xml

@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import puppeteer from 'puppeteer';
-import { pages, requireWasm, chromePath, rootPath } from './lib.mjs';
+import { shapes, requireWasm, chromePath, rootPath } from './lib.mjs';
 import { startServers } from './server.mjs';
 import { states, installMocks, BASE } from './states.mjs';
 
@@ -61,7 +61,7 @@ async function audit(page, label, snapshot) {
 }
 
 try {
-  for (const p of pages()) {
+  for (const p of shapes()) {
     await ensureBrowser();
     let page;
     try {
