@@ -103,6 +103,7 @@ Only `src/client/config.ts` needs editing for deployment (`WORKER_URL`; `SITE_UR
 ## Browser limits that shape the design
 
 - **Browsers cannot set `User-Agent` on fetch** (forbidden header) and **most sites do not send CORS headers on robots.txt**. Hence the worker: it fetches with CORS headers for our origin and forwards a `ua` parameter as the real User-Agent.
+- **A direct cross-origin fetch can only read the CORS-safelisted response headers** (content-type, cache-control, expires, last-modified, pragma, content-language), so `X-Robots-Tag`, `Vary` and `Retry-After` reach the engine only through the worker, which puts them in `headers` in its JSON. `src/client/fetcher.ts` fills in what each path can see and the engine treats a header it was not given as unseen rather than as missing, so no finding accuses a server of something the browser simply could not read.
 - Fetch order in `src/client/fetcher.ts`: direct cross-origin fetch first, then the proxy, then the user can paste the text. If `WORKER_URL` is the placeholder, the proxy step and the access check are disabled with a message rather than an error.
 - GitHub Pages cannot read `Accept-Language`, so the root page redirects once, client-side, to the browser's EU language; a stored choice wins. See "Languages".
 

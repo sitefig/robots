@@ -118,6 +118,22 @@ export interface Redirect {
   to: string;
 }
 
+/**
+ * Response headers the engine has findings about. Empty where the fetch could
+ * not read them: a direct cross-origin fetch may only read the CORS-safelisted
+ * headers (content-type, cache-control, expires, last-modified, pragma,
+ * content-language), so the rest arrive only through the worker, and the engine
+ * treats a header it was not given as unseen rather than as missing.
+ */
+export interface ResponseHeaders {
+  cacheControl?: string;
+  expires?: string;
+  xRobotsTag?: string;
+  retryAfter?: string;
+  vary?: string;
+  contentEncoding?: string;
+}
+
 /** What the page fetched, in the shape susbot_core::FetchInfo expects. */
 export interface FetchInfo {
   source: string;
@@ -131,4 +147,5 @@ export interface FetchInfo {
   redirects: Redirect[];
   redirectLimit: boolean;
   text: string;
+  headers?: ResponseHeaders;
 }

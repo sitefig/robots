@@ -3,6 +3,7 @@
 // headers), then the Cloudflare Worker proxy, which can also set User-Agent.
 
 import { WORKER_URL, proxyConfigured, DIRECT_TIMEOUT_MS, PROXY_TIMEOUT_MS, MAX_BYTES } from './config.ts';
+import type { ResponseHeaders } from './types.ts';
 import { t } from './i18n.ts';
 import type { Redirect } from './types.ts';
 
@@ -32,6 +33,7 @@ export interface FetchResult {
   truncated: boolean;
   redirects?: Redirect[];
   redirectLimit?: boolean;
+  headers?: ResponseHeaders;
 }
 
 /** Turn whatever the user typed into { origin, robotsUrl }. */
@@ -142,6 +144,14 @@ export async function fetchDirect(robotsUrl: string): Promise<FetchResult> {
       status: res.status,
       statusText: res.statusText,
       contentType: res.headers.get('content-type') || '',
+      // Cross-origin, a browser hands over the CORS-safelisted headers and
+      // nothing else, however the server answered. X-Robots-Tag, Vary and
+      // Retry-After are only readable through the worker, which is why the
+      // engine never reads an absent header as a missing one.
+      headers: {
+        cacheControl: res.headers.get('cache-control') || '',
+        expires: res.headers.get('expires') || '',
+      },
       userAgent: null,
       durationMs: performance.now() - started,
       ...body,

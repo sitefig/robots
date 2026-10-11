@@ -5,9 +5,63 @@
     "format": "storyfeed.v1",
     "docs": "https://storyfeed.invalid/docs/export"
   },
-  "syncedAt": "2026-10-10",
+  "syncedAt": "2026-10-11",
   "sample": true,
   "stories": [
+    {
+      "id": "sample-cache-no-store-1",
+      "docs": [
+        "fetch.warn.cacheNoStore"
+      ],
+      "author": {
+        "name": "Fictional Frida",
+        "role": "Imaginary platform engineer",
+        "company": "Not A Real Bank NV"
+      },
+      "postedAt": "2026-06-22",
+      "text": "A site-wide no-store header covered robots.txt too. During a ten-minute deploy the file answered 503, and because nobody had a cached copy, crawling stopped for the rest of the day.",
+      "source": {
+        "app": "Storyfeed",
+        "url": "https://storyfeed.invalid/s/sample-cache-no-store-1"
+      },
+      "sample": true
+    },
+    {
+      "id": "sample-cache-too-long-1",
+      "docs": [
+        "fetch.warn.cacheTooLong"
+      ],
+      "author": {
+        "name": "Make-believe Mats",
+        "role": "Invented SEO manager",
+        "company": "Example Outdoors (invented)"
+      },
+      "postedAt": "2026-05-30",
+      "text": "Our CDN put a one-year cache on every static file, robots.txt included. We unblocked the shop in March and crawlers were still following the old file in July. Nothing was broken, it was just not being read.",
+      "source": {
+        "app": "Storyfeed",
+        "url": "https://storyfeed.invalid/s/sample-cache-too-long-1"
+      },
+      "sample": true
+    },
+    {
+      "id": "sample-charset-1",
+      "docs": [
+        "fetch.warn.charset"
+      ],
+      "author": {
+        "name": "Imaginary Ivana",
+        "role": "Invented web lead",
+        "company": "Placeholder Publishing"
+      },
+      "postedAt": "2026-04-09",
+      "text": "An editor on Windows saved robots.txt as UTF-16 and the file looked perfect when we opened it. Crawlers read a null byte between every letter, so the whole thing was one unreadable line and every rule in it stopped existing.",
+      "source": {
+        "app": "Storyfeed",
+        "url": "https://storyfeed.invalid/s/sample-charset-1"
+      },
+      "sample": true
+    },
     {
       "id": "sample-content-type-1",
       "docs": [
@@ -222,6 +276,23 @@
       "sample": true
     },
     {
+      "id": "sample-retry-after-long-1",
+      "docs": [
+        "fetch.warn.retryAfterLong"
+      ],
+      "author": {
+        "name": "Notional Nuno",
+        "role": "Invented site reliability engineer"
+      },
+      "postedAt": "2026-02-14",
+      "text": "Maintenance mode answered 503 with Retry-After set to three days, which somebody had copied from a tutorial. The site was back in an hour. Search traffic took most of the week to come back with it.",
+      "source": {
+        "app": "Storyfeed",
+        "url": "https://storyfeed.invalid/s/sample-retry-after-long-1"
+      },
+      "sample": true
+    },
+    {
       "id": "sample-server-error-1",
       "docs": [
         "fetch.warn.serverError"
@@ -255,6 +326,42 @@
       },
       "postedAt": "2026-09-26",
       "text": "Our uptime check asked for the home page and nothing else. robots.txt came from a plugin that broke in an update and answered 503 for nine days. Nothing we published in that time was refreshed in search, and no alert ever mentioned the plugin.",
+      "sample": true
+    },
+    {
+      "id": "sample-vary-user-agent-1",
+      "docs": [
+        "fetch.warn.varyUserAgent"
+      ],
+      "author": {
+        "name": "Hypothetical Hanne",
+        "role": "Imaginary head of digital",
+        "company": "Fabricated Fashion ApS"
+      },
+      "postedAt": "2026-08-05",
+      "text": "Bot management served a different robots.txt to anything it did not recognise. Our own browser saw the file we wrote; GPTBot and two search crawlers saw a block on everything, and nobody could tell me who had set that rule.",
+      "source": {
+        "app": "Storyfeed",
+        "url": "https://storyfeed.invalid/s/sample-vary-user-agent-1"
+      },
+      "sample": true
+    },
+    {
+      "id": "sample-x-robots-tag-1",
+      "docs": [
+        "fetch.warn.xRobotsTag"
+      ],
+      "author": {
+        "name": "Pretend Pelle",
+        "role": "Fictional developer",
+        "company": "Mock Media AB"
+      },
+      "postedAt": "2026-07-18",
+      "text": "We had spent a week adding Noindex lines to robots.txt and wondering why the thank-you pages stayed in Google. The server was already sending X-Robots-Tag on other files, so the tool we needed was switched on all along.",
+      "source": {
+        "app": "Storyfeed",
+        "url": "https://storyfeed.invalid/s/sample-x-robots-tag-1"
+      },
       "sample": true
     },
     {

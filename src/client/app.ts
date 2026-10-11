@@ -119,6 +119,7 @@ async function analyseUrl(input: string, trigger: CheckTrigger = 'user'): Promis
       redirects: (result.redirects || []).map((r) => ({ from: r.from, status: r.status ?? null, to: r.to })),
       redirectLimit: Boolean(result.redirectLimit),
       text: '',
+    headers: result.headers,
     };
     state.text = result.text;
     state.siteUrl = result.finalUrl;

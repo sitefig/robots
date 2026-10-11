@@ -2,6 +2,24 @@
   "engine": "2.2.1",
   "findings": [
     {
+      "id": "fetch.warn.cacheNoStore",
+      "family": "fetch",
+      "level": "info",
+      "message": "Crawlers fetch this file again on every visit, because the response says \"{value}\". They expect to cache it for about a day, and Google serves its cached copy when the file is briefly unreachable."
+    },
+    {
+      "id": "fetch.warn.cacheTooLong",
+      "family": "fetch",
+      "level": "warning",
+      "message": "A change to this file can go unread for a long time, because the response asks for a {maxage}-second cache and a crawler that honours it will not look again until that runs out."
+    },
+    {
+      "id": "fetch.warn.charset",
+      "family": "fetch",
+      "level": "warning",
+      "message": "Crawlers may read this file as something other than what it says, because it is served as {charset}. RFC 9309 requires UTF-8; serve it as \"text/plain; charset=utf-8\"."
+    },
+    {
       "id": "fetch.warn.contentType",
       "family": "fetch",
       "level": "warning",
@@ -56,10 +74,28 @@
       "message": "Crawlers still reach the file. robots.txt redirects to {host}, and crawlers follow a www or https redirect like this one."
     },
     {
+      "id": "fetch.warn.retryAfterLong",
+      "family": "fetch",
+      "level": "warning",
+      "message": "The whole site can stay out of search for {seconds} seconds, because robots.txt answered {status} and the response asks crawlers to wait that long before trying again."
+    },
+    {
       "id": "fetch.warn.serverError",
       "family": "fetch",
       "level": "error",
       "message": "Google stops crawling the whole site while this lasts, because robots.txt answered {status} and Google treats a server error as \"block everything\"."
+    },
+    {
+      "id": "fetch.warn.varyUserAgent",
+      "family": "fetch",
+      "level": "info",
+      "message": "What you see here is not necessarily what Googlebot or GPTBot is served, because the server says this file depends on who asks (\"Vary: {value}\"). The access check fetches it again as each crawler and compares."
+    },
+    {
+      "id": "fetch.warn.xRobotsTag",
+      "family": "fetch",
+      "level": "info",
+      "message": "Pages on this server can be kept out of search results with a header, because it already sends \"X-Robots-Tag: {value}\" on this file. A Noindex line inside robots.txt does nothing."
     },
     {
       "id": "lint.absoluteUrl",

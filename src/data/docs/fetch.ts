@@ -5,6 +5,74 @@
 import type { Doc } from '../../lib/docs.ts';
 
 export const FETCH: Record<string, Doc> = {
+  'fetch.warn.charset': {
+    title: 'The file is served in an encoding that is not UTF-8',
+    summary: 'The Content-Type names a charset other than UTF-8, and RFC 9309 says a robots.txt is UTF-8, so a strict parser reads something other than what you wrote.',
+    what: 'sus.bot reads the charset parameter of the Content-Type header and reports anything that is not UTF-8 or ASCII, which is a subset of it. UTF-16 is the one that turns up in practice, usually from a file saved by a Windows editor or exported from a database, and it puts a null byte between every letter.',
+    why: 'A parser that honours the charset reads the bytes as that encoding. A parser that assumes UTF-8, which is what the standard tells it to assume, reads the same bytes as nonsense. Either way the rules you wrote are not the rules being applied, and nothing in the file looks wrong when you open it.',
+    fix: 'Save the file as UTF-8 without a byte-order mark and serve it as "text/plain; charset=utf-8". If the file is generated, check what the generator writes rather than what the editor shows.',
+    example: {
+      wrong: 'Content-Type: text/plain; charset=utf-16',
+      right: 'Content-Type: text/plain; charset=utf-8',
+    },
+    also: ['fetch.warn.contentType', 'parser.bom'],
+  },
+  'fetch.warn.cacheNoStore': {
+    title: 'Caching is switched off for robots.txt',
+    summary: 'The response says no-store, no-cache or max-age=0, so every crawler fetches the file again on every visit and has no copy to fall back on.',
+    what: 'sus.bot reads the Cache-Control header and reports a value that forbids caching. It usually comes from a site-wide header applied to everything, or from a framework that serves robots.txt through the application rather than as a file.',
+    why: 'Crawlers expect to keep robots.txt for about a day. Without a cached copy, Google has nothing to fall back on when the file is briefly unreachable, and a short outage is read as a server error, which Google treats as "block everything" while it lasts. It also spends crawl budget on a file that rarely changes.',
+    fix: 'Let robots.txt be cached for an hour or a day. Exclude it from the rule that switches caching off for the application, and set the header on the file itself.',
+    example: {
+      wrong: 'Cache-Control: no-store',
+      right: 'Cache-Control: public, max-age=3600',
+    },
+    also: ['fetch.warn.cacheTooLong', 'fetch.warn.serverError'],
+  },
+  'fetch.warn.cacheTooLong': {
+    title: 'The file asks to be cached for longer than a day',
+    summary: 'A max-age past a day means a crawler that honours it will not look at the file again until that runs out, so a change can go unread for as long as the header says.',
+    what: 'sus.bot reads the max-age of the Cache-Control header and reports a value longer than a day, which is the limit in the configuration. A week or a year usually comes from a CDN rule written for images and applied to every static file.',
+    why: 'The day you block a crawler, or unblock one, is the day you want the file read. A long cache means the old rules keep being applied, and nothing tells you which crawlers still hold the old copy. The gap between changing the file and the change taking effect is exactly as long as the header asks for.',
+    fix: 'Set an hour or a day on robots.txt specifically, and leave the long cache for the files that never change. If a CDN sets it, add a rule for /robots.txt ahead of the one for static assets.',
+    example: {
+      wrong: 'Cache-Control: public, max-age=31536000',
+      right: 'Cache-Control: public, max-age=3600',
+    },
+    also: ['fetch.warn.cacheNoStore'],
+  },
+  'fetch.warn.xRobotsTag': {
+    title: 'The server already sends X-Robots-Tag',
+    summary: 'The response carries an X-Robots-Tag header, which is the mechanism that keeps a page out of search results, unlike a Noindex line inside robots.txt.',
+    what: 'sus.bot reports the header when it is there, with the value it carries. This is not a fault: it is worth knowing because the header is the answer to the thing people try to do with a Noindex line in robots.txt, and seeing it here proves the server can send it.',
+    why: 'Robots.txt controls crawling, not indexing. A page that is blocked can still be listed, with no description, because somebody linked to it. X-Robots-Tag is what actually keeps a page out of the results, and a server that already sends it on one file can send it on the pages that need it.',
+    fix: 'Nothing, for this file. Use the same header on the pages you want kept out of search results: X-Robots-Tag: noindex, and let crawlers reach the page so they can read it.',
+    example: {
+      right: 'X-Robots-Tag: noindex',
+    },
+    also: ['parser.noindex', 'parser.metaRobots'],
+  },
+  'fetch.warn.retryAfterLong': {
+    title: 'The server asks crawlers to stay away for longer than a day',
+    summary: 'A 429 or a 503 with a long Retry-After is read as "block everything" for as long as it asks, so the whole site can drop out of search while it lasts.',
+    what: 'sus.bot reads the Retry-After header on a 429 or a 503 and reports a wait longer than a day, which is the limit in the configuration. Only the form in seconds is read; the date form is legal and is left alone rather than guessed at.',
+    why: 'Google treats a 429 or a 5xx on robots.txt as a block on the whole site while it lasts. A Retry-After of three days tells crawlers not to look again for three days, so a maintenance window set in the morning can keep the site out of search for the rest of the week.',
+    fix: 'Keep Retry-After short, in minutes rather than days, and make sure robots.txt is served even while the rest of the site is down. A static file in front of the application is enough.',
+    example: {
+      wrong: 'HTTP/1.1 503 Service Unavailable\nRetry-After: 259200',
+      right: 'HTTP/1.1 503 Service Unavailable\nRetry-After: 120',
+    },
+    also: ['fetch.warn.serverError', 'fetch.warn.rateLimited'],
+  },
+  'fetch.warn.varyUserAgent': {
+    title: 'The file is served differently depending on who asks',
+    summary: 'Vary names User-Agent, so the rules you are reading are not necessarily the rules Googlebot or GPTBot is given.',
+    what: 'sus.bot reads the Vary header and reports it when it names User-Agent, or everything. It means the server has been configured to answer this address differently for different clients, whether through a CDN rule, a bot-management product or an application that serves its own robots.txt.',
+    why: 'A file that varies by crawler cannot be checked by reading it once. It is also how a site ends up blocking a crawler it meant to allow, because the rule that decides who gets which copy lives somewhere else, usually in a dashboard nobody opens. Where it is deliberate, the risk is that the two copies drift apart.',
+    fix: 'Serve one robots.txt to everyone unless you have a reason not to. Where the variation is deliberate, run the access check: it fetches the file again as each crawler, with its real user agent, and shows you what each one is given.',
+    also: ['fetch.warn.forbidden', 'fetch.warn.contentType'],
+  },
+
   'fetch.warn.contentType': {
     title: 'robots.txt is served with the wrong content type',
     summary: 'The file arrives as text/html or another media type instead of text/plain, and a crawler is allowed to ignore everything in it.',

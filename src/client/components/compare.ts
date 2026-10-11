@@ -191,6 +191,7 @@ export async function runCompare(input: string): Promise<void> {
         redirects: (result.redirects || []).map((r) => ({ from: r.from, status: r.status ?? null, to: r.to })),
         redirectLimit: Boolean(result.redirectLimit),
         text: '',
+        headers: result.headers,
       },
       lang: getLocale(),
       locale: getLocale() === DEFAULT_LANG ? null : JSON.stringify(currentDictionary()),
