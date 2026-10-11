@@ -928,6 +928,15 @@ a.chip {
   min-height: 2.875rem;
 }
 
+/* The link to copy by hand, shown only when the browser refused to copy it for
+   the visitor. It sits beside the button in the checked bar. */
+.share-link {
+  flex: 1 1 18rem;
+  min-width: 0;
+  height: 2.875rem;
+  font-size: var(--text-sm);
+}
+
 .checked__what {
   display: flex;
   flex: 1 1 20rem;

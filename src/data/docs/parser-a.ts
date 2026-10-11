@@ -241,7 +241,7 @@ export const PARSER_A: Record<string, Doc> = {
     title: 'A Cyrillic letter in a directive name that looks Latin',
     summary: 'A field name containing a, e, o, p, c, y or x from the Cyrillic alphabet is not the directive it appears to be, and crawlers skip the line.',
     what: 'sus.bot compares the field name against the Cyrillic letters drawn the same as Latin ones and reports the line when it finds one. "Disallow" with a Cyrillic a in it is a different field name, so crawlers do not recognise the directive and the rule is dropped. The engine folds the letter back to Latin so the rest of the analysis can read the line.',
-    why: 'There is nothing to see. The two letters are the same shape in every font, no editor flags the line, and a review passes over it. The rule is simply not in force, usually on a file edited through a translated admin panel or pasted out of a document, and a folder you thought was blocked has been open the whole time.',
+    why: 'There is nothing to see. The two letters are the same shape in every font, no editor flags the line, and a review passes over it. The rule is not in force, usually on a file edited through a translated admin panel or pasted out of a document, and a folder you thought was blocked has been open the whole time.',
     fix: 'Retype the whole field name in plain Latin letters rather than editing around the one character, because the rest of the word is likely affected too. If the file comes out of a content management system, check the keyboard layout it was typed on, and search the file for the other letters on the list.',
     example: {
       wrong: 'User-agent: *\nDisаllow: /admin/',

@@ -6,9 +6,9 @@
 // which is about consequences rather than about a URL.
 
 import { t, formatNumber } from '../i18n.ts';
-import { el, replace, slot, $ } from '../dom.ts';
+import { el, replace, slot, $, setStatus } from '../dom.ts';
 import { state, current } from '../state.ts';
-import { shareLink, actionButton } from './export.ts';
+import { shareLink, shareReport } from './export.ts';
 import { trackExport } from '../track.ts';
 
 export function renderChecked(): void {
@@ -33,11 +33,42 @@ export function renderChecked(): void {
       el('span', {}, host || t('ui.checked.pasted')),
       el('span', { class: 'checked__meta' }, t('ui.checked.meta', { n: formatNumber(lines) })),
     ),
-    share
-      ? actionButton(t('ui.checked.share'), () => {
-        trackExport('link');
-        return navigator.clipboard.writeText(share);
-      })
-      : null,
+    share ? shareButton(share, host) : null,
   );
+}
+
+/**
+ * Share this check.
+ *
+ * The result goes to the status line under the field, which is a live region
+ * and stays there, rather than to the button's own label for a second and a
+ * half: a visitor who looked away saw a button that did nothing. When the
+ * browser refuses to copy, the link appears beside the button to be copied by
+ * hand, because the alternative is telling somebody it worked when it did not.
+ */
+function shareButton(url: string, host: string | null): HTMLButtonElement {
+  const button = el('button', { type: 'button', class: 'button' }, t('ui.checked.share'));
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    const result = await shareReport(url);
+    button.disabled = false;
+    if (result === 'cancelled') return;
+    if (result === 'manual') {
+      setStatus('warning', t('ui.share.manual'));
+      const field = el('input', {
+        type: 'text',
+        class: 'share-link',
+        readonly: 'readonly',
+        'aria-label': t('ui.share.linkLabel'),
+        value: url,
+      }) as HTMLInputElement;
+      button.insertAdjacentElement('afterend', field);
+      field.focus();
+      field.select();
+      return;
+    }
+    trackExport('link');
+    setStatus('ok', result === 'shared' ? t('ui.share.shared') : t('ui.share.copied', { host: host || '' }));
+  });
+  return button;
 }

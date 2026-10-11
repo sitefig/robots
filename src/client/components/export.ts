@@ -25,6 +25,43 @@ async function copyText(text: string): Promise<void> {
 }
 
 /**
+ * What came of an attempt to share: the sheet was used, the link went to the
+ * clipboard, the visitor closed the sheet, or the browser refused and the link
+ * has to be copied by hand.
+ */
+export type ShareResult = 'shared' | 'copied' | 'cancelled' | 'manual';
+
+/**
+ * Hand the link to this check to somebody else.
+ *
+ * Phones have a share sheet and that is what a person expects from a button
+ * called "Share report"; everything else gets the clipboard. A browser is
+ * allowed to refuse both, and several do, so the caller is told which of the
+ * four things happened and shows the link itself when nothing worked. The old
+ * version wrote "Done" on the button whether or not anything had been copied,
+ * which is the one answer that is never true.
+ */
+export async function shareReport(url: string): Promise<ShareResult> {
+  if (typeof navigator.share === 'function') {
+    try {
+      await navigator.share({ url });
+      return 'shared';
+    } catch (err) {
+      // Closing the sheet is a decision, not a failure, and it must not end in
+      // a copy the visitor did not ask for.
+      if (err instanceof DOMException && err.name === 'AbortError') return 'cancelled';
+      // Anything else (no gesture, no permission) falls through to the clipboard.
+    }
+  }
+  try {
+    await copyText(url);
+    return 'copied';
+  } catch {
+    return 'manual';
+  }
+}
+
+/**
  * The address of this check, or null when the text was pasted and there is
  * nothing anyone else could open.
  */
@@ -88,9 +125,10 @@ function shareActions(): Child[] {
       return copyText(a.markdown());
     }, { primary: true }),
     shareUrl
-      ? actionButton(t('ui.export.share.copy'), () => {
+      ? actionButton(t('ui.export.share.copy'), async () => {
         trackExport('link');
-        return copyText(shareUrl);
+        // Fails loudly rather than reporting a copy the browser refused.
+        if ((await shareReport(shareUrl)) === 'manual') throw new Error('clipboard refused');
       })
       : null,
   ];

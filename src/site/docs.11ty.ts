@@ -34,19 +34,18 @@ ${group.pages.map((p) => `          <li class="doc-entry flow" data-space="3xs">
         </ul>
       </section>`).join('\n\n');
 
-  const title = 'What sus.bot reports, and what to do about it';
-  const description = `A page for each of the ${all.length} things a sus.bot check can report: what it means, what it costs and what to write instead.`;
+  const title = 'What a robots.txt check can find, and what to do about it';
+  const description = `A page for each of the ${all.length} things a check can find in a robots.txt: what it costs you, what to do about it, and the lines to change.`;
 
   const body = `${SiteHeader(ctx)}
   <main id="main" class="wrapper flow pt-8" data-space="l">
     <div class="flow max-w-prose" data-space="2xs">
       <h1 class="text-3xl">${escapeHtml(title)}</h1>
-      <p class="text-lg text-muted">Every check sus.bot runs has a page here: the sentence the report shows, what the line actually does, what it costs to leave alone, and what to write instead. ${all.length} of them.</p>
+      <p class="text-lg text-muted">${all.length} pages, one for each thing a check can find. Each says what it costs you, what to do about it, and, at the end, what whoever makes the change needs to know.</p>
     </div>
 
     <div class="panel flow" data-space="xs">
-      <p>The list comes out of the engine itself, so it is the checks that exist rather than the ones somebody remembered to write up. A check added to the engine gets a page here or the build fails.</p>
-      <p class="text-sm text-muted">Want the answer for your own file? <a href="/">Run a check</a>: it is free, it runs in your browser, and it names every one of these it finds.</p>
+      <p class="text-sm text-muted">Looking for your own file? <a href="/">Run a check</a>. It is free, it runs in your browser, and every finding links to its page here.</p>
     </div>
 
     <nav class="flow" data-space="xs" aria-labelledby="families-heading">

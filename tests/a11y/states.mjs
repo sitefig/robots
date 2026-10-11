@@ -192,6 +192,15 @@ export function states(path) {
     ...(PRICING.show ? [{ name: 'pricing-annual', url: url(), setup: async (page) => { await page.click('#billing-cycle [data-cycle="annual"]'); await page.waitForSelector('#billing-cycle [data-cycle="annual"][aria-pressed="true"]'); } }] : []),
     { name: 'raw-copy-flash', url: url(), setup: async (page) => { await paste(page); await flash(page, '#raw .button'); } },
     { name: 'fetched-worst', url: url(`?url=${origin(PORTS.worst)}`), setup: results },
+    // Sharing says what happened in the status line under the field, which is
+    // where a visitor is looking, rather than on the button for a moment. The
+    // clipboard may be refused here as it is in a real browser; either way the
+    // line fills in, and both of its wordings are a state worth checking.
+    { name: 'share-result', url: url(`?url=${origin(PORTS.worst)}`), setup: async (page) => {
+      await results(page);
+      await page.click('#checked button');
+      await page.waitForFunction(() => (document.getElementById('status')?.textContent || '').length > 0, { timeout: 15000 });
+    } },
     { name: 'fetched-worst-access-check', url: url(`?url=${origin(PORTS.worst)}`), setup: async (page) => { await results(page); await openRow(page, 'row-access'); await page.click('#access .button'); await page.waitForSelector('#access .button:not([disabled])', { timeout: 60000 }); } },
     { name: 'fetched-404', url: url(`?url=${origin(PORTS.notFound)}`), setup: async (page) => { await page.waitForSelector('#results:not([hidden])'); } },
     { name: 'fetched-410', url: url(`?url=${origin(PORTS.gone)}`), setup: async (page) => { await page.waitForSelector('#results:not([hidden])'); } },

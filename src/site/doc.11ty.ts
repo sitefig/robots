@@ -1,9 +1,10 @@
 // One documentation page per thing sus.bot can report, at /docs/<family>/<name>/.
 //
-// The page answers the question somebody arrives with: the report said this,
-// what is it, what does it cost me, and what do I type instead. The sentence
-// the report showed is quoted as the engine writes it, placeholders and all, so
-// a visitor searching for the words they saw lands here.
+// The order is the argument, the same one the home page makes: what it costs
+// and what to do about it are for the person answerable for the site, and
+// everything an engineer needs to act (what sets the finding off, the lines to
+// write, the sentence the report printed, the id) is one block at the end they
+// can be sent straight to. Nobody has to read the other half.
 //
 // The stories at the bottom come from src/data/social-proof.json. Everything in
 // that file is invented at the moment, and says so in the story itself: the
@@ -69,41 +70,17 @@ export function render(d: Data): string {
       <p class="eyebrow font-mono"><a href="/docs/">Documentation</a></p>
       <h1 class="text-3xl">${escapeHtml(p.doc.title)}</h1>
       <p class="text-lg text-muted">${escapeHtml(p.doc.summary)}</p>
-      <dl class="defs">
-        <div><dt>Reported as</dt><dd><code>${escapeHtml(p.id)}</code></dd></div>
-        <div><dt>Kind</dt><dd>${escapeHtml(FAMILY_LABEL[p.family] ?? p.family)}</dd></div>
-        <div><dt>Level</dt><dd>${escapeHtml(LEVEL_WORD[p.level] ?? p.level)}</dd></div>
-      </dl>
     </div>
 
-    ${messages.length > 0 ? `<section class="panel flow" data-space="s" aria-labelledby="says-heading">
-      <h2 id="says-heading">What the report says</h2>
-      ${messages.map((m) => `<p>${escapeHtml(m)}</p>`).join('\n      ')}
-      ${hasPlaceholder(messages[0]) ? '<p class="text-sm text-muted">The words in braces are filled in with your own line: the rule, the directive or the value sus.bot found.</p>' : ''}
-    </section>` : ''}
-
-    <section class="flow" data-space="s" aria-labelledby="what-heading">
-      <h2 id="what-heading">What it means</h2>
-      <p class="text-muted max-w-prose">${escapeHtml(p.doc.what)}</p>
-    </section>
-
     <section class="flow" data-space="s" aria-labelledby="why-heading">
-      <h2 id="why-heading">Why it matters</h2>
+      <h2 id="why-heading">What it costs you</h2>
       <p class="text-muted max-w-prose">${escapeHtml(p.doc.why)}</p>
     </section>
 
     <section class="flow" data-space="s" aria-labelledby="fix-heading">
-      <h2 id="fix-heading">How to fix it</h2>
+      <h2 id="fix-heading">What to do</h2>
       <p class="text-muted max-w-prose">${escapeHtml(p.doc.fix)}</p>
-      ${p.doc.example?.wrong ? `<div class="flow" data-space="2xs">
-        <p class="text-sm text-muted">What triggers it</p>
-        <pre class="cmd">${escapeHtml(p.doc.example.wrong)}</pre>
-      </div>` : ''}
-      ${p.doc.example?.right ? `<div class="flow" data-space="2xs">
-        <p class="text-sm text-muted">What to write instead</p>
-        <pre class="cmd">${escapeHtml(p.doc.example.right)}</pre>
-      </div>` : ''}
-      <p><a href="/?utm_doc=${encodeURIComponent(p.id)}">Check your own robots.txt</a> and see whether this is in your file.</p>
+      <p><a href="/?utm_doc=${encodeURIComponent(p.id)}">Check your own robots.txt</a> to see whether this is in your file.</p>
     </section>
 
     ${p.stories.length > 0 ? `<section class="flow" data-space="s" aria-labelledby="stories-heading">
@@ -117,6 +94,29 @@ ${p.stories.map((story) => `        <li>
         </li>`).join('\n')}
       </ul>
     </section>` : ''}
+
+    <section class="panel flow" data-space="s" aria-labelledby="tech-heading">
+      <h2 id="tech-heading">For whoever makes the change</h2>
+      <p class="text-muted max-w-prose">${escapeHtml(p.doc.what)}</p>
+      ${p.doc.example?.wrong ? `<div class="flow" data-space="2xs">
+        <p class="text-sm text-muted">What triggers it</p>
+        <pre class="cmd">${escapeHtml(p.doc.example.wrong)}</pre>
+      </div>` : ''}
+      ${p.doc.example?.right ? `<div class="flow" data-space="2xs">
+        <p class="text-sm text-muted">What to write instead</p>
+        <pre class="cmd">${escapeHtml(p.doc.example.right)}</pre>
+      </div>` : ''}
+      ${messages.length > 0 ? `<div class="flow" data-space="2xs">
+        <p class="text-sm text-muted">What the report says</p>
+        ${messages.map((m) => `<p>${escapeHtml(m)}</p>`).join('\n        ')}
+        ${hasPlaceholder(messages[0]) ? '<p class="text-sm text-muted">The words in braces are filled in with your own line: the rule, the directive or the value that was found.</p>' : ''}
+      </div>` : ''}
+      <dl class="defs">
+        <div><dt>Reported as</dt><dd><code>${escapeHtml(p.id)}</code></dd></div>
+        <div><dt>Kind</dt><dd>${escapeHtml(FAMILY_LABEL[p.family] ?? p.family)}</dd></div>
+        <div><dt>Level</dt><dd>${escapeHtml(LEVEL_WORD[p.level] ?? p.level)}</dd></div>
+      </dl>
+    </section>
 
     ${related.length > 0 ? `<section class="flow" data-space="s" aria-labelledby="also-heading">
       <h2 id="also-heading">Read next</h2>

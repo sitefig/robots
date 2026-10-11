@@ -8,7 +8,7 @@ import type { Doc } from '../../lib/docs.ts';
 export const RECON: Record<string, Doc> = {
   'recon.stack': {
     title: 'The default paths in your robots.txt name the platform you run',
-    summary: 'A handful of stock Disallow lines is enough to identify WordPress, Drupal, Shopify or Magento, and sus.bot reports what they add up to.',
+    summary: 'A handful of stock Disallow lines is enough for anyone to name the platform behind your site: WordPress, Drupal, Shopify or Magento.',
     what: 'sus.bot matches every rule and every comment against platform fingerprints. A path that is close to unique for one product counts double, a suggestive path counts once, and the product named in a comment counts most of all; suggestive evidence on its own needs two separate hits. The strongest content, shop, hosting, forum or wiki platform becomes the detected platform, and frameworks such as Laravel or Spring Boot are listed without being picked.',
     why: 'The platform decides what a scanner tries next: which login path it attacks, which plugin endpoints it probes, which version file it requests. This is not a defect in your file and no edit takes it back, because the paths are the ones the product needs. What it is worth knowing is that the first question about your site is already answered in public.',
     fix: 'Treat the platform as public and keep it patched on that basis. Read the detection as an inventory check instead: a platform you migrated away from means stale rules are still in the file, and rules for a plugin you removed can go. Do not strip the stock lines to hide, because those paths answer requests either way.',
@@ -43,7 +43,7 @@ export const RECON: Record<string, Doc> = {
   },
   'recon.cloud': {
     title: 'A sitemap on a storage bucket publishes the bucket name',
-    summary: 'Sitemap lines and rules pointing at S3, CloudFront, Azure Blob, R2 or a hosting domain give sus.bot the provider and usually the bucket or project name.',
+    summary: 'Sitemap lines and rules pointing at S3, CloudFront, Azure Blob, R2 or a hosting domain name your provider, and usually the bucket or project with it.',
     what: 'sus.bot reads every absolute URL in the file, in Sitemap lines, Host lines, rules and comments, and matches the hostname against known object storage, CDN, hosting and platform domains. Where the provider puts the identity in the hostname or the path, it extracts that too: the S3 bucket, the Azure storage account and container, the CloudFront distribution, the Vercel or Netlify project.',
     why: 'A bucket name is the one thing needed to start asking a storage account questions: whether it lists its contents, whether it reads without credentials, whether it accepts uploads. A hosting project name often belongs to a copy of the site that was never meant to be found. None of it can be unpublished once a Sitemap line has pointed at it.',
     fix: 'Check the bucket rather than the file: listing off, public write off, public read only for what is meant to be public. Serve assets through a domain of your own in front of the bucket and point Sitemap lines at that domain. Then look for the raw hostname elsewhere, because robots.txt is rarely the only place it appears.',
@@ -55,7 +55,7 @@ export const RECON: Record<string, Doc> = {
   },
   'recon.hosts': {
     title: 'Hostnames in the file name the servers behind the site',
-    summary: 'Sitemap lines, Host lines, absolute rules and comments carry hostnames, and sus.bot tags the ones that look like staging, dev or an internal system.',
+    summary: 'Sitemap lines, Host lines, absolute rules and comments carry hostnames, including the staging, dev and internal ones nobody meant to publish.',
     what: 'sus.bot collects every hostname in the file that is not the site itself: Sitemap and Host lines, rules written as full URLs, and bare hostnames inside comments. Hosts that belong to a cloud provider move to the cloud card. A label such as staging, dev, test, uat, internal, intranet, vpn or legacy is tagged, and path names like /old-site/ or /v2-redesign/ are listed alongside them.',
     why: 'Internal and pre-production hostnames are hard to find from outside, which is why mapping a target starts with hunting for them. One line in a public file saves that work and gives away the naming convention as well, so the next guesses are better. The host it names is usually the least hardened one you run.',
     fix: 'Sitemap lines have to be absolute, so point them at the live host and nowhere else. Write rules as paths, since a rule carrying a hostname does nothing for any crawler. Keep hostnames out of comments. Then protect the host that was named, with an IP allowlist, a VPN or a login, because the address itself is already out.',
@@ -67,7 +67,7 @@ export const RECON: Record<string, Doc> = {
   },
   'recon.api': {
     title: 'The rules map the API surface, including the docs and the health endpoints',
-    summary: 'sus.bot sorts the endpoints your rules name into gateways, GraphQL, documentation and operational endpoints, with the version where the path carries one.',
+    summary: 'The endpoints your rules name are readable as a list: gateways, GraphQL, documentation and operational endpoints, with the version where the path carries one.',
     what: 'Every rule is matched against endpoint shapes and sorted: GraphQL and its playgrounds, documentation and schemas such as Swagger, OpenAPI, Redoc and WSDL, operational endpoints such as actuator, health, metrics, server-status, phpinfo and profilers, remote procedure calls including XML-RPC, SOAP and websockets, and general gateways under /api/, /rest/ or /ajax/. A bare /v2/ is treated as a site version and handled by the hosts card.',
     why: 'Each line on its own is ordinary. Together they are an application map: which versions are mounted, where the schema is, where the queue dashboard is. The documentation endpoint is the most valuable of them, because it lists the parameters somebody would otherwise have to guess, and an old version still mounted is often the one that stopped getting updates.',
     fix: 'A public API can stay public and keep its rule. Put the documentation, the schema and every operational endpoint behind authentication or an internal network, and turn profilers off in the production build. Retire an old version rather than disallowing it, because a blocked version still answers requests from anyone who is not a polite crawler.',
@@ -90,7 +90,7 @@ export const RECON: Record<string, Doc> = {
   },
   'recon.extensions': {
     title: 'The file types in your rules say what is stored under the web root',
-    summary: 'A rule for *.sql, *.log, *.map or *.xlsx tells a reader those files are served from somewhere below the document root, and sus.bot ranks them by what an exposure would cost.',
+    summary: 'A rule for *.sql, *.log, *.map or *.xlsx tells a reader those files are served from somewhere below the document root, and which ones would hurt.',
     what: 'sus.bot collects the extensions named in rules, counts each one, keeps up to three example paths and groups them: backups and database files, logs, configuration and keys, source maps, version control files, unbuilt source, documents, structured data, archives, installers, server-side scripts, media and plain web files. Backups, logs, configuration files, source maps and version control files are the high-risk groups.',
     why: 'The rule is evidence that the files are served. A source map hands over your original front-end code. A log file holds URLs, tokens and sometimes personal data. A spreadsheet in a blocked folder is a document somebody wanted unread, which a Disallow does not achieve. The list also tells a scanner which guesses are worth making on your site in particular.',
     fix: 'For the high-risk groups, stop serving the files: move them outside the web root or return 404 for the extension at the web server, and leave source maps out of production builds. Remove the rule afterwards, because the rule is the symptom. Documents that have to stay reachable need a login rather than a Disallow.',
@@ -102,7 +102,7 @@ export const RECON: Record<string, Doc> = {
   },
   'recon.comments': {
     title: 'Comments leak names, addresses, ticket numbers and plans',
-    summary: 'sus.bot reads the comment lines for email addresses, people, ticket references, dates, internal IP addresses, URLs, vendor names and notes about what is coming.',
+    summary: 'Comment lines carry email addresses, people, ticket references, dates, internal IP addresses, URLs, vendor names and notes about what is coming.',
     what: 'Every line after a # is searched for an email address, a name after "updated by" or "maintained by", a ticket reference such as OPS-4821 or "ticket 1234", a date, a private IP address, a URL, a named vendor or tool, and words that state intent: todo, do not index, launch, embargo, confidential, unreleased. A date far in the past or in the future is flagged as such.',
     why: 'An address in a public file is a phishing target, and a name tells somebody who to impersonate. A ticket reference confirms the tracker and its project key. A private IP address or an internal wiki URL describes infrastructure nobody outside should know about. A note about not indexing something until a launch date announces the launch and the date.',
     fix: 'Keep the reasoning out of the published file. Put it in the commit message, or in the template the file is generated from. A comment that has to stay should name no person, address, ticket or date. Read the comments again whenever a rule changes, because an old date in the file usually sits above a rule nobody has checked either.',

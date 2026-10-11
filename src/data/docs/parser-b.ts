@@ -27,7 +27,7 @@ export const PARSER_B: Record<string, Doc> = {
   },
   'parser.longLine': {
     title: 'A line thousands of characters long may be cut short',
-    summary: 'sus.bot reports the first line longer than two thousand characters, because a crawler may stop reading it part way and lose the end of the rule.',
+    summary: 'A line longer than two thousand characters can be cut off part way by a crawler, so whatever is at the end of it never takes effect.',
     what: 'sus.bot counts the characters of every line and reports the first one over two thousand. A line that long is never typed: it is a generator that joined a list of paths, a minifier that removed the line breaks between directives, or a query string pasted whole into a Disallow value. Crawlers do not agree on how much of such a line they read.',
     why: 'You cannot tell which part of the line survives, so the rule may block a prefix nobody meant, or nothing at all. When a minifier removed the line breaks, the directives after the first one are inside the first line and none of them binds anything, which takes a whole file of rules out of service at once.',
     fix: 'Split the content over one directive per line. If a plugin minifies the response, exclude /robots.txt from it, because robots.txt is a line-based format and a minifier treats it as free text. If a generator joined a list of paths, have it write a rule per path, or replace the list with the folder prefix that covers it.',
@@ -264,7 +264,7 @@ export const PARSER_B: Record<string, Doc> = {
   'parser.tooLarge': {
     title: 'Everything after the first 500 KiB of the file is ignored',
     summary: 'Crawlers stop reading robots.txt at 500 KiB, so in a file bigger than that every rule past the cut does nothing.',
-    what: 'sus.bot measures the file and reports its size when it passes the 500 KiB a crawler is required to read, the limit RFC 9309 sets. What comes after is not an error and not a warning to a crawler: it is simply never read, so the rules there are absent. A file reaches this size one way, by listing URLs one rule at a time.',
+    what: 'sus.bot measures the file and reports its size when it passes the 500 KiB a crawler is required to read, the limit RFC 9309 sets. What comes after is not an error and not a warning to a crawler: it is never read, so the rules there are absent. A file reaches this size one way, by listing URLs one rule at a time.',
     why: 'The lines at the end are usually the newest, so the rules added last are the ones that do not apply, and they are the ones somebody is relying on this week. The file is also slow to fetch and impossible to review, so nobody prunes it, and it keeps growing in the one direction that makes the problem worse.',
     fix: 'Replace lists of single URLs with the prefix that covers them, so a thousand rules under /archive/ become one rule for the folder. Delete rules for paths that no longer exist. For one-off pages use an X-Robots-Tag header or a meta tag instead, since robots.txt was never meant to be a list of URLs.',
     example: {
