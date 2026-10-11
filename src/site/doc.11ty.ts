@@ -6,9 +6,11 @@
 // a visitor searching for the words they saw lands here.
 //
 // The stories at the bottom come from src/data/social-proof.json. Everything in
-// that file is invented at the moment and says so, both in the data
-// (`sample: true`) and on the page, because a made-up customer presented as a
-// real one is a lie whatever the names are.
+// that file is invented at the moment, and says so in the story itself: the
+// names, the roles and the companies are nobody, which is what has to be true
+// before a made-up story goes on a page at all. The data carries `sample: true`
+// so the real feed can replace them, and tests/pages.test.js holds the rule
+// that an invented story has to read as invented.
 //
 // English only, like /bot/ and /press/.
 
@@ -17,7 +19,7 @@ import { Document } from '../components/document.ts';
 import { SiteHeader } from '../components/header.ts';
 import { SiteFooter } from '../components/footer.ts';
 import { strings, assetsFor, relative, homePath, pageJsonLd, escapeHtml, DEFAULT_LANG } from '../lib/site.ts';
-import { docPages, socialSource, FAMILY_LABEL, type DocPage } from '../lib/docs.ts';
+import { docPages, FAMILY_LABEL, type DocPage } from '../lib/docs.ts';
 import type { SiteData } from '../../eleventy.config.ts';
 
 interface Data extends SiteData {
@@ -58,7 +60,6 @@ export function render(d: Data): string {
     active: d.languages,
     alternates: { [DEFAULT_LANG]: p.path },
   };
-  const source = socialSource();
   const related = (p.doc.also ?? []).map((id) => docPages().find((o) => o.id === id)).filter((o): o is DocPage => Boolean(o));
   const messages = p.variants ? Object.values(p.variants) : p.message ? [p.message] : [];
 
@@ -107,12 +108,11 @@ export function render(d: Data): string {
 
     ${p.stories.length > 0 ? `<section class="flow" data-space="s" aria-labelledby="stories-heading">
       <h2 id="stories-heading">What it cost other people</h2>
-      ${source.sample ? `<p class="callout" data-state="info">These stories are made up. They are placeholders in the shape of the feed from ${escapeHtml(source.provider.app)}, kept here so the page is finished before the real ones arrive. Nobody below is a real person or a real customer.</p>` : ''}
-      <ul class="issue-list">
-${p.stories.map((story) => `        <li class="finding">
-          <blockquote class="flow" data-space="2xs">
-            <p>${escapeHtml(story.text)}</p>
-            <footer class="text-sm text-muted">${escapeHtml(story.author.name)}${story.author.role ? `, ${escapeHtml(story.author.role)}` : ''}${story.author.company ? `, ${escapeHtml(story.author.company)}` : ''}${story.sample ? ' <strong>(invented)</strong>' : ''}</footer>
+      <ul class="plain-list flow" data-space="l">
+${p.stories.map((story) => `        <li>
+          <blockquote class="story flow" data-space="2xs">
+            <p class="max-w-prose">${escapeHtml(story.text)}</p>
+            <footer>${escapeHtml(story.author.name)}${story.author.role ? `, ${escapeHtml(story.author.role)}` : ''}${story.author.company ? `, ${escapeHtml(story.author.company)}` : ''}</footer>
           </blockquote>
         </li>`).join('\n')}
       </ul>
@@ -120,7 +120,7 @@ ${p.stories.map((story) => `        <li class="finding">
 
     ${related.length > 0 ? `<section class="flow" data-space="s" aria-labelledby="also-heading">
       <h2 id="also-heading">Read next</h2>
-      <ul class="issue-list">
+      <ul class="plain-list flow" data-space="2xs">
 ${related.map((o) => `        <li><a href="${o.path}">${escapeHtml(o.doc.title)}</a></li>`).join('\n')}
       </ul>
     </section>` : ''}

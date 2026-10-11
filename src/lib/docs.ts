@@ -60,8 +60,12 @@ export interface Story {
   source: { app: string; url?: string };
   postedAt: string;
   text: string;
-  /** False only once a real feed has replaced it. Nothing real is in there yet. */
-  sample: boolean;
+  /**
+   * True while the story is a placeholder. A real export does not have to carry
+   * it: the flag on the file is what decides, and this is the per-story
+   * override for a feed that mixes the two.
+   */
+  sample?: boolean;
 }
 
 interface SocialFile {

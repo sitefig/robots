@@ -411,6 +411,15 @@
   cursor: pointer;
 }
 
+/* A chip that is a link rather than a filter button. A <button> is already a
+   box, an <a> is not, so it needs laying out before the padding and the 2.5rem
+   target mean anything. */
+a.chip {
+  display: inline-flex;
+  gap: 0.375rem;
+  align-items: center;
+}
+
 .chip:hover {
   background: var(--color-raise);
 }
@@ -647,6 +656,29 @@
 
 .finding > .badge {
   margin-inline-start: auto;
+}
+
+/* A list whose items are sentences or links rather than data: a list for a
+   screen reader, no bullets on the page. The report's .issue-list is a
+   three-column grid for a level, a line number and a message, and putting a
+   paragraph in it drops the paragraph into the 5.5rem column. */
+.plain-list {
+  padding: 0;
+  list-style: none;
+}
+
+/* A story on a documentation page. The quote carries the measure, the person
+   sits under it, and the rule down the side marks where somebody else is
+   speaking. */
+.story {
+  margin: 0;
+  padding-inline-start: 1rem;
+  border-inline-start: 3px solid var(--color-line);
+}
+
+.story > footer {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
 }
 
 .more > summary {

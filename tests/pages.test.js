@@ -194,8 +194,25 @@ test('every documentation page carries a story, and every story says it is inven
       assert.equal(social.sample, true, 'the feed says it is real but the stories are still invented');
       assert.ok(story.source.url?.includes('.invalid/') ?? true, `${story.id} points at a domain that could resolve`);
     }
-    const html = files[`${p.path.slice(1)}index.html`];
-    assert.ok(html.includes('made up'), `${p.id} shows stories without saying they are invented`);
+  }
+});
+
+// An invented story has to read as invented from the story itself: the page
+// carries no banner saying so, because the names, the roles and the companies
+// are the disclosure. If a real feed ever lands with sample still true, this is
+// what catches it.
+const INVENTED = /invent|fiction|imagin|placeholder|sample|dummy|test|fake|made.up|make.believe|mock|notional|hypothetic|pretend|fabricat|simulat|unreal|nonexist|example|not a real|fictive|spurious|apocryph|illusory|conjectur|pseudo|sham|supposed|bogus|imitation|counterfeit|synthetic|theoretic|contrived|faux|nominal|stand.in|phantom|mythical/i;
+
+test('an invented story says so in its own name, role or company', async () => {
+  const { docPages, socialSource } = await import('../src/lib/docs.ts');
+  if (!socialSource().sample) return; // a real feed; the rule below is for the placeholders
+  for (const p of docPages()) {
+    for (const { id, author } of p.stories) {
+      const who = [author.name, author.role, author.company].filter(Boolean).join(' ');
+      assert.match(who, INVENTED, `${id} could be read as a real person: ${who}`);
+      const html = files[`${p.path.slice(1)}index.html`];
+      assert.ok(html.includes(author.name), `${p.id} does not show who ${id} is from`);
+    }
   }
 });
 
