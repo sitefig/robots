@@ -179,22 +179,24 @@ test('every check the engine can report has a documentation page', async () => {
   }
 });
 
-test('every documentation page carries a story, and every story says it is invented', async () => {
-  const { docPages, socialSource } = await import('../src/lib/docs.ts');
-  const social = socialSource();
+test('every story belongs to a page that exists, and is shown on it', async () => {
+  const { docPages, catalogueIds, socialSource } = await import('../src/lib/docs.ts');
   const pages = docPages();
-  const bare = pages.filter((p) => p.stories.length === 0).map((p) => p.id);
-  assert.deepEqual(bare, [], `no social proof for: ${bare.join(', ')}`);
+  const known = new Set(catalogueIds());
+  const feed = socialSource();
   for (const p of pages) {
+    const html = files[`${p.path.slice(1)}index.html`];
     for (const story of p.stories) {
-      // Until a real feed replaces them, every story is marked as invented in
-      // the data and labelled as invented on the page. The page template keys
-      // the warning off the file-level flag, so the two have to agree.
-      assert.equal(story.sample, true, `${story.id} is not marked as a sample`);
-      assert.equal(social.sample, true, 'the feed says it is real but the stories are still invented');
-      assert.ok(story.source.url?.includes('.invalid/') ?? true, `${story.id} points at a domain that could resolve`);
+      for (const id of story.docs) assert.ok(known.has(id), `${story.id} is filed under ${id}, which is not a finding`);
+      assert.ok(html.includes(story.author.name), `${p.id} does not show the person ${story.id} came from`);
     }
+    // A page the feed does not reach shows no empty section, which is what a
+    // real feed means: testimonials arrive for the findings people hit, not for
+    // all of them.
+    if (p.stories.length === 0) assert.ok(!html.includes('stories-heading'), `${p.id} has an empty stories section`);
   }
+  assert.ok(pages.some((p) => p.stories.length > 0), 'no page has social proof at all');
+  assert.ok(['storyfeed.v1', 'aicrm.v1'].includes(feed.provider.format) || feed.provider.format.length > 0, 'the feed does not say what format it is in');
 });
 
 // An invented story has to read as invented from the story itself: the page

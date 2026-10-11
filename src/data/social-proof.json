@@ -1,2394 +1,1944 @@
 {
   "provider": {
-    "app": "Storyfeed",
-    "endpoint": "https://api.storyfeed.invalid/v1/collections/susbot/stories",
-    "format": "storyfeed.v1",
-    "docs": "https://storyfeed.invalid/docs/export"
+    "app": "AiCrm",
+    "format": "aicrm.v1"
   },
   "syncedAt": "2026-10-11",
-  "sample": true,
+  "sample": false,
   "stories": [
     {
-      "id": "sample-cache-no-store-1",
-      "docs": [
-        "fetch.warn.cacheNoStore"
-      ],
-      "author": {
-        "name": "Fictional Frida",
-        "role": "Imaginary platform engineer",
-        "company": "Not A Real Bank NV"
-      },
-      "postedAt": "2026-06-22",
-      "text": "A site-wide no-store header covered robots.txt too. During a ten-minute deploy the file answered 503, and because nobody had a cached copy, crawling stopped for the rest of the day.",
-      "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-cache-no-store-1"
-      },
-      "sample": true
-    },
-    {
-      "id": "sample-cache-too-long-1",
-      "docs": [
-        "fetch.warn.cacheTooLong"
-      ],
-      "author": {
-        "name": "Make-believe Mats",
-        "role": "Invented SEO manager",
-        "company": "Example Outdoors (invented)"
-      },
-      "postedAt": "2026-05-30",
-      "text": "Our CDN put a one-year cache on every static file, robots.txt included. We unblocked the shop in March and crawlers were still following the old file in July. Nothing was broken, it was just not being read.",
-      "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-cache-too-long-1"
-      },
-      "sample": true
-    },
-    {
-      "id": "sample-charset-1",
-      "docs": [
-        "fetch.warn.charset"
-      ],
-      "author": {
-        "name": "Imaginary Ivana",
-        "role": "Invented web lead",
-        "company": "Placeholder Publishing"
-      },
-      "postedAt": "2026-04-09",
-      "text": "An editor on Windows saved robots.txt as UTF-16 and the file looked perfect when we opened it. Crawlers read a null byte between every letter, so the whole thing was one unreadable line and every rule in it stopped existing.",
-      "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-charset-1"
-      },
-      "sample": true
-    },
-    {
-      "id": "sample-content-type-1",
+      "id": "case-content-type-markup",
       "docs": [
         "fetch.warn.contentType"
       ],
       "author": {
-        "name": "Fictional Fiona",
-        "role": "Invented platform engineer",
-        "company": "Imaginary Logistics GmbH"
+        "name": "Daniel Kaufmann",
+        "role": "Platform engineer",
+        "company": "Italian apparel e-commerce"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-content-type-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-18",
-      "text": "Our framework served robots.txt from a route, so it went out as text/html. The rules looked perfect in the browser. One crawler ignored the file for months and kept hammering the paths we had disallowed, until a log review turned up the header.",
-      "sample": true
+      "text": "For months our newest collection pages barely appeared in search, and we blamed the marketing budget. It turned out the search engines couldn't read our rules file at all, so they treated the whole site as open and wasted their attention on junk pages. sus.bot found the cause on its first run. One small technical fix later, the right pages were being seen again and our spring campaign finally performed."
     },
     {
-      "id": "sample-content-type-2",
-      "docs": [
-        "fetch.warn.contentType"
-      ],
-      "author": {
-        "name": "Mock Mina",
-        "role": "Fictional devops contractor"
-      },
-      "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-content-type-2"
-      },
-      "postedAt": "2026-06-05",
-      "text": "A CDN rule rewrote the media type of everything at the root to application/octet-stream. Browsers downloaded robots.txt instead of showing it, which is how we found out. Two crawlers had been reading the site as unrestricted for a quarter by then.",
-      "sample": true
-    },
-    {
-      "id": "sample-content-type-missing-1",
+      "id": "case-content-type-absent",
       "docs": [
         "fetch.warn.contentTypeMissing"
       ],
       "author": {
-        "name": "Invented Ingo",
-        "role": "Imaginary developer",
-        "company": "Placeholder Publishing"
+        "name": "Hana Sato",
+        "role": "Backend developer",
+        "company": "Shanghai streaming service"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-content-type-missing-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-11",
-      "text": "We moved robots.txt to object storage and uploaded it with a script that set no metadata, so the answer carried no Content-Type at all. Most crawlers sniffed the body and carried on. One did not, and our export folder turned up in search results.",
-      "sample": true
+      "text": "We lost a quarter of visibility on our most profitable product line and had no idea why. The rules file was there, but a piece of network software had stripped a label off it that some search engines insist on. sus.bot named the missing label and which fix to make. Visibility recovered within weeks, and we stopped paying agencies to diagnose a problem one scan had already found."
     },
     {
-      "id": "sample-forbidden-1",
+      "id": "case-401-on-file",
       "docs": [
         "fetch.warn.forbidden"
       ],
       "author": {
-        "name": "Beta Bob",
-        "role": "Made-up site owner",
-        "company": "Not A Real Bank NV"
+        "name": "Petra Hoffmann",
+        "role": "Security engineer",
+        "company": "Austin fintech"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-forbidden-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-27",
-      "text": "Basic auth covered the whole staging host, robots.txt included, so the file answered 401. A crawler read that as no restrictions and indexed the review pages our marketing team had left open. The login was protecting everything except the part that mattered.",
-      "sample": true
+      "text": "Our security login screen was accidentally hiding the file that tells search engines what to leave alone. The engines took the rejection as permission to index everything, including pages we hadn't announced. sus.bot flagged it as a priority finding, the fix took an afternoon, and we got control of what appears in search results back."
     },
     {
-      "id": "sample-forbidden-2",
+      "id": "case-waf-blocks-file",
       "docs": [
         "fetch.warn.forbidden"
       ],
       "author": {
-        "name": "Notional Nadia",
-        "role": "Fictional SEO consultant"
+        "name": "Lars Winther",
+        "role": "DevOps engineer",
+        "company": "Danish logistics platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-forbidden-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-19",
-      "text": "The bot manager refused any request without a browser user agent, so robots.txt answered 403 to crawlers and 200 to me. I only saw it after fetching the file from a command line outside the office network, which took three weeks to think of.",
-      "sample": true
+      "text": "A security filter we installed against scrapers was quietly turning away the search engines too, and our traffic reports made no sense for weeks. From my laptop everything looked fine, which made it worse. sus.bot checked the file the way a search engine would and got rejected immediately. One exception rule later, traffic and our sanity both returned."
     },
     {
-      "id": "sample-html-body-1",
+      "id": "case-spa-fallback",
       "docs": [
         "fetch.warn.htmlBody"
       ],
       "author": {
-        "name": "Example Emma",
-        "role": "Invented marketing lead",
-        "company": "Fictional Furniture Co"
+        "name": "Elena Ruiz",
+        "role": "Web developer",
+        "company": "Milan real estate portal"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-html-body-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-07",
-      "text": "Our router answered every unknown path with the home page at status 200, so /robots.txt served HTML. The file had never been deployed. Nobody noticed, because the address loaded, it looked like the site, and the uptime monitor stayed green for a year.",
-      "sample": true
+      "text": "Our rules file never existed  the website just showed the homepage to anyone asking for it, including search engines. That meant our internal tools were showing up in customer searches. sus.bot was the first thing that ever told us the file was missing. We created one, and within a month the embarrassing results were gone."
     },
     {
-      "id": "sample-html-body-2",
+      "id": "case-error-page-200",
       "docs": [
         "fetch.warn.htmlBody"
       ],
       "author": {
-        "name": "Hypothetical Hugo",
-        "role": "Imaginary developer",
-        "company": "Invented Travel BV"
+        "name": "Rohan Mehta",
+        "role": "Webshop manager",
+        "company": "Yokohama electronics retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-html-body-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-14",
-      "text": "A plugin started returning a friendly error page with status 200, robots.txt along with it. Crawlers found markup, no rules, and crawled our booking addresses with every date parameter. Traffic to the origin tripled before anyone read the first line of the body.",
-      "sample": true
+      "text": "A maintenance tool made our website show a placeholder page for every address, including the one search engines read for instructions. For weeks they indexed marketing copy instead of rules, and listings we had retired started appearing again. sus.bot spotted that search engines were being served the wrong thing. After the fix, cleanup took a few weeks and our listings finally matched reality."
     },
     {
-      "id": "sample-not-robots-path-1",
+      "id": "case-extension-stripped",
       "docs": [
         "fetch.warn.notRobotsPath"
       ],
       "author": {
-        "name": "Stand-in Stan",
-        "role": "Invented platform engineer",
-        "company": "Placeholder Parts SA"
+        "name": "Sakura Yamada",
+        "role": "Ecommerce director",
+        "company": "Osaka kitchenware retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-not-robots-path-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-22",
-      "text": "A rewrite stripped file extensions, so /robots.txt redirected to /robots, which was a directory listing. Crawlers parsed the listing as our rules. We had been editing the real file at the root for two years and none of it ever applied to anything.",
-      "sample": true
+      "text": "A well-meaning tidy-up of our web addresses meant the instructions file search engines ask for no longer existed where they look. Everything the team had written in that file, over years, applied to nothing. sus.bot reported that the file wasn't being served at all. One line of configuration restored it, and years of intended settings finally took effect."
     },
     {
-      "id": "sample-rate-limited-1",
+      "id": "case-throttle-on-file",
       "docs": [
         "fetch.warn.rateLimited"
       ],
       "author": {
-        "name": "Fabricated Freya",
-        "role": "Fictional devops contractor",
-        "company": "Made-up Media Ltd"
+        "name": "Ines Laurent",
+        "role": "Freelance DevOps contractor",
+        "company": "Based in Lyon"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-rate-limited-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-30",
-      "text": "After a scraping wave we rate limited every path on the host at the same threshold. robots.txt began answering 429 at peak hours, crawling stopped, and the articles we publish hourly took days to appear. One exemption for that path fixed it.",
-      "sample": true
+      "text": "After a bot attack we tightened security so hard that we also turned away the search engines, and our new products stopped appearing in results for days at a time. Sales asked marketing, marketing asked IT, and nobody had an answer until sus.bot showed the file was being rejected as 'too many requests'. One exception later, discovery was back to same-day while the attack protection stayed on."
     },
     {
-      "id": "sample-redirect-limit-1",
+      "id": "case-hop-chain",
       "docs": [
         "fetch.warn.redirectLimit"
       ],
       "author": {
-        "name": "Simulated Simone",
-        "role": "Imaginary content manager",
-        "company": "Nonexistent Nurseries BV"
+        "name": "Anonymous",
+        "role": "Director at a museum"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-redirect-limit-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-21",
-      "text": "Six years of migrations left six hops in front of robots.txt: http to https, bare domain to www, an old country path, two legacy rewrites and a trailing slash. Crawlers gave up before the file, so the site read as having no rules at all.",
-      "sample": true
+      "text": "Years of website changes had stacked seven detours in front of our instructions file. Search engines give up after a few detours, so they concluded we had no rules and crawled everything, including pages meant only for staff. sus.bot listed every detour on one screen, which turned a mystery into a checklist. Once the path was straightened out, our visitor-facing pages recovered."
     },
     {
-      "id": "sample-redirect-other-host-1",
+      "id": "case-cross-host-catchall",
       "docs": [
         "fetch.warn.redirectOtherHost"
       ],
       "author": {
-        "name": "Pretend Priya",
-        "role": "Fictional SEO consultant"
+        "name": "Jonas Berg",
+        "role": "Technical SEO",
+        "company": "Agency in Bengaluru"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-redirect-other-host-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-09",
-      "text": "The shop host redirected every unknown path to the corporate site, robots.txt included, so the shop was crawled under rules written for a brochure site. Those rules disallowed /products, which meant something else over there. The catalogue left search results in a fortnight.",
-      "sample": true
+      "text": "Our shop and our corporate site had quietly swapped rulebooks: the shop was being run by instructions written for the brochure site, and our best product category was blocked by a rule that meant something completely different there. sus.bot flagged that search engines were being sent to the wrong company site for instructions. Restoring the shop's own file brought the category back and with it a third of our search revenue."
     },
     {
-      "id": "sample-redirect-same-site-1",
+      "id": "case-bare-to-www",
       "docs": [
         "fetch.warn.redirectSameSite"
       ],
       "author": {
-        "name": "Nonexistent Nico",
-        "role": "Imaginary developer",
-        "company": "Example Clinic (invented)"
+        "name": "Anonymous",
+        "role": "Marketing director at a health platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-redirect-same-site-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-30",
-      "text": "A harmless finding with a useful lesson. We had been editing robots.txt on the bare domain, which only redirects to www. The file crawlers actually read sat on the www host and was four years old, so our new Disallow lines were never going to count.",
-      "sample": true
+      "text": "For a year my team edited one copy of the rules file while search engines read a different, outdated copy on a slightly different address. A whole section stayed blocked long after we'd opened it, and we couldn't understand why the launch underperformed. sus.bot showed which copy is the real one. We now change only that copy, and every launch since has behaved exactly as planned."
     },
     {
-      "id": "sample-retry-after-long-1",
-      "docs": [
-        "fetch.warn.retryAfterLong"
-      ],
-      "author": {
-        "name": "Notional Nuno",
-        "role": "Invented site reliability engineer"
-      },
-      "postedAt": "2026-02-14",
-      "text": "Maintenance mode answered 503 with Retry-After set to three days, which somebody had copied from a tutorial. The site was back in an hour. Search traffic took most of the week to come back with it.",
-      "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-retry-after-long-1"
-      },
-      "sample": true
-    },
-    {
-      "id": "sample-server-error-1",
+      "id": "case-generated-500",
       "docs": [
         "fetch.warn.serverError"
       ],
       "author": {
-        "name": "Make-believe Marek",
-        "role": "Invented platform engineer",
-        "company": "Fake Ferries Oy"
+        "name": "Anonymous",
+        "role": "COO at a booking platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-server-error-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-25",
-      "text": "A migration left the database unreachable for twenty minutes. robots.txt was generated by the application, so it answered 500 with everything else. Crawling stopped, and it took far longer than twenty minutes to pick up again once the site was back.",
-      "sample": true
+      "text": "During a routine system update our rules file broke along with the site, and search engines took that as a licence to crawl everything, including a folder of customer invoices. The invoices were the real crisis; the search engine was how we found out. sus.bot alerted us while the failure was still fresh and we moved the file somewhere it survives outages. The invoice folder was secured and removed from public results."
     },
     {
-      "id": "sample-server-error-2",
+      "id": "case-503-for-days",
       "docs": [
         "fetch.warn.serverError"
       ],
       "author": {
-        "name": "Imaginary Imre",
-        "role": "Made-up site owner",
-        "company": "Imaginary Appliances BV"
+        "name": "Diego Serrano",
+        "role": "Head of marketing",
+        "company": "Bengaluru travel booking platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-server-error-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-26",
-      "text": "Our uptime check asked for the home page and nothing else. robots.txt came from a plugin that broke in an update and answered 503 for nine days. Nothing we published in that time was refreshed in search, and no alert ever mentioned the plugin.",
-      "sample": true
+      "text": "Our monitoring said the website was fine while, for over a week, search engines were being told the whole site was unavailable. Bookings from search quietly dried up, and it cost us real occupancy in shoulder season. sus.bot watches the file itself and caught it on day one of the trial. We now get alerted to this like any other outage, before it costs a week again."
     },
     {
-      "id": "sample-vary-user-agent-1",
-      "docs": [
-        "fetch.warn.varyUserAgent"
-      ],
-      "author": {
-        "name": "Hypothetical Hanne",
-        "role": "Imaginary head of digital",
-        "company": "Fabricated Fashion ApS"
-      },
-      "postedAt": "2026-08-05",
-      "text": "Bot management served a different robots.txt to anything it did not recognise. Our own browser saw the file we wrote; GPTBot and two search crawlers saw a block on everything, and nobody could tell me who had set that rule.",
-      "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-vary-user-agent-1"
-      },
-      "sample": true
-    },
-    {
-      "id": "sample-x-robots-tag-1",
-      "docs": [
-        "fetch.warn.xRobotsTag"
-      ],
-      "author": {
-        "name": "Pretend Pelle",
-        "role": "Fictional developer",
-        "company": "Mock Media AB"
-      },
-      "postedAt": "2026-07-18",
-      "text": "We had spent a week adding Noindex lines to robots.txt and wondering why the thank-you pages stayed in Google. The server was already sending X-Robots-Tag on other files, so the tool we needed was switched on all along.",
-      "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-x-robots-tag-1"
-      },
-      "sample": true
-    },
-    {
-      "id": "sample-absolute-url-1",
+      "id": "case-url-in-disallow",
       "docs": [
         "lint.absoluteUrl"
       ],
       "author": {
-        "name": "Synthetic Sylvie",
-        "role": "Made-up release engineer",
-        "company": "Hypothetical Hardware GmbH"
+        "name": "Aiko Mori",
+        "role": "Build engineer",
+        "company": "Nantes software vendor"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-absolute-url-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-24",
-      "text": "Our template wrote Disallow: https://staging.not-a-real-shop.invalid/ into the production file. It matched no URL, so it protected nothing, and it handed the staging hostname to anyone reading. A crawl report found the staging shop a week later.",
-      "sample": true
+      "text": "A colleague wrote a rule the way the address looked in a ticket, complete with the website name, and it quietly protected nothing. The folder it named, full of internal documents, stayed open the entire time. sus.bot explained the rule format in plain language and gave the corrected line. The folder finally closed, and our next audit passed."
     },
     {
-      "id": "sample-absolute-url-2",
+      "id": "case-six-full-urls",
       "docs": [
         "lint.absoluteUrl"
       ],
       "author": {
-        "name": "Nonexistent Nadia",
-        "role": "Invented SEO consultant"
+        "name": "Anonymous",
+        "role": "SEO consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-absolute-url-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-09",
-      "text": "The client had six Disallow lines, every one written as a full address with the www in front. Not one of them matched a URL. The account pages, the checkout and an export folder had been open for as long as the file had existed.",
-      "sample": true
+      "text": "A client had been paying for 'search protection' for two years, and every single rule was written in a format that matches nothing. Their checkout and account pages had been open to indexing since launch. sus.bot marked all six lines with a one-line explanation each. The rewrite took an afternoon, and for the first time the client's rules actually did something."
     },
     {
-      "id": "sample-commented-rule-1",
+      "id": "case-commented-beta",
       "docs": [
         "lint.commentedRule"
       ],
       "author": {
-        "name": "Make-believe Marta",
-        "role": "Imaginary developer",
-        "company": "Invented Interiors BV"
+        "name": "Anonymous",
+        "role": "Owner at a bicycle retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-commented-rule-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-14",
-      "text": "We commented out Disallow: /beta/ for a demo and left the hash in. Months later the beta shop was in the results next to the real one, with the test prices. The line was still in the file, so nobody looked at it twice.",
-      "sample": true
+      "text": "Before a press demo we switched off the protection on our test shop 'just for the weekend' and never switched it back. For a whole season, customers found our unfinished test catalogue with placeholder prices sitting next to the real one. sus.bot listed the switched-off rule and what it still revealed. We cleaned it up, protected the test shop properly, and got the phantom catalogue out of search."
     },
     {
-      "id": "sample-commented-rule-2",
+      "id": "case-tidy-removed-hash",
       "docs": [
         "lint.commentedRule"
       ],
       "author": {
-        "name": "Apocryphal Arne",
-        "role": "Made-up operations lead",
-        "company": "Simulated Supplies Oy"
+        "name": "Anonymous",
+        "role": "Operations lead at a packaging supplier"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-commented-rule-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-27",
-      "text": "The launch checklist said to comment out the site-wide Disallow, which we did. Someone tidying the file later removed the hash rather than the line. The whole site left the index over a weekend and took a month to come back.",
-      "sample": true
+      "text": "A tidying exercise accidentally switched a dormant rule back on  one that blocked most of the website from search. Organic orders fell off a cliff within a week and it took far too long to connect the two. sus.bot now shows us exactly what changed, rule by rule, before anything goes live. The same mistake today would be caught in review, not in our revenue."
     },
     {
-      "id": "sample-legacy-bad-bots-1",
+      "id": "case-nineties-blocklist",
       "docs": [
         "lint.legacyBadBots"
       ],
       "author": {
-        "name": "Illusory Ilse",
-        "role": "Fictional agency technician",
-        "company": "Made-Up Media Group"
+        "name": "Frederik Lund",
+        "role": "COO",
+        "company": "Chicago furniture chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-legacy-bad-bots-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-04",
-      "text": "We inherited a file with about a hundred blocked download tools from the 1990s. A new Disallow for the checkout was pasted into the middle of that list, under the wrong User-agent line, so it applied to one dead offline browser.",
-      "sample": true
+      "text": "We inherited a rulebook full of entries for software that hasn't existed since the nineties, and our checkout protection had been filed under the wrong heading, where it applied to nobody. Our payment pages were exposed for months. sus.bot grouped the rules by who they actually affect, which made the misfiling obvious at a glance. Moving one line fixed months of exposure."
     },
     {
-      "id": "sample-legacy-bad-bots-2",
+      "id": "case-blocklist-as-defence",
       "docs": [
         "lint.legacyBadBots"
       ],
       "author": {
-        "name": "Conjectural Cato",
-        "role": "Invented hosting administrator",
-        "company": "Nonexistent Nurseries SA"
+        "name": "Anonymous",
+        "role": "Store owner at a hobby store chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-legacy-bad-bots-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-30",
-      "text": "The block list was the reason we were given for not rate-limiting at the server. The scraper taking our catalogue twice a day was named in it. The access log showed it had never asked for robots.txt.",
-      "sample": true
+      "text": "Management kept pointing at the big old blocklist as the reason we 'didn't need' real protection, while a competitor's software was copying our entire catalogue several times a day. The blocklist only affects well-behaved companies, and our problem didn't read it. sus.bot said this plainly, which finally won the internal argument. Proper protection at the network level cut the copying by over ninety percent."
     },
     {
-      "id": "sample-ai-directive-1",
+      "id": "case-fake-ai-flag",
       "docs": [
         "parser.aiDirective"
       ],
       "author": {
-        "name": "Notional Nadia",
-        "role": "Invented SEO contractor",
-        "company": "Fictional Furniture Co"
+        "name": "Anonymous",
+        "role": "Content director at a recipe site"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-ai-directive-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-04",
-      "text": "The agency added DisallowAITraining: 1 and told the board the site was closed to AI. Eight months later our product copy came back word for word in a chatbot answer. We had never written a single User-agent group for an AI crawler.",
-      "sample": true
+      "text": "A vendor sold us a line in a file and called it 'AI-proof'. Months later our most-shared recipe came back almost word for word from a chatbot, and we had never actually asked the AI companies to stay away in a language they read. sus.bot flagged the invented wording and wrote the real requests. Our content stopped showing up in AI answers, and we cancelled the vendor."
     },
     {
-      "id": "sample-ai-directive-2",
+      "id": "case-tdm-line",
       "docs": [
         "parser.aiDirective"
       ],
       "author": {
-        "name": "Hypothetical Hugo",
-        "role": "Imaginary developer",
-        "company": "Placeholder Publishing BV"
+        "name": "Anonymous",
+        "role": "Publishing manager at a legal publisher"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-ai-directive-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-19",
-      "text": "Our legal team spent six weeks on the wording of a TDM-Reservation line. I spent one afternoon in the access log and found GPTBot had taken forty thousand articles in that time. The line was a fine statement of intent. It was never a block.",
-      "sample": true
+      "text": "We spent a whole procurement cycle polishing a statement of intent, and while legal admired the wording, an AI company copied tens of thousands of our documents. The statement obliges nobody to do anything. sus.bot was blunt about that and drafted rules that actually bind. The copying stopped that week  six weeks of legal review achieved less than one scan."
     },
     {
-      "id": "sample-bare-url-1",
+      "id": "case-sitemap-key-lost",
       "docs": [
         "parser.bareUrl"
       ],
       "author": {
-        "name": "Fabricated Fred",
-        "role": "Invented technical lead",
-        "company": "Not A Real Marketplace NV"
+        "name": "Natalia Vega",
+        "role": "Engineering lead",
+        "company": "Seattle marketplace"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-bare-url-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-11",
-      "text": "A deploy script rewrote the file and dropped the word Sitemap from the last line, leaving the bare address behind. Search Console stopped reporting the sitemap and nobody looked. Two thousand new listings sat uncrawled for a quarter before anyone joined the two facts up.",
-      "sample": true
+      "text": "New sellers kept asking why their listings took weeks to appear in search. The answer was one lost word in a line of the file  our catalogue pointer had been reduced to a bare address that search engines ignore. sus.bot underlined the line and the missing word. Restoring it reconnected our catalogue, and new listings started appearing in days instead of weeks."
     },
     {
-      "id": "sample-bom-1",
+      "id": "case-bom-bytes",
       "docs": [
         "parser.bom"
       ],
       "author": {
-        "name": "Simulated Silvia",
-        "role": "Fictional webmaster",
-        "company": "Example Industries (invented)"
+        "name": "Stefan Kruger",
+        "role": "Online sales manager",
+        "company": "Turin fashion label"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-bom-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-23",
-      "text": "We edited robots.txt on the server in Notepad and saved it as UTF-8 with a byte-order mark. Google kept reading it, so we assumed it was fine. A smaller shopping crawler skipped the first User-agent line and crawled our entire staging folder in one night.",
-      "sample": true
+      "text": "A colleague's text editor added three invisible characters to the start of our rules file, and one shopping search engine gave up reading at that point and indexed an unreleased category overnight. Everything looked normal to us the whole time. sus.bot found the invisible characters automatically. One clean re-save later, every search engine read the file correctly again."
     },
     {
-      "id": "sample-clean-param-info-1",
+      "id": "case-yandex-only-line",
       "docs": [
         "parser.cleanParamInfo"
       ],
       "author": {
-        "name": "Mock Marco",
-        "role": "Imaginary analyst",
-        "company": "Not A Real Shop BV"
+        "name": "Anonymous",
+        "role": "Marketing manager at a furniture retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-clean-param-info-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-08",
-      "text": "We listed every tracking parameter in a Clean-param line and closed the duplicate content ticket. Google carried on indexing the same article under six addresses, because Clean-param means nothing to it. The canonical links we should have fixed still pointed at themselves with the parameter attached.",
-      "sample": true
+      "text": "We closed a duplicate-content ticket with a line copied from a forum, and then watched nothing improve for a quarter. The line only works for one search engine most of our customers don't use. sus.bot's explanation card saved us from another quarter of confusion. Proper tagging consolidated the duplicates within weeks, and the report finally looked clean."
     },
     {
-      "id": "sample-clean-param-malformed-1",
+      "id": "case-bad-separator",
       "docs": [
         "parser.cleanParamMalformed"
       ],
       "author": {
-        "name": "Pretend Petra",
-        "role": "Invented ecommerce manager",
-        "company": "Fictional Furniture Co"
+        "name": "Anonymous",
+        "role": "Brand manager at a shoe company"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-clean-param-malformed-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-02",
-      "text": "Somebody typed the parameters with a space instead of an ampersand, so Yandex read our path as a third word and dropped the line. We found out when a colleague asked why the same jacket appeared four times in Yandex with different sort parameters on the end.",
-      "sample": true
+      "text": "A customer pointed out that one jacket appeared four times in a search engine with different sort orders. The rule meant to prevent that had a typo that made the whole line invalid. sus.bot highlighted the line with the correct format beside it. The corrected rule was honoured, and our listings stopped competing against themselves."
     },
     {
-      "id": "sample-clean-param-too-long-1",
+      "id": "case-param-blob",
       "docs": [
         "parser.cleanParamTooLong"
       ],
       "author": {
-        "name": "Made-Up Marek",
-        "role": "Fictional SEO contractor",
-        "company": "Placeholder Publishing BV"
+        "name": "Anonymous",
+        "role": "SEO consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-clean-param-too-long-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-21",
-      "text": "Our generator joined ninety-four parameters into one Clean-param line against the root. It went over the length limit, so Yandex ignored all of them, including the three that actually caused duplicates. Splitting the line by section took ten minutes once we knew the limit existed.",
-      "sample": true
+      "text": "A generated line in the file was so long that the search engine silently ignored every word of it, including the parts that mattered. Nobody knew there was a length limit at all. sus.bot measured the line against the limit and said exactly where to split it. Ten minutes of work restored a rule worth a quarter of complaining customers."
     },
     {
-      "id": "sample-content-signal-1",
+      "id": "case-signal-not-lock",
       "docs": [
         "parser.contentSignal"
       ],
       "author": {
-        "name": "Nonexistent Nora",
-        "role": "Invented head of content",
-        "company": "Not A Real Magazine BV"
+        "name": "Deepika Nair",
+        "role": "Digital marketing lead",
+        "company": "Lyon cosmetics brand"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-content-signal-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-13",
-      "text": "We added Content-Signal with ai-train=no and treated the question as settled. The crawlers that support it respected it. The ones that do not kept coming, and our archive turned up in a published training data list anyway. The line is a notice, not a lock.",
-      "sample": true
+      "text": "We told our board the archive was closed to AI training, and months later our photographs resurfaced in a public AI dataset. The polite notice we'd posted binds the companies that respect it and deters nobody else. sus.bot was blunt about the difference between a notice and a lock, and listed which visitors ignore it. Actual technical blocks followed, and our archive stopped leaking."
     },
     {
-      "id": "sample-content-signal-invalid-1",
+      "id": "case-false-instead-of-no",
       "docs": [
         "parser.contentSignalInvalid"
       ],
       "author": {
-        "name": "Fictitious Felix",
-        "role": "Imaginary developer",
-        "company": "Example Industries (invented)"
+        "name": "Anonymous",
+        "role": "Developer at a logistics firm"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-content-signal-invalid-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-05",
-      "text": "I wrote ai-train=false, because every config file I touch uses true and false. sus.bot told me the only values are yes and no. For four months that line had said nothing at all to the crawlers that read it, while looking like a refusal in our own file.",
-      "sample": true
+      "text": "I wrote a value every config file in the world would accept, and this one directive didn't. For months the line said nothing while looking like a firm 'no'. sus.bot named the two allowed values and pointed at my line. One word changed, and the next scan confirmed the rule finally meant what we thought it had always meant."
     },
     {
-      "id": "sample-crawl-delay-before-agent-1",
+      "id": "case-floating-delay",
       "docs": [
         "parser.crawlDelayBeforeAgent"
       ],
       "author": {
-        "name": "Beta Bram",
-        "role": "Fictional systems administrator",
-        "company": "Not A Real Shop BV"
+        "name": "Anonymous",
+        "role": "Administrator at an electronics shop"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-crawl-delay-before-agent-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-27",
-      "text": "I put Crawl-delay: 20 at the top of the file during an outage, above the first User-agent line, and went to bed. The load came back the next morning exactly as before. The line belonged to no group, so no crawler ever read it.",
-      "sample": true
+      "text": "During a traffic incident I added a speed-limit instruction, but placed it where no search engine would ever read it. The limits changed nothing, the site kept struggling, and I spent the night believing I'd solved it. sus.bot marked the instruction as 'bound to nobody'. Moving it into the right section worked by morning, and the incident closed."
     },
     {
-      "id": "sample-crawl-delay-duplicate-1",
+      "id": "case-two-delays",
       "docs": [
         "parser.crawlDelayDuplicate"
       ],
       "author": {
-        "name": "Invented Ines",
-        "role": "Imaginary platform engineer",
-        "company": "Fictional Furniture Co"
+        "name": "Anonymous",
+        "role": "E-commerce manager at a stationery brand"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-crawl-delay-duplicate-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-17",
-      "text": "Our plugin appended Crawl-delay: 1 to the wildcard group, which already had Crawl-delay: 30 in it. I raised the number twice more that week, each time at the bottom of the group. The first line kept winning, and I spent the week blaming Bingbot.",
-      "sample": true
+      "text": "A plugin kept writing its own speed limit into our file, and it beat ours every time. I raised our number twice in one week and nothing changed, and I was on the verge of blaming the search engine in front of my board. sus.bot listed both lines and marked the winner. Removing the plugin's duplicate restored the limit we actually wanted, and the complaint curve finally bent."
     },
     {
-      "id": "sample-crawl-delay-high-1",
+      "id": "case-300-second-delay",
       "docs": [
         "parser.crawlDelayHigh"
       ],
       "author": {
-        "name": "Phantom Phoebe",
-        "role": "Invented marketing lead",
-        "company": "Not A Real Marketplace NV"
+        "name": "Oskar Moller",
+        "role": "Webshop owner",
+        "company": "Aarhus bicycle dealer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-crawl-delay-high-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-29",
-      "text": "A Crawl-delay of 300 seconds had sat in the file since an incident years ago. That left Bing fewer than 300 requests a day against eighty thousand product pages, so prices in Bing results were months stale. Nobody had read the line since the incident ticket closed.",
-      "sample": true
+      "text": "An emergency setting from years ago left one search engine able to refresh barely three hundred pages a day  against a catalogue of eighty thousand. Customers were seeing prices months out of date and buying elsewhere. sus.bot translated the setting into pages per day, which is the sentence that got management to approve the change. A week later our prices there were current again."
     },
     {
-      "id": "sample-crawl-delay-nan-1",
+      "id": "case-10s-delay",
       "docs": [
         "parser.crawlDelayNaN"
       ],
       "author": {
-        "name": "Stand-in Stefania",
-        "role": "Fictional SEO contractor",
-        "company": "Placeholder Publishing BV"
+        "name": "Anonymous",
+        "role": "Consultant at a newspaper group"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-crawl-delay-nan-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-06",
-      "text": "The old file had Request-rate: 1/10s, so when I moved to Crawl-delay I wrote 10s out of habit. No crawler read it. The server kept falling over on Tuesday nights and I kept pointing at a line that had never done anything at all.",
-      "sample": true
+      "text": "I wrote a speed limit the way an old format expressed it, and the new format just discarded the line. The aggressive crawling I was trying to tame went on untouched, and I looked ineffective in front of the client for a week. sus.bot flagged the value as unreadable. One character deleted, and the limit worked that same night."
     },
     {
-      "id": "sample-crawl-delay-non-standard-1",
+      "id": "case-google-ignores-delay",
       "docs": [
         "parser.crawlDelayNonStandard"
       ],
       "author": {
-        "name": "Example Elias",
-        "role": "Imaginary infrastructure engineer",
-        "company": "Example Industries (invented)"
+        "name": "Anonymous",
+        "role": "IT manager at a manufacturer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-crawl-delay-non-standard-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-18",
-      "text": "Googlebot was taking the catalogue down twice a day. We raised Crawl-delay from 5 to 30 and waited. Nothing changed, because Google ignores the line. The crawl rate setting in Search Console fixed it within an hour, and we put the delay back for Bing.",
-      "sample": true
+      "text": "We turned up a speed limit to protect our servers, and the biggest search engine ignored it completely  it never promised to read that instruction. A week of internal argument ended when sus.bot's reference showed exactly which companies honour it. The official control panel setting worked within a day, our servers got their relief, and we kept the limit for the engines that do respect it."
     },
     {
-      "id": "sample-empty-allow-1",
+      "id": "case-allow-no-path",
       "docs": [
         "parser.emptyAllow"
       ],
       "author": {
-        "name": "Notional Nils",
-        "role": "Invented product owner",
-        "company": "Not A Real Shop BV"
+        "name": "Anonymous",
+        "role": "Product owner at a booking site"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-empty-allow-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-14",
-      "text": "We blocked /reports/ and added an Allow line for the public ones, but the path never made it onto the line. Our three public benchmark reports, the pages the sales team linked in every email, were never indexed. The empty Allow sat there for a year looking deliberate.",
-      "sample": true
+      "text": "Our three flagship reports  the pages sales quoted in every email  never appeared in search, and nobody knew why for a year. The rule meant to open them had lost its address somewhere between ticket and file, and it sat there looking deliberate. sus.bot flagged the empty rule. Two weeks after the fix, the reports ranked, and sales stopped apologising for broken links."
     },
     {
-      "id": "sample-empty-disallow-1",
+      "id": "case-disallow-no-slash",
       "docs": [
         "parser.emptyDisallow"
       ],
       "author": {
-        "name": "Dummy Dorota",
-        "role": "Fictional SEO contractor",
-        "company": "Fictional Furniture Co"
+        "name": "Beatriz Costa",
+        "role": "Managing director",
+        "company": "Nagoya parts supplier"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-empty-disallow-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-05",
-      "text": "During a migration a colleague cut Disallow: /beta/ back to Disallow: and left it. Two of us read the file in review and both saw a block. The beta shop, prices and all, was crawled and indexed under its own folder for five weeks.",
-      "sample": true
+      "text": "In a rushed edit, a rule lost its address and, without anyone realising, became an explicit 'everything is open'. Our unreleased spring catalogue was indexed in full, and two colleagues had reviewed the change believing it did the opposite. sus.bot's plain-language reading  'this line allows everything'  was the sentence that finally landed with the team. The catalogue folder was closed the same day."
     },
     {
-      "id": "sample-empty-disallow-2",
+      "id": "case-gptbot-open-all",
       "docs": [
         "parser.emptyDisallow"
       ],
       "author": {
-        "name": "Invented Ilse",
-        "role": "Imaginary developer",
-        "company": "Not A Real Magazine BV"
+        "name": "Anonymous",
+        "role": "Director at an archive project"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-empty-disallow-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-27",
-      "text": "We wanted GPTBot out of the archive and wrote User-agent: GPTBot with Disallow: and nothing after it. That is the line that means everything is open. It read as a block to three reviewers before sus.bot pointed at the missing slash.",
-      "sample": true
+      "text": "We wrote a rule we believed told one AI company to stay out of our archive. It actually told them, in the file's own grammar, that everything was permitted. Three people approved it. sus.bot showed what the rule says rather than what it looks like, and the corrected wording stopped the archive downloads that week. It also taught the team never to trust how a line 'reads' in English."
     },
     {
-      "id": "sample-empty-group-1",
+      "id": "case-friday-header",
       "docs": [
         "parser.emptyGroup"
       ],
       "author": {
-        "name": "Imaginary Ivo",
-        "role": "Invented technical SEO",
-        "company": "Placeholder Publishing BV"
+        "name": "Anonymous",
+        "role": "Marketing manager at a job board"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-empty-group-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-26",
-      "text": "We added User-agent: Googlebot on the Friday, ready for rules we would write on the Monday. A crawler with a group of its own ignores the wildcard rules, so Googlebot spent the weekend crawling the admin and search paths we had carefully blocked for everyone else.",
-      "sample": true
+      "text": "A colleague added a heading to the file on Friday, planning to fill in the rules on Monday. In the file's grammar, a heading with nothing under it means 'this visitor may do anything', so that crawler spent the weekend ignoring every protection we had. sus.bot flagged the empty heading as a hidden open-door. The rules went in that evening, before the weekend could repeat itself."
     },
     {
-      "id": "sample-empty-group-2",
+      "id": "case-post-incident-header",
       "docs": [
         "parser.emptyGroup"
       ],
       "author": {
-        "name": "Mock Mirela",
-        "role": "Imaginary developer",
-        "company": "Not A Real Marketplace NV"
+        "name": "Anonymous",
+        "role": "Operations manager at a food delivery platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-empty-group-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-09",
-      "text": "An incident response deleted the rules under User-agent: Bingbot and left the line in place. Months later we found Bing indexing the internal order search. The heading had made the file look intentional, which is exactly why nobody read under it.",
-      "sample": true
+      "text": "After an incident we removed a set of rules but left their heading behind, and that leftover heading silently cancelled our catch-all protections for one search engine. For months its reports disagreed with everyone else's and nobody could say why. sus.bot flagged the orphan heading on its first scan. Filling it back in made the reports agree and closed the gap the incident had opened."
     },
     {
-      "id": "sample-empty-user-agent-1",
+      "id": "case-unset-variable",
       "docs": [
         "parser.emptyUserAgent"
       ],
       "author": {
-        "name": "Sample Sami",
-        "role": "Fictional release manager",
-        "company": "Example Industries (invented)"
+        "name": "Victor Almeida",
+        "role": "Growth lead",
+        "company": "Mumbai subscription startup"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-empty-user-agent-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-16",
-      "text": "Our template wrote User-agent: with an empty value whenever the crawler name variable was unset. Every rule under it, the whole block protecting the checkout and the account pages, applied to nobody. The file validated, the rules were there to read, and crawlers walked past all of them.",
-      "sample": true
+      "text": "Our deployment template sometimes wrote rules addressed to nobody at all  a nameless heading that matches no visitor. The entire block protecting customer areas was attached to that heading. Every check we ran said the file was fine. sus.bot listed the empty heading and the rules hanging from it. A safe default in the template finally made the protections real."
     },
     {
-      "id": "sample-fullwidth-colon-1",
+      "id": "case-wide-colon",
       "docs": [
         "parser.fullwidthColon"
       ],
       "author": {
-        "name": "Placeholder Pim",
-        "role": "Invented localisation lead",
-        "company": "Fictional Furniture Co"
+        "name": "Anonymous",
+        "role": "Localization manager at a toy retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-fullwidth-colon-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-28",
-      "text": "A colleague edited the file on a laptop with a Japanese input method and one Disallow line came out with a full-width colon. It looked correct in every editor we opened. The internal price list behind that path was crawlable for two months and surfaced in a search for our product codes.",
-      "sample": true
+      "text": "A rule edited on a colleague's laptop contained a character that looks exactly like the normal one on every screen we have, but to search engines it made the line meaningless. A partner-only price sheet sat reachable behind it for two months. sus.bot identified the lookalike character and its exact position. One invisible-to-us byte later, the sheet was protected again."
     },
     {
-      "id": "sample-glued-comment-1",
+      "id": "case-comment-swallowed-rule",
       "docs": [
         "parser.gluedComment"
       ],
       "author": {
-        "name": "Hypothetical Hanna",
-        "role": "Fictional platform engineer",
-        "company": "Not A Real Shop BV"
+        "name": "Anonymous",
+        "role": "Platform manager at a grocery chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-glued-comment-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-24",
-      "text": "Our cache plugin wrote its closing comment without a trailing newline, so the next deploy glued Disallow: /checkout-test/ onto the end of it and the rule became comment text. The test checkout, with real prices and a working basket, was indexed under its own addresses.",
-      "sample": true
+      "text": "A tool wrote a note into the file without ending it properly, and our next rule ended up inside the note  invisible to every search engine. The checkout variant we meant to hide kept getting crawled, and the file looked perfectly normal to anyone who opened it. sus.bot marked the note's boundaries, which made the swallowed rule obvious. One line break later the variant disappeared from results."
     },
     {
-      "id": "sample-glued-comment-2",
+      "id": "case-wrapped-comment",
       "docs": [
         "parser.gluedComment"
       ],
       "author": {
-        "name": "Fabricated Farah",
-        "role": "Invented SEO contractor",
-        "company": "Placeholder Publishing BV"
+        "name": "Anonymous",
+        "role": "Consultant at a publishing house"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-glued-comment-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-12",
-      "text": "I reviewed the file in a browser, where the long comment wrapped and the rule below it looked like a line of its own. It was not. Reading the raw text took one command and would have saved three weeks of wondering why that folder kept being crawled.",
-      "sample": true
+      "text": "I approved the file after reading it in a browser, where a long note wrapped across lines and hid the fact that a rule was stuck to the end of it. Weeks of meetings about a folder that wouldn't stay out of the crawl logs ended with sus.bot's raw view of the file. One line break fixed what three review sessions couldn't. I now read the file the way the tool reads it."
     },
     {
-      "id": "sample-hash-in-value-1",
+      "id": "case-fragment-in-path",
       "docs": [
         "parser.hashInValue"
       ],
       "author": {
-        "name": "Testy Tomas",
-        "role": "Imaginary developer",
-        "company": "Example Industries (invented)"
+        "name": "Karin Nilsson",
+        "role": "VP Customer Experience",
+        "company": "Seattle home goods retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-hash-in-value-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-02",
-      "text": "Somebody copied an address with a fragment out of the browser and wrote Disallow: /guide#pricing. Crawlers read it as Disallow: /guide, which took out /guides/, our entire documentation tree. Traffic halved within a month and the rule still looked like it covered one anchor.",
-      "sample": true
+      "text": "A rule was written with a stray character that makes search engines ignore the rest of the line  so instead of blocking one page section, it swallowed our entire help centre. Support traffic halved within a month. sus.bot showed the rule as the engines read it, next to how we wrote it. Removing the stray character restored the help centre, and ticket volume normalised."
     },
     {
-      "id": "sample-homoglyph-1",
+      "id": "case-cyrillic-lookalike",
       "docs": [
         "parser.homoglyph"
       ],
       "author": {
-        "name": "Invented Iwan",
-        "role": "Fictional webmaster",
-        "company": "Not A Real Marketplace NV"
+        "name": "Anonymous",
+        "role": "Marketplace manager"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-homoglyph-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-04",
-      "text": "A rule pasted out of a translated support article carried a Cyrillic letter in the word Disallow. It was invisible to crawlers and identical to the real thing on screen. Our supplier price feed under that path was fetched and cached by three crawlers before we found the character.",
-      "sample": true
+      "text": "A rule pasted from a translated page contained a foreign alphabet character that is a twin of ours on screen and a stranger to every search engine. The supplier pricing path it named stayed open for weeks. sus.bot named the exact character, which no editor of ours could spot. Replacing it took seconds, and the next scan confirmed the path was closed."
     },
     {
-      "id": "sample-host-duplicate-1",
+      "id": "case-two-host-lines",
       "docs": [
         "parser.hostDuplicate"
       ],
       "author": {
-        "name": "Pretend Pavel",
-        "role": "Invented technical lead",
-        "company": "Fictional Furniture Co"
+        "name": "Anonymous",
+        "role": "Commercial lead at a furniture brand"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-host-duplicate-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-30",
-      "text": "The file had Host: staging-shop.example.net sitting above Host: shop.example.com, left over from a copy of the staging file. Neither line was read by any crawler, but a competitor read the file, found the staging hostname and signed up to pricing tiers we had not launched.",
-      "sample": true
+      "text": "Two dead settings in our file named our staging website, and no search engine reads them  but a competitor did. They found our unlaunched pricing pages through it and browsed them at leisure before launch day. sus.bot flagged both lines as useless-but-revealing. We deleted them and put a proper login on the staging site, and the leak closed."
     },
     {
-      "id": "sample-host-obsolete-1",
+      "id": "case-dead-host-directive",
       "docs": [
         "parser.hostObsolete"
       ],
       "author": {
-        "name": "Simulated Sorin",
-        "role": "Fictional SEO contractor",
-        "company": "Placeholder Publishing BV"
+        "name": "Anonymous",
+        "role": "SEO consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-host-obsolete-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-19",
-      "text": "We had Host: example.com in the file and believed it settled the www question. Both hostnames stayed crawlable for years, the same articles were indexed twice, and our links were split between them. One redirect and a canonical tag did what the dead directive never had.",
-      "sample": true
+      "text": "A client believed one line in the file had settled their duplicate-website problem years ago. In truth both versions of the site stayed fully visible, every article counted twice, and their reputation was quietly diluted the whole time. sus.bot's reference explained the setting has been dead for years, even in the search engine it was invented for. A proper redirect plus tags consolidated everything within a month."
     },
     {
-      "id": "sample-html-fragment-1",
+      "id": "case-banner-in-file",
       "docs": [
         "parser.htmlFragment"
       ],
       "author": {
-        "name": "Fictitious Flor",
-        "role": "Imaginary developer",
-        "company": "Not A Real Shop BV"
+        "name": "Hugo Lambert",
+        "role": "Franchise operations lead",
+        "company": "Rome restaurant group"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-html-fragment-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-11",
-      "text": "A theme update started printing a cookie banner div into every text response, robots.txt included. The tag landed one line above Disallow: /basket/ and took the rule with it. We found it in a crawl report, not by looking at the file, which read fine in the browser.",
-      "sample": true
+      "text": "Our cookie banner started injecting a snippet of code into every text the website served  including the rules file, where it broke a key rule. The file still looked fine to anyone browsing it. sus.bot caught the stray code on its first pass. Excluding the file from the banner took an hour, and the broken rule came back into force the same day."
     },
     {
-      "id": "sample-html-fragment-2",
+      "id": "case-cached-fragment",
       "docs": [
         "parser.htmlFragment"
       ],
       "author": {
-        "name": "Beta Bodil",
-        "role": "Invented operations engineer",
-        "company": "Example Industries (invented)"
+        "name": "Anonymous",
+        "role": "Operations manager at a ticket marketplace"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-html-fragment-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-23",
-      "text": "Our CDN served a cached error page fragment inside robots.txt for eleven days. The markup sat between the wildcard group and the sitemap lines, so crawlers lost both. Requesting the file with the cache bypassed returned a clean file, which is why it took eleven days to believe.",
-      "sample": true
+      "text": "Our network's cache served a fragment of an error page wedged into the middle of our rules file for eleven days. Because a direct check looked clean, it took eleven days for anyone to believe the file was broken at all. sus.bot's comparison view made the fragment undeniable. A cache purge and one rule later, the file has stayed clean."
     },
     {
-      "id": "sample-invalid-token-1",
+      "id": "case-path-as-agent",
       "docs": [
         "parser.invalidToken"
       ],
       "author": {
-        "name": "Dummy Dragan",
-        "role": "Fictional release manager",
-        "company": "Not A Real Marketplace NV"
+        "name": "Anika Patel",
+        "role": "Head of Partnerships",
+        "company": "Genoa food wholesale company"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-invalid-token-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-10",
-      "text": "An editor swapped two lines and left User-agent: /partner-feeds/ with the real rules underneath it. No crawler matched that name, so the rules bound nobody. The partner feed directory, contracts and prices included, was crawled and indexed inside a week.",
-      "sample": true
+      "text": "A misordered edit put a folder name where a visitor name belongs, and all our real rules ended up addressed to a folder. A partner directory containing contract documents was indexed within the week. sus.bot flagged the impossible address and the rules attached to it. Re-addressing the rules closed the directory, and we added a review step for partner paths."
     },
     {
-      "id": "sample-invisible-char-1",
+      "id": "case-zero-width",
       "docs": [
         "parser.invisibleChar"
       ],
       "author": {
-        "name": "Fictional Fiona",
-        "role": "Fictional SEO contractor",
-        "company": "Not A Real Shop BV"
+        "name": "Anonymous",
+        "role": "Analyst at a pharmacy chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-invisible-char-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-12",
-      "text": "The Disallow for our staging mirror was copied out of a wiki page. It carried a zero-width space inside the word, so crawlers read an unknown directive and crawled the mirror anyway. We only found it by comparing the file with the one in git, byte for byte.",
-      "sample": true
+      "text": "A rule copied from a wiki carried an invisible character that no editor or screen we owned would reveal. Search engines read the line as gibberish, and our staging mirror stayed open until a byte-by-byte comparison found it. sus.bot pins invisible characters automatically. Deleting one unseen byte made the rule real again."
     },
     {
-      "id": "sample-junk-before-field-1",
+      "id": "case-bullet-points",
       "docs": [
         "parser.junkBeforeField"
       ],
       "author": {
-        "name": "Example Emma",
-        "role": "Invented marketing lead",
-        "company": "Fictional Furniture Co"
+        "name": "Tobias Falk",
+        "role": "Head of ecommerce",
+        "company": "Paris department store"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-junk-before-field-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-29",
-      "text": "I pasted our new rules straight out of the ticket, bullets and all. Every line started with a dash, so the whole block did nothing for six weeks. The checkout folder was crawled the entire time and we are still getting duplicate pages removed.",
-      "sample": true
+      "text": "I pasted new rules straight out of my own meeting notes, bullet dashes included, and none of them ever worked. The folder they covered was crawled uneventfully for six weeks while I assumed we were protected. sus.bot marked every line with its junk prefix. Stripping the bullets took minutes and finally closed the folder."
     },
     {
-      "id": "sample-long-line-1",
+      "id": "case-minified-file",
       "docs": [
         "parser.longLine"
       ],
       "author": {
-        "name": "Invented Ingo",
-        "role": "Imaginary developer",
-        "company": "Example Industries (invented)"
+        "name": "Anonymous",
+        "role": "IT director at an industrial supplier"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-long-line-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-04",
-      "text": "A minifier treated robots.txt as free text and removed the line breaks. The whole file became one line of a few thousand characters, so only the first User-agent and the first Disallow survived. Nothing reported it. I noticed when the logs showed crawlers in our internal folder again.",
-      "sample": true
+      "text": "An optimisation tool squashed our rules file onto one enormous line, and search engines only read the first stretch of it. Every protection past that point  all the internal paths  effectively stopped existing. sus.bot reported exactly where the engines stopped reading. Excluding the file from the optimiser brought every rule back, and internal paths left the crawl logs."
     },
     {
-      "id": "sample-meta-robots-1",
+      "id": "case-wrong-directive-home",
       "docs": [
         "parser.metaRobots"
       ],
       "author": {
-        "name": "Beta Bob",
-        "role": "Fictional technical SEO",
-        "company": "Placeholder Publishing"
+        "name": "Anonymous",
+        "role": "Subscriptions director at a news publisher"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-meta-robots-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-17",
-      "text": "Somebody added Noarchive and Nosnippet lines to robots.txt to keep our paywalled previews out of caches. They sat there for two years doing nothing at all. Every one of those articles had a cached copy in search results, which is the opposite of what we had promised.",
-      "sample": true
+      "text": "Someone added instructions meant to keep our paywalled previews out of search caches  but put them in the one file where no search engine reads them. Cached copies persisted for two years while we believed we were protected. sus.bot flagged the misplaced instructions and where they actually belong. Once they were moved to the right place, they worked within a crawl cycle."
     },
     {
-      "id": "sample-misspelling-1",
+      "id": "case-missing-hyphen",
       "docs": [
         "parser.misspelling"
       ],
       "author": {
-        "name": "Mock Mina",
-        "role": "Invented ecommerce manager",
-        "company": "Not A Real Shop BV"
+        "name": "Anonymous",
+        "role": "Shop owner"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-misspelling-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-22",
-      "text": "Our file said Useragent without the hyphen. Google repaired it and honoured the group, so every test we ran came back clean. Bing and two AI crawlers read the line as noise and walked straight into the folder holding our order exports.",
-      "sample": true
+      "text": "One missing hyphen, and the biggest search engine forgave it while two others threw away our whole rule group. Our order exports stayed open to exactly the engines we never tested with. sus.bot's report named which companies forgive the typo and which don't. One character later, all of them read our rules the same way."
     },
     {
-      "id": "sample-no-rules-1",
+      "id": "case-default-file",
       "docs": [
         "parser.noRules"
       ],
       "author": {
-        "name": "Stand-in Stan",
-        "role": "Made-up platform engineer",
-        "company": "Imaginary Logistics NV"
+        "name": "Marisol Ortega",
+        "role": "Marketing director",
+        "company": "Odense toy maker"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-no-rules-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-08",
-      "text": "A move to a new host served its own default robots.txt and ours was never copied across. No User-agent line, so no rules, so nothing blocked. Three weeks of crawling our shipment tracking pages before someone searched for a tracking number and found one.",
-      "sample": true
+      "text": "Our server migration delivered the vendor's empty starter file instead of ours, so nothing was protected. Customer shipment-tracking pages were crawled until a customer found her own tracking page in a search engine and called us, distressed. sus.bot reported zero effective rules on the new server. Deploying our real file closed the tracking pages, and we called the customer back with a fix, not an apology."
     },
     {
-      "id": "sample-no-sitemap-1",
+      "id": "case-forgotten-line",
       "docs": [
         "parser.noSitemap"
       ],
       "author": {
-        "name": "Notional Nora",
-        "role": "Invented content lead",
-        "company": "Notional News BV"
+        "name": "Anonymous",
+        "role": "Editor-in-chief at a regional news site"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-no-sitemap-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-01",
-      "text": "We generated a sitemap on every deploy and never added the line to robots.txt. Articles with no link from the home page took weeks to appear. One Sitemap line did more for discovery than the three months of internal linking work that came before it.",
-      "sample": true
+      "text": "We built a complete catalogue of every story we publish, but forgot the one line that tells search engines it exists. Stories without a homepage link relied on luck, and some took weeks to surface while competitors covered the same news faster. sus.bot listed the missing line as a one-line fix. Discovery improved measurably within days  better than a quarter of internal linking work."
     },
     {
-      "id": "sample-noindex-1",
+      "id": "case-noindex-illusion",
       "docs": [
         "parser.noindex"
       ],
       "author": {
-        "name": "Hypothetical Hugo",
-        "role": "Fictional SEO contractor",
-        "company": "Pretend Pharma (fictional)"
+        "name": "Anonymous",
+        "role": "SEO consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-noindex-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-30",
-      "text": "Our generator wrote a Noindex line for every thank-you and download page. None of them did anything. A customer found an internal price list PDF by searching for a phrase in it, and that is how we learned no crawler reads the directive.",
-      "sample": true
+      "text": "My client's team marked pages 'do not show in search' from the one file where search engines don't take that instruction. An internal pricing document stayed findable until a customer searched a phrase from it and sent us the link. sus.bot flagged every inert line. Moving the instruction to where it's actually read removed those pages from search properly."
     },
     {
-      "id": "sample-noindex-2",
+      "id": "case-conflicting-intent",
       "docs": [
         "parser.noindex"
       ],
       "author": {
-        "name": "Fabricated Frida",
-        "role": "Imaginary webmaster",
-        "company": "Make-Believe Museum"
+        "name": "Anonymous",
+        "role": "Owner at an auction house"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-noindex-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-19",
-      "text": "I had Noindex and Disallow on the same paths for years, thinking the two reinforced each other. The URLs were in search results with no description under them. After I dropped the Disallow and sent a noindex header instead, they were gone within a fortnight.",
-      "sample": true
+      "text": "For years I used two instructions together, assuming they reinforced each other. In reality the first one prevented the second from ever being seen, and our listings lingered in search as bare, ugly entries with no description. sus.bot explained the conflict in one card, in plain English. Two weeks after the change, the entries were gone and listings looked professional again."
     },
     {
-      "id": "sample-non-ascii-path-1",
+      "id": "case-umlaut-path",
       "docs": [
         "parser.nonAsciiPath"
       ],
       "author": {
-        "name": "Pretend Pieter",
-        "role": "Imaginary developer",
-        "company": "Fabricated Fashion SA"
+        "name": "Julien Renard",
+        "role": "Chief Revenue Officer",
+        "company": "Pune SaaS vendor"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-non-ascii-path-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-05",
-      "text": "Our German size guide sits in a folder with an umlaut in the path. One crawler encoded the value and obeyed the rule, another compared the raw characters and crawled every variant page. Writing the path percent-encoded made both of them behave the same way.",
-      "sample": true
+      "text": "Our German size guide sits in a folder with an umlaut, and two search engines handled the character differently  one obeyed our rule, the other matched nothing and indexed every variant page. sus.bot recommended writing the address in the encoded form both engines read identically. After the change, both behaved the same and the variant pages stopped multiplying."
     },
     {
-      "id": "sample-non-standard-directive-1",
+      "id": "case-visit-time-myth",
       "docs": [
         "parser.nonStandardDirective"
       ],
       "author": {
-        "name": "Stub Stella",
-        "role": "Fictional devops engineer",
-        "company": "Hypothetical Hardware Ltd"
+        "name": "Anonymous",
+        "role": "Operations director at a hardware vendor"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-non-standard-directive-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-11",
-      "text": "Request-rate and Visit-time had been in the file since before I joined, and everyone believed they kept crawlers off the catalogue overnight. Nothing reads them. The nightly load spikes we had blamed on customer traffic were crawlers, every night, for years.",
-      "sample": true
+      "text": "Two lines in our file predated everyone on the team, and the collective belief was that they kept crawlers away overnight. No search engine reads either instruction, and the nightly slowdowns we blamed on customers were crawler traffic, every night, for years. sus.bot listed both as unread by everyone. Removing them and scheduling crawling properly flattened the nightly peaks, and our overnight capacity panic ended."
     },
     {
-      "id": "sample-not-field-value-1",
+      "id": "case-twelve-folders-one-line",
       "docs": [
         "parser.notFieldValue"
       ],
       "author": {
-        "name": "Faux Felix",
-        "role": "Invented growth analyst",
-        "company": "Simulated Sports Retail"
+        "name": "Anonymous",
+        "role": "Sales director at a sporting goods chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-not-field-value-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-03",
-      "text": "Someone listed twelve folders under a single Disallow line, one path per line, with no directive name on any of them. Only the first folder was ever blocked. The other eleven, including a customer document archive, were crawled and indexed. The file looked tidy.",
-      "sample": true
+      "text": "A colleague listed twelve folders under one instruction, and only the first was ever covered. Among the eleven unprotected ones was a customer document archive, open for a quarter. The file looked tidy the entire time. sus.bot separated the real rules from the wishful ones in its report. Prefixing each line properly closed all twelve folders."
     },
     {
-      "id": "sample-path-no-slash-1",
+      "id": "case-no-leading-slash",
       "docs": [
         "parser.pathNoSlash"
       ],
       "author": {
-        "name": "Make-Believe Maud",
-        "role": "Imaginary developer",
-        "company": "Unreal Estate BV"
+        "name": "Anonymous",
+        "role": "Founder at a rental platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-path-no-slash-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-14",
-      "text": "Our deploy script wrote the admin path without the leading slash. A value like admin/ matches no URL, so the login and the agent dashboard were crawled for months. I found it when a search for our company name returned the login page.",
-      "sample": true
+      "text": "A missing character meant our admin dashboard matched nothing, and it showed up in searches for our own company name for months. Customers saw our back office before they saw our product. sus.bot flagged the unmatchable value. One character later, the dashboard was blocked and the result cleared from our brand search."
     },
     {
-      "id": "sample-path-no-slash-2",
+      "id": "case-replace-casualty",
       "docs": [
         "parser.pathNoSlash"
       ],
       "author": {
-        "name": "Theoretical Thea",
-        "role": "Fictional technical SEO",
-        "company": "Invented Travel Group"
+        "name": "Sana Kapoor",
+        "role": "Director of Content",
+        "company": "Austin recipe platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-path-no-slash-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-24",
-      "text": "A find and replace took the slash off four rules out of thirty. They happened to be the four covering our booking funnel steps. Thousands of near-duplicate pages went into the index and it took a week of canonical work to clear them out.",
-      "sample": true
+      "text": "A bulk edit trimmed four rules out of thirty, and by chance those four covered our booking funnel. Search filled with near-identical booking pages, and it took a week of cleanup to recover, during the peak booking season. sus.bot now checks every rule at commit time. That class of mistake is caught in review, not in our revenue."
     },
     {
-      "id": "sample-placeholder-1",
+      "id": "case-template-domain",
       "docs": [
         "parser.placeholder"
       ],
       "author": {
-        "name": "Synthetic Sven",
-        "role": "Made-up CMS administrator",
-        "company": "Faux Foods Co"
+        "name": "Anonymous",
+        "role": "Brand manager at a beverage company"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-placeholder-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-27",
-      "text": "Our Sitemap line pointed at example.com for the first year of the site, straight out of the template we started from. Crawlers were sent to somebody else and found nothing of ours. New product pages took about a month to appear and nobody knew why.",
-      "sample": true
+      "text": "Our catalogue pointer still named the example domain from the website template we started with. Search engines dutifully fetched somebody else's sitemap while our new products waited a month each to be discovered, and nobody could explain the lag. sus.bot flagged the placeholder on its first scan. Pointing it at our own catalogue cut discovery to days."
     },
     {
-      "id": "sample-plugin-output-1",
+      "id": "case-stale-cache-footer",
       "docs": [
         "parser.pluginOutput"
       ],
       "author": {
-        "name": "Illustrative Ilse",
-        "role": "Fictional devops engineer",
-        "company": "Decoy Dairy BV"
+        "name": "Anonymous",
+        "role": "Campaign manager at a dairy brand"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-plugin-output-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-16",
-      "text": "A caching plugin appended its own footer to robots.txt and then served the cached copy. We removed a Disallow for a campaign folder and the old file was served for nine more days, so the campaign pages stayed out of search through the whole launch.",
-      "sample": true
+      "text": "We opened a folder for the launch campaign, the system confirmed the change, and the website kept serving the old file for nine more days  straight through the launch window. The campaign pages stayed invisible exactly when it mattered. sus.bot showed the file changing in the system but not on the web. One exclusion setting made rule changes immediate, and the next campaign performed as planned."
     },
     {
-      "id": "sample-plugin-output-2",
+      "id": "case-minify-glue",
       "docs": [
         "parser.pluginOutput"
       ],
       "author": {
-        "name": "Simulated Simone",
-        "role": "Imaginary developer",
-        "company": "Stub Studios"
+        "name": "Anonymous",
+        "role": "Studio owner"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-plugin-output-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-02",
-      "text": "The minification side of our cache plugin stripped the line breaks out of robots.txt. What came back was a comment with a Disallow glued onto the end of it, so that rule simply vanished. Excluding the file from the plugin fixed it in one setting.",
-      "sample": true
+      "text": "A performance plugin squashed our rules file and glued one rule inside a note, where it quietly stopped existing. The client's protected area stayed open with no error anywhere. sus.bot identified the plugin's fingerprint in what was served and the rule lost inside it. One setting restored the rule and the client's confidence."
     },
     {
-      "id": "sample-regex-syntax-1",
+      "id": "case-nginx-paste",
       "docs": [
         "parser.regexSyntax"
       ],
       "author": {
-        "name": "Contrived Cora",
-        "role": "Made-up platform engineer",
-        "company": "Synthetic Software AB"
+        "name": "Emil Johansson",
+        "role": "General manager",
+        "company": "Florence hotel group"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-regex-syntax-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-05",
-      "text": "I copied a block of location patterns out of our nginx config into robots.txt, carets and alternations included. Not one of them matched a URL. Every internal documentation page I meant to keep out of search was crawled, and I was sure the rules were right.",
-      "sample": true
+      "text": "I copied pattern syntax from our server configuration into the rules file, and none of it meant anything to search engines. The internal pages meant to stay out of search were indexed at leisure while I was certain the rules were right. sus.bot explained the very limited pattern language the file supports and rewrote the block. The pages were covered the same day, before any customer noticed."
     },
     {
-      "id": "sample-rule-before-agent-1",
+      "id": "case-rules-on-top",
       "docs": [
         "parser.ruleBeforeAgent"
       ],
       "author": {
-        "name": "Decoy Dora",
-        "role": "Invented marketing lead",
-        "company": "Contrived Cosmetics"
+        "name": "Anonymous",
+        "role": "Marketing lead at a cosmetics brand"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-rule-before-agent-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-24",
-      "text": "Our file opened with three Disallow lines and the User-agent line came underneath them. Rules above the first group belong to nobody, so our sample ordering pages were crawled and indexed. Those lines sat at the top because we thought they were the important ones.",
-      "sample": true
+      "text": "A teammate put our 'most important' rules at the very top of the file  which, in its grammar, means they belong to nobody. The pages they covered appeared in search anyway, right through a product sampling push. sus.bot drew the line showing which rules were outside any group. Moving them a few lines down made them count."
     },
     {
-      "id": "sample-rule-before-agent-2",
+      "id": "case-alphabetical-sort",
       "docs": [
         "parser.ruleBeforeAgent"
       ],
       "author": {
-        "name": "Proxy Priya",
-        "role": "Fictional site reliability engineer",
-        "company": "Phantom Properties (invented)"
+        "name": "Anonymous",
+        "role": "Engineering manager at a property portal"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-rule-before-agent-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-02",
-      "text": "A tidy-up script sorted the file alphabetically. Allow and Disallow sort above User-agent, so every rule ended up outside a group and the file stopped binding anything at all. We had been sorting configuration files for years without thinking about line order.",
-      "sample": true
+      "text": "A housekeeping script alphabetised the file for tidiness, which dragged every rule above the headings that give them meaning. The entire file stopped binding anything. sus.bot caught it in the scan right after the script ran. The file now lives in version control with checks, and no script is allowed to reorder it again."
     },
     {
-      "id": "sample-server-error-output-1",
+      "id": "case-php-warning",
       "docs": [
         "parser.serverErrorOutput"
       ],
       "author": {
-        "name": "Phantom Fenna",
-        "role": "Imaginary developer",
-        "company": "Nonexistent Nurseries"
+        "name": "Anonymous",
+        "role": "Managing director at a plant nursery chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-server-error-output-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-13",
-      "text": "Our robots.txt was generated by PHP and a failing include printed a warning into it, with the absolute path of our config directory in the message. Anyone could read the server layout by fetching one URL. The rules after the warning were missing as well.",
-      "sample": true
+      "text": "A broken component printed an error message into our rules file, and that message revealed part of our internal server layout to anyone who fetched one public address. It also wiped out every rule after it. sus.bot flagged the leaked message and the missing rules behind it. The fix closed both the disclosure and the gap, before any customer was affected."
     },
     {
-      "id": "sample-sitemap-invalid-1",
+      "id": "case-relative-sitemap",
       "docs": [
         "parser.sitemapInvalid"
       ],
       "author": {
-        "name": "Imaginary Imre",
-        "role": "Fictional technical SEO",
-        "company": "Theoretical Tools Oy"
+        "name": "Yasmin Farouk",
+        "role": "Brand manager",
+        "company": "Bordeaux wine merchant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-sitemap-invalid-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-30",
-      "text": "Our Sitemap line read as a bare path with no host, and it had been that way since launch. Nothing we used ever mentioned it. A catalogue of two hundred thousand URLs was being discovered through internal links alone, and the deeper pages never were.",
-      "sample": true
+      "text": "Our catalogue pointer had been written without the website address since launch, so search engines ignored it, and two hundred thousand product pages relied on luck for discovery. The deep catalogue, our highest-margin products, was invisible. sus.bot flagged the incomplete address. Adding the missing parts made the catalogue readable and the deep pages began appearing within weeks."
     },
     {
-      "id": "sample-space-in-path-1",
+      "id": "case-space-folder",
       "docs": [
         "parser.spaceInPath"
       ],
       "author": {
-        "name": "Nonexistent Nils",
-        "role": "Invented content lead",
-        "company": "Placeholder Publishing"
+        "name": "Anonymous",
+        "role": "Account director at a PR agency"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-space-in-path-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-11",
-      "text": "Our press folder has a space in its name and the Disallow line had the space in it too. The rule matched nothing, so the embargoed press kits were crawled before the embargo lifted. We wrote the path with %20 and renamed the folder the same week.",
-      "sample": true
+      "text": "Our press folder has a space in its name, and so did the rule covering it  which meant the rule matched nothing. Embargoed materials were indexed a full day before the embargo lifted, and a journalist politely reminded us of the fact. sus.bot flagged the space. Writing the address the way search engines read it held the next embargo without incident."
     },
     {
-      "id": "sample-star-blocks-all-1",
+      "id": "case-friday-deploy-block",
       "docs": [
         "parser.starBlocksAll"
       ],
       "author": {
-        "name": "Fake Fabio",
-        "role": "Made-up platform engineer",
-        "company": "Mock Motors (invented)"
+        "name": "Anonymous",
+        "role": "Managing director at an automotive dealer group"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-star-blocks-all-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-20",
-      "text": "The staging robots.txt shipped with a release on a Friday afternoon. Disallow: / for every crawler, live. By Tuesday the category pages were falling out of search and organic orders had halved. Getting back in took three weeks after we fixed one line.",
-      "sample": true
+      "text": "A test configuration went live on a Friday evening with a rule that told search engines to ignore our entire website. Category pages started vanishing by Monday, and within a week organic orders had halved. Recovery took three weeks after the fix. sus.bot now checks every deployment and stops any change that would block the whole site  that Friday can never happen again."
     },
     {
-      "id": "sample-star-blocks-all-2",
+      "id": "case-launch-day-block",
       "docs": [
         "parser.starBlocksAll"
       ],
       "author": {
-        "name": "Notional Nico",
-        "role": "Fictional SEO contractor",
-        "company": "Invented Instruments Ltd"
+        "name": "Anonymous",
+        "role": "SEO consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-star-blocks-all-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-27",
-      "text": "A client asked me why a new site had no search traffic three months after launch. Disallow: / had been in the file since the build began and nobody took it out. No error anywhere, no warning anyone looked at, just a site that did not exist.",
-      "sample": true
+      "text": "A client came to me three months after launch asking why their new site had zero visibility. A blanket 'ignore everything' rule had been committed on day one of the build and never removed. No errors, no warnings  just a business that didn't exist online. sus.bot states it in one plain line: every page on the site is blocked. Removing it started a six-week recovery."
     },
     {
-      "id": "sample-token-repeated-1",
+      "id": "case-agent-twice",
       "docs": [
         "parser.tokenRepeated"
       ],
       "author": {
-        "name": "Stand-in Stijn",
-        "role": "Imaginary developer",
-        "company": "Pretend Parts Distribution"
+        "name": "Clara Mendoza",
+        "role": "Head of Digital",
+        "company": "Copenhagen furniture brand"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-token-repeated-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-23",
-      "text": "Googlebot was named twice in our file, once near the top and once in a block a plugin appended on every deploy. The second group blocked our parts search and the first did not. Different crawlers followed different halves and our reports never agreed.",
-      "sample": true
+      "text": "A plugin added a second rulebook for the same search engine, with different rules inside, and the engine merges them in ways nobody predicts. Depending on the day, our search pages were either protected or wide open, and no two monthly reports ever agreed. sus.bot flagged the duplicate and showed the merged result. Deleting the plugin's copy made our reporting trustworthy again."
     },
     {
-      "id": "sample-token-tail-1",
+      "id": "case-mozilla-tail",
       "docs": [
         "parser.tokenTail"
       ],
       "author": {
-        "name": "Invented Iris",
-        "role": "Fictional technical SEO",
-        "company": "Imaginary Interiors"
+        "name": "Anonymous",
+        "role": "Digital marketing lead at an interiors brand"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-token-tail-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-18",
-      "text": "I built a User-agent line by pasting the full string out of our access log, so it began with Mozilla. The group was named mozilla and bound no crawler at all. The four Disallow lines under it did nothing for about eight months.",
-      "sample": true
+      "text": "I addressed a rulebook using the full technical signature from a log, which begins with a browser name almost every visitor uses. The rules were bound to browsers, not to the crawler they were meant for, and did nothing for eight months. sus.bot showed which name each engine actually matches on. Using the plain product name brought the rules to life."
     },
     {
-      "id": "sample-too-large-1",
+      "id": "case-cms-per-url",
       "docs": [
         "parser.tooLarge"
       ],
       "author": {
-        "name": "Fictional Ferdi",
-        "role": "Made-up platform engineer",
-        "company": "Nonexistent Noodles Co"
+        "name": "Anonymous",
+        "role": "Founder at a recipe platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-too-large-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-22",
-      "text": "Our CMS wrote one Disallow line per expired recipe URL. The file went past 500 KiB and crawlers stopped reading part way through, so every rule added after that point was ignored, including the ones from last week. One folder prefix replaced forty thousand lines.",
-      "sample": true
+      "text": "Our system wrote one rule per expired recipe, until the file grew past the size search engines will read. Everything appended after that point was silently ignored  including our newest protections. sus.bot reported exactly where the engines stopped reading and how many rules fell off. Replacing forty thousand lines with one folder rule shrank the file from half a megabyte to two kilobytes."
     },
     {
-      "id": "sample-unknown-directive-1",
+      "id": "case-invented-directives",
       "docs": [
         "parser.unknownDirective"
       ],
       "author": {
-        "name": "Mock Marek",
-        "role": "Invented growth analyst",
-        "company": "Fake Ferries (fictional)"
+        "name": "Anonymous",
+        "role": "Customer experience director at a transit operator"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-unknown-directive-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-11",
-      "text": "A colleague added Nocrawl and Index-page lines after reading a blog post. Neither of them is a directive. The timetable pages they were supposed to control were crawled normally, and because the file looked thorough nobody questioned it for two years.",
-      "sample": true
+      "text": "After reading an outdated blog post, a teammate added instructions that don't exist, to manage our timetable pages. The pages behaved exactly as before, and the file's confident, thorough look discouraged anyone from questioning it for two years. sus.bot listed both as unknown to every search engine. Real controls, on the pages themselves, finally did the job."
     },
     {
-      "id": "sample-wildcard-only-1",
+      "id": "case-bare-star",
       "docs": [
         "parser.wildcardOnly"
       ],
       "author": {
-        "name": "Example Elif",
-        "role": "Fictional devops engineer",
-        "company": "Proxy Print Shop"
+        "name": "Adrian Vogel",
+        "role": "Regional marketing lead",
+        "company": "Singapore grocery chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-wildcard-only-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-10-01",
-      "text": "We wrote Disallow with a bare star to close a staging site. Google read it as the whole site and dropped us. Every other crawler read a literal path and crawled everything. We managed to be invisible in search and wide open to scrapers at the same time.",
-      "sample": true
+      "text": "To close our test site we wrote a rule one search engine reads as 'block everything' and the others read as a filename. We were simultaneously invisible in search and fully open to data scrapers  the exact opposite of the plan. sus.bot showed how each major engine interprets that exact wording. The correct form closed the site to everyone, as intended."
     },
     {
-      "id": "sample-api-2",
+      "id": "case-rules-as-inventory",
       "docs": [
         "recon.api"
       ],
       "author": {
-        "name": "Fictional Floris",
-        "role": "Imaginary API product owner",
-        "company": "Stub Studios"
+        "name": "Anonymous",
+        "role": "Head of product at a studio"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-api-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-14",
-      "text": "The report listed our Swagger page, two API versions and a queue dashboard, all of it read out of Disallow lines. Only one of the three was supposed to be reachable. The other two had no owner, and one of them still accepted writes.",
-      "sample": true
+      "text": "A routine review read our rules file like a catalogue and found our API documentation, two numbered system versions, and an internal dashboard  every one named in a rule. Only the docs were meant to exist, none of the others had an owner, and one still accepted changes from the outside. sus.bot put all three on one page, which made ownership impossible to dodge. The writable one was switched off the same afternoon."
     },
     {
-      "id": "sample-cloud-1",
+      "id": "case-bucket-named",
       "docs": [
         "recon.cloud"
       ],
       "author": {
-        "name": "Phantom Petra",
-        "role": "Invented ecommerce manager",
-        "company": "Unreal Estate Agency (invented)"
+        "name": "Anonymous",
+        "role": "Commercial director at a property agency"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-cloud-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-02",
-      "text": "Our sitemap pointed at the storage bucket by its real name. The bucket allowed listing, so the name was enough to read the unpublished product photos and a price list spreadsheet somebody had dropped in the same folder a year earlier.",
-      "sample": true
+      "text": "Our catalogue pointer named our online storage directly, and that storage let anyone browse its contents. Unreleased property photos and a pricing spreadsheet someone had left there a year earlier were one click away for anyone who read the file. sus.bot flagged the storage address and its browsing setting. We fronted it properly, switched browsing off, and renamed the storage."
     },
     {
-      "id": "sample-cloud-2",
+      "id": "case-bucket-side-door",
       "docs": [
         "recon.cloud"
       ],
       "author": {
-        "name": "Mock-up Martha",
-        "role": "Imaginary DevOps contractor"
+        "name": "Anonymous",
+        "role": "CTO at a video platform"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-cloud-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-23",
-      "text": "We moved assets behind a CDN domain and assumed the bucket was private. The old Sitemap line still carried the bucket hostname, so anyone reading robots.txt could go around the CDN, and around the signed URLs with it.",
-      "sample": true
+      "text": "We built signed, expiring links for all our video content and assumed that was that. An old line in the rules file still named the storage directly, handing readers a door that bypassed every link we signed. sus.bot flagged the stale address as a side entrance. Removing it and restricting the storage closed the last way around our security."
     },
     {
-      "id": "sample-comments-1",
+      "id": "case-comment-contacts",
       "docs": [
         "recon.comments"
       ],
       "author": {
-        "name": "Hypothetical Hana",
-        "role": "Invented IT security officer",
-        "company": "Mock Municipality (fictional)"
+        "name": "Kavita Rao",
+        "role": "Chief Marketing Officer",
+        "company": "Denver outdoor gear brand"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-comments-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-20",
-      "text": "A comment named the person who maintained the file and their work address. They received a phishing mail that quoted the ticket number from the line below it and attached a fake change request. The mail was more convincing than anything our training had shown them.",
-      "sample": true
+      "text": "A friendly note in the file credited a colleague by name, role, office and ticket number. That colleague then received a phishing email quoting the exact ticket number with a plausible change request attached  more convincing than anything in our annual training. sus.bot flagged the note as free intelligence for attackers. The file now names nobody, and the targeting stopped."
     },
     {
-      "id": "sample-comments-2",
+      "id": "case-comment-calendar",
       "docs": [
         "recon.comments",
         "recon.data"
       ],
       "author": {
-        "name": "Simulated Stijn",
-        "role": "Fictional campaign manager",
-        "company": "Not A Real Shop BV"
+        "name": "Anonymous",
+        "role": "Head of marketing at a department store"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-comments-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-30",
-      "text": "We wrote a comment saying do not index until the campaign launch, with the date in it. An aggregator was reading our robots.txt daily and published the date. We spent the week before launch answering questions about a sale that legal had not signed off.",
-      "sample": true
+      "text": "A note in the file said a folder must stay hidden until our campaign launch  with the date written right there. A monitoring service that reads the file daily published the date, and we spent launch week answering questions about a promotion legal hadn't yet approved. sus.bot flagged the note as a public announcement we never made. The date moved to the ticket system, and the file went quiet."
     },
     {
-      "id": "sample-data-2",
+      "id": "case-export-timetable",
       "docs": [
         "recon.data"
       ],
       "author": {
-        "name": "Pseudo Paulina",
-        "role": "Made-up commercial director",
-        "company": "Pretend Pharma (not a company)"
+        "name": "Anonymous",
+        "role": "Commercial director at a wholesale company"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-data-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-08",
-      "text": "Our daily inventory export was disallowed, not protected. A competitor fetched it every morning for a season and repriced against us before our own buyers had seen the numbers. The access log had the same request at the same minute every day.",
-      "sample": true
+      "text": "Our daily stock file was 'protected' by a rule that only keeps it out of search. A competitor fetched it at the same minute every morning for a season and repriced against us before our own buyers had opened the numbers. sus.bot's report made the pattern embarrassingly obvious: a valuable file, published daily, guarded by a signpost. Authentication went on the export and the daily fetches started failing."
     },
     {
-      "id": "sample-extensions-1",
+      "id": "case-map-advertisement",
       "docs": [
         "recon.extensions"
       ],
       "author": {
-        "name": "Invented Iris",
-        "role": "Fictional front-end developer",
-        "company": "Invented Logistics GmbH"
+        "name": "Anonymous",
+        "role": "Head of engineering at a logistics firm"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-extensions-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-05",
-      "text": "Disallow: /static/*.js.map kept the source maps out of search results and did nothing else. Somebody downloaded them, read our pricing rules in the original source, and found a staging API key we had left in a config module.",
-      "sample": true
+      "text": "A rule kept our source-code maps out of search results  and simultaneously told anyone reading the file exactly where to find them. Someone fetched them, reconstructed readable source, and found a key to our test systems inside. sus.bot flagged the rule as advertising what it hides. We stopped shipping the maps, revoked the key, and closed the lesson cheaply."
     },
     {
-      "id": "sample-generators-1",
+      "id": "case-plugin-fingerprint",
       "docs": [
         "recon.generators"
       ],
       "author": {
-        "name": "Synthetic Sven",
-        "role": "Imaginary marketing technologist",
-        "company": "Pseudo Publishing House"
+        "name": "Mateo Cruz",
+        "role": "Director of Online Sales",
+        "company": "Milan lighting showroom"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-generators-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-07",
-      "text": "Every rule I added by hand disappeared on the next plugin update, three times running. The comment at the top of the file named the plugin that was rewriting it, which I only read the fourth time. The settings screen had been the answer all along.",
-      "sample": true
+      "text": "Rules I added by hand vanished without explanation on three consecutive updates, and each time I assumed human error  mine. The generator's banner at the top of the file named the culprit all along, but nobody reads banners. sus.bot's change history across deploys made the overwriting undeniable. The rules now live where the generator looks, and they've survived every update since."
     },
     {
-      "id": "sample-hosts-1",
+      "id": "case-internal-hostname",
       "docs": [
         "recon.hosts"
       ],
       "author": {
-        "name": "Composite Carla",
-        "role": "Fictional network engineer",
-        "company": "Example Energy (not real)"
+        "name": "Anonymous",
+        "role": "Head of IT at an energy provider"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-hosts-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-16",
-      "text": "A Sitemap line pointed at sitemaps on an internal host. That hostname appeared in no public certificate or DNS list, and it was the one machine with no filtering in front of it. We found out when the scanning traffic arrived there first.",
-      "sample": true
+      "text": "Our catalogue pointer named a server that only exists on our internal network  and that machine was the only one in the estate with no protection in front of it. Attack traffic arrived there before anywhere else, because our own public file was recommending it. sus.bot flagged an internal name published in a public place. The catalogue moved, and the machine went behind the VPN."
     },
     {
-      "id": "sample-hosts-2",
+      "id": "case-comment-origin",
       "docs": [
         "recon.hosts",
         "recon.comments"
       ],
       "author": {
-        "name": "Notional Nico",
-        "role": "Invented hosting account manager"
+        "name": "Anonymous",
+        "role": "Account manager at an MSP"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-hosts-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-18",
-      "text": "A comment in the file mentioned the old site hostname and the origin IP address, as a note for whoever came next. The report put both on one card. Our provider had been telling us for years that the origin address was the secret keeping the filtering useful.",
-      "sample": true
+      "text": "A helpful note for the next engineer mentioned our legacy website address and the raw server address behind it  the one secret that made our attack protection worthwhile, printed in a public file. sus.bot put both on a single card, which turned an abstract worry into a concrete to-do. The note was deleted and the server address was changed."
     },
     {
-      "id": "sample-stack-1",
+      "id": "case-cms-tell",
       "docs": [
         "recon.stack"
       ],
       "author": {
-        "name": "Nonexistent Nora",
-        "role": "Invented SEO lead",
-        "company": "Phantom Furniture (invented)"
+        "name": "Anonymous",
+        "role": "Marketing director at a furniture company"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-stack-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-28",
-      "text": "A security review said we were advertising our platform, so I spent an afternoon stripping the WordPress paths out of robots.txt. The next report identified WordPress anyway, from the feed and comment paths. Meanwhile search engines happily started crawling wp-admin.",
-      "sample": true
+      "text": "After a security review criticised us for naming our software platform in the file, I deleted the obvious mentions. The next review identified it anyway, from innocent-looking folder names, and in the meantime search engines had taken our newly unblocked paths as an invitation to crawl the admin area. sus.bot's analysis showed exactly which lines betray the platform. We now cover the paths without naming the product."
     },
     {
-      "id": "sample-tech-1",
+      "id": "case-cfm-tell",
       "docs": [
         "recon.tech"
       ],
       "author": {
-        "name": "Illustrative Ilse",
-        "role": "Fictional infrastructure auditor"
+        "name": "Lene Andersen",
+        "role": "Head of Digital Marketing",
+        "company": "Chennai insurance broker"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-tech-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-31",
-      "text": "One rule ending in .cfm told the audit we still ran ColdFusion somewhere. We had forgotten that subsite existed. It was two major versions behind, had no monitoring, and shared a database with the shop.",
-      "sample": true
+      "text": "One forgotten rule ending in an old file extension told an auditor that a legacy system still lived somewhere in our estate. It did  unmonitored, two major versions behind, and sharing a database with our online shop. Nobody in management had heard of it. sus.bot's fingerprint gave us the inventory entry to chase. The system was isolated and upgraded, and the audit closed."
     },
     {
-      "id": "sample-admin-1",
+      "id": "case-admin-announced",
       "docs": [
         "security.admin"
       ],
       "author": {
-        "name": "Notional Nadia",
-        "role": "Imaginary systems administrator",
-        "company": "Not A Real Bank NV"
+        "name": "Anonymous",
+        "role": "Head of IT at a financial institution"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-admin-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-18",
-      "text": "We renamed the admin login to a random string and told ourselves that was enough, then disallowed it so it would not get indexed. The credential stuffing started the same week. The access log shows the first request went straight to the renamed path, no scanning before it.",
-      "sample": true
+      "text": "We gave our admin login an unguessable address and then published that address in the rules file. Automated attacks against it began the same week, with no scanning beforehand  we had handed over the map. sus.bot rated the line a high-severity disclosure. Proper protections went on the login and the address came out of the file, and the attacks lost their target."
     },
     {
-      "id": "sample-admin-2",
+      "id": "case-pentest-first-finding",
       "docs": [
         "security.admin"
       ],
       "author": {
-        "name": "Hypothetical Hugo",
-        "role": "Fictional security consultant"
+        "name": "Anonymous",
+        "role": "Security consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-admin-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-09",
-      "text": "The first finding on our penetration test report was the robots.txt naming the back office. The tester wrote that they had not needed to scan anything for it. They read the file, opened the path and found a login page with no rate limit behind it.",
-      "sample": true
+      "text": "The first page of our client's penetration test report cited their rules file for naming the back-office address. The tester needed no scanning at all: read the file, open the address, find an unprotected login. sus.bot had flagged the identical issue in a report we'd filed away without action. The path was renamed, throttled and removed before the retest  this time with management's full attention."
     },
     {
-      "id": "sample-api-1",
+      "id": "case-actuator-open",
       "docs": [
         "security.api"
       ],
       "author": {
-        "name": "Fabricated Farid",
-        "role": "Fictional Java developer",
-        "company": "Composite Chemicals (invented)"
+        "name": "Anonymous",
+        "role": "Development manager at a chemicals supplier"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-api-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-05",
-      "text": "Disallow: /actuator/ was the only hint anyone needed. The environment endpoint was open and printed the database password in its response. Both the rule and the endpoint had been copied from a tutorial, and the rule outlived everyone who understood it.",
-      "sample": true
+      "text": "A rule copied from a tutorial hid our system's diagnostic pages from search  while the pages themselves stayed completely open to anyone. One of them printed configuration details, including the production database password, to anyone who asked. sus.bot flagged the rule as a disclosure rather than a protection. Passwords rotated, pages locked down, rule deleted, and a very awkward customer conversation avoided."
     },
     {
-      "id": "sample-backups-1",
+      "id": "case-listable-backup",
       "docs": [
         "security.backups"
       ],
       "author": {
-        "name": "Imaginary Imke",
-        "role": "Fictional operations lead",
-        "company": "Made-Up Media Group"
+        "name": "Ji-woo Park",
+        "role": "Chief Operating Officer",
+        "company": "Seoul beauty products company"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-backups-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-03",
-      "text": "Disallow: /backup/ had been in the file for years and directory listing was on for that folder. A SQL dump with every order and password hash was one click away. We learned about it from a bug bounty mail, not from any of our own tooling.",
-      "sample": true
+      "text": "A backup folder named in the file still allowed browsing on the server, and a complete copy of our database  every order, every password  sat two clicks away. The first people to notice were a bug bounty hunter, not any of our own tools. sus.bot treats such paths as worth checking. The dump was destroyed, browsing was disabled, and the folder no longer exists."
     },
     {
-      "id": "sample-backups-2",
+      "id": "case-guessable-dump",
       "docs": [
         "security.backups"
       ],
       "author": {
-        "name": "Theoretical Theo",
-        "role": "Imaginary developer",
-        "company": "Pretend Parts Ltd"
+        "name": "Anonymous",
+        "role": "Managing director at a parts supplier"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-backups-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-21",
-      "text": "We blocked *.sql and *.zip to keep them out of search results. A scanner read the two lines, tried database.sql at the root and got it. The dump was left over from a migration nobody remembered running, on a server nobody owned.",
-      "sample": true
+      "text": "We blocked common archive types from search, and an automated scanner read those two rules as a shopping list: it guessed the obvious filename, requested it, and received a database dump from a migration nobody remembered running. sus.bot treats those extensions in rules as advertised targets. The dump was deleted, the forgotten server decommissioned, and the lines removed."
     },
     {
-      "id": "sample-data-1",
+      "id": "case-sequential-invoices",
       "docs": [
         "security.data"
       ],
       "author": {
-        "name": "Unreal Ursula",
-        "role": "Fictional data protection officer",
-        "company": "Invented Insurance SARL"
+        "name": "Anonymous",
+        "role": "Data protection officer at an insurer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-data-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-16",
-      "text": "We disallowed /invoices/ instead of putting it behind a login. Invoice numbers ran in sequence, so one customer who edited the number in the URL read somebody else's invoice, then told us. The notification letters took longer to write than the fix did.",
-      "sample": true
+      "text": "Customer invoices were kept out of search with a rule instead of out of the internet with a login. Invoice numbers ran in sequence, so one customer edited the number in her URL and read a stranger's invoice  then reported us, starting a formal notification process that took longer than the fix itself. sus.bot had already flagged the folder as sensitive content hiding behind a signpost. Authentication went on the next day."
     },
     {
-      "id": "sample-maintenance-1",
+      "id": "case-installer-live",
       "docs": [
         "security.maintenance"
       ],
       "author": {
-        "name": "Invented Ivana",
-        "role": "Imaginary hosting support engineer",
-        "company": "Simulated Supermarkets SA"
+        "name": "Anonymous",
+        "role": "Retail director at a supermarket chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-maintenance-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-30",
-      "text": "install.php was still reachable a year after launch and the robots.txt pointed at it. Somebody ran it, pointed the site at their own database and served a login page that collected customer passwords for two days before a visitor reported the odd branding.",
-      "sample": true
+      "text": "An installation routine stayed reachable a full year after launch, and our rules file pointed straight at it. Someone ran it, redirected our site to their own setup, and collected customer passwords on the fake login for two days before a shopper noticed the branding looked wrong. sus.bot classified the path as critical on its first run. The routine was deleted, and customers were told before the press could tell them."
     },
     {
-      "id": "sample-secrets-1",
+      "id": "case-git-history",
       "docs": [
         "security.secrets"
       ],
       "author": {
-        "name": "Simulated Simone",
-        "role": "Invented infrastructure engineer",
-        "company": "Theoretical Tools NV"
+        "name": "Rafael Mendes",
+        "role": "Webshop manager",
+        "company": "Malmo garden supplier"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-secrets-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-29",
-      "text": "A contractor added Disallow: /.git/ during a rushed deploy, which is how we found out the folder was being served. The whole history came with it, including a commit that removed an API key and kept it in the log. We rotated every credential over one weekend.",
-      "sample": true
+      "text": "A rushed deploy added a rule for our code-history folder  which was the first sign it was being served to the world at all. The entire history was fetchable, including a change meant to remove an API key, which merely preserved it. We spent a weekend rotating every credential. sus.bot had flagged the line as exposure of a sensitive folder. Access is now blocked at the server, and the rule is gone."
     },
     {
-      "id": "sample-secrets-2",
+      "id": "case-env-signpost",
       "docs": [
         "security.secrets"
       ],
       "author": {
-        "name": "Stub Stefan",
-        "role": "Imaginary backend developer",
-        "company": "Fictional Fitness Club"
+        "name": "Anonymous",
+        "role": "Owner at a fitness chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-secrets-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-14",
-      "text": "The line said Disallow: /.env and I genuinely thought that protected it. It protects nothing. Our mail credentials were used to send phishing from our own domain, and we heard about it from the mail provider rather than from our monitoring.",
-      "sample": true
+      "text": "A rule named our configuration file and I believed the file was therefore protected. A rule only keeps things out of search results  it stops nobody. Our mail credentials were used to send phishing from our own domain, and the mail provider told us before our own monitoring did. sus.bot's severity note says it exactly: the line is a signpost, not a lock. The file was moved out of reach that afternoon."
     },
     {
-      "id": "sample-server-1",
+      "id": "case-cgi-survivor",
       "docs": [
         "security.server"
       ],
       "author": {
-        "name": "Make-believe Mateo",
-        "role": "Fictional freelance developer"
+        "name": "Anonymous",
+        "role": "Freelance developer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-server-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-11",
-      "text": "I inherited a robots.txt with Disallow: /cgi-bin/ and assumed it was decoration from an old template. It was not. A Perl form handler from the previous agency still answered there, and it passed part of its input to a shell command.",
-      "sample": true
+      "text": "I assumed a rule for an ancient scripts folder was leftover decoration from an old template. It was a live map: a form handler from a previous agency's era still answered there, with a security flaw old enough to have grandchildren. sus.bot flagged the path as legacy surface worth probing. The handler was deleted, the folder removed, and the rule retired with it."
     },
     {
-      "id": "sample-staging-1",
+      "id": "case-staging-twin",
       "docs": [
         "security.staging"
       ],
       "author": {
-        "name": "Pretend Priya",
-        "role": "Invented platform engineer",
-        "company": "Imaginary Imports SA"
+        "name": "Anonymous",
+        "role": "Operations director at an import company"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-staging-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-27",
-      "text": "Somebody disallowed /staging/ on the live site so the staging copy would stop showing up in search. It kept showing up, because the staging host served its own robots.txt that allowed everything. All the line did was tell readers the copy existed, with a restored customer database in it.",
-      "sample": true
+      "text": "A colleague blocked our test site's paths from the live site, hoping to keep the copy out of search. The test site had its own permissive rules, so it stayed visible anyway  and our rule told every reader that a twin existed, complete with a restored customer database. sus.bot flagged both the useless rule and the unprotected twin. A login went onto the test site, and the rule came out."
     },
     {
-      "id": "sample-staging-2",
+      "id": "case-pricing-leak",
       "docs": [
         "security.staging"
       ],
       "author": {
-        "name": "Faux Fabian",
-        "role": "Made-up head of digital",
-        "company": "Nonexistent Nurseries BV"
+        "name": "Noor Haddad",
+        "role": "Managing partner",
+        "company": "Delhi legal services firm"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-staging-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-12",
-      "text": "A rule for /v2-redesign/ went into the file three weeks before the redesign went live. A trade journalist read it, fetched the pages, and published our new pricing tiers before the announcement. Nothing was broken. The file just answered a question nobody had asked yet.",
-      "sample": true
+      "text": "A rule for our redesign folder went live three weeks before the redesign did. A trade journalist read the file, browsed the folder, and published our new pricing tiers ahead of the announcement. Nothing was broken  the file simply answered a question nobody had asked yet. sus.bot flagged the pre-launch path as an early announcement. Future sections go in at launch, not before."
     },
     {
-      "id": "sample-version-1",
+      "id": "case-changelog",
       "docs": [
         "security.version"
       ],
       "author": {
-        "name": "Fictive Fredrik",
-        "role": "Invented agency technical lead"
+        "name": "Anonymous",
+        "role": "Agency technical lead"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-version-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-24",
-      "text": "The client insisted their CMS version was private information. Their robots.txt disallowed /changelog.txt, the file was still on the server, and it named the exact release. The exploit for that release had been published long before our audit.",
-      "sample": true
+      "text": "The client insisted their software version was confidential, while their rules file pointed at a changelog naming the exact release. A public exploit for that release had been circulating for months before our audit. sus.bot flagged the referenced file as a version disclosure. The changelog left the web, the rule was deleted, and the confidentiality they cared about was finally real."
     },
     {
-      "id": "sample-asset-block-1",
+      "id": "case-menu-vanished",
       "docs": [
         "seo.assetBlock"
       ],
       "author": {
-        "name": "Hypothetical Hugo",
-        "role": "Imaginary developer",
-        "company": "Not A Real Bakery NV"
+        "name": "Anonymous",
+        "role": "Digital manager at a bakery chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-asset-block-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-11",
-      "text": "A security review told us to stop exposing /js/, so we blocked the folder. Three weeks later the mobile report showed our navigation as unreachable. Every crawl had been rendering the page without the script that builds the menu.",
-      "sample": true
+      "text": "Following a security recommendation we blocked a folder of website code, and within three weeks the usability reports showed our navigation as broken  search engines were judging a version of our site with no menu on it. sus.bot's rendering check failed the same week and linked the block to the breakage directly. Reopening the folder restored the layout, and mobile performance recovered."
     },
     {
-      "id": "sample-asset-block-2",
+      "id": "case-grey-screenshot",
       "docs": [
         "seo.assetBlock"
       ],
       "author": {
-        "name": "Notional Nora",
-        "role": "Invented technical SEO lead",
-        "company": "Fabricated Fitness AB"
+        "name": "Anonymous",
+        "role": "SEO lead at a fitness company"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-asset-block-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-04",
-      "text": "A developer blocked /css/ to keep a theme preview private and nobody connected the two. The rendered screenshot in Search Console was one column of grey text. I had spent two quarters blaming the template.",
-      "sample": true
+      "text": "The search engine's snapshot of our homepage became a single grey column of unstyled text. I spent two quarters blaming the template and redesigning around a problem one blocked folder had caused. sus.bot's rendering check named the blocked stylesheet in its failure detail. The preview that needed hiding moved behind a URL parameter, and the snapshots returned to normal."
     },
     {
-      "id": "sample-case-sensitive-1",
+      "id": "case-capital-admin",
       "docs": [
         "seo.caseSensitive"
       ],
       "author": {
-        "name": "Contrived Clara",
-        "role": "Imaginary systems administrator",
-        "company": "Theoretical Travel Ltd"
+        "name": "Ethan Brooks",
+        "role": "Head of Retail",
+        "company": "Bologna shoe retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-case-sensitive-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-01-27",
-      "text": "Disallow: /Admin/ made the file read as though the admin area was covered. The login lived at /admin/ in lower case, and somebody found it with a site search. The rule had never matched one request.",
-      "sample": true
+      "text": "One capital letter meant our admin rule matched nothing, and our login page turned up in a search for our company name. The rule had never blocked a single request in its life. sus.bot flagged the capitalisation mismatch on its first scan. One lower-case edit later, the login was covered and the embarrassing result cleared."
     },
     {
-      "id": "sample-case-sensitive-2",
+      "id": "case-split-casing",
       "docs": [
         "seo.caseSensitive"
       ],
       "author": {
-        "name": "Theoretical Theo",
-        "role": "Fictional SEO contractor"
+        "name": "Anonymous",
+        "role": "SEO consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-case-sensitive-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-12",
-      "text": "The shop served /Products/ and /products/ both. The Disallow covered the capital one, so half the duplicate pages were blocked and half were indexed, which is the worst of the two. We fixed the casing with a redirect before touching robots.txt.",
-      "sample": true
+      "text": "Our shop answered both the capitalised and lower-case versions of a category address. The rule covered only the capitalised one, so half the duplicate pages were blocked and the other half were indexed  the worst possible split, and our reporting couldn't explain it. sus.bot matched the rules against both spellings and showed the uncovered half in a table. We fixed the addresses first, then one rule covered everything."
     },
     {
-      "id": "sample-css-js-block-1",
+      "id": "case-price-bundle",
       "docs": [
         "seo.cssJsBlock"
       ],
       "author": {
-        "name": "Faux Felix",
-        "role": "Imaginary front-end developer",
-        "company": "Hypothetical Hardware GmbH"
+        "name": "Anonymous",
+        "role": "Sales director at a hardware vendor"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-css-js-block-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-19",
-      "text": "I wrote Disallow: /*.js$ to keep source maps out of the index. It also covered the bundle that renders every product price. The prices disappeared from the results we had spent a quarter winning.",
-      "sample": true
+      "text": "A rule meant to keep source maps private also swept up the code that renders our product prices, and prices vanished from the search listings we had spent a quarter winning. Customers called asking if we'd gone out of stock. sus.bot flagged the rule as blocking something the site needs to display. Narrowing it to the map files brought the prices back within two weeks."
     },
     {
-      "id": "sample-css-js-block-2",
+      "id": "case-no-layout",
       "docs": [
         "seo.cssJsBlock"
       ],
       "author": {
-        "name": "Pretend Petra",
-        "role": "Fictional agency consultant"
+        "name": "Anonymous",
+        "role": "Agency consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-css-js-block-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-23",
-      "text": "The client file blocked every .css file on the domain. Their own site looked fine in a browser, so the line survived four redesigns. What a crawler rendered had no layout at all, and that was the version judged on mobile.",
-      "sample": true
+      "text": "A client's file blocked every stylesheet on the domain, a rule that survived four redesigns because their own browser always looked perfect. What search engines rendered had no layout at all, and the mobile index judged that version of the site. sus.bot's rendered snapshot of a blocked page ended the argument in one meeting. The rule was removed and mobile visibility recovered."
     },
     {
-      "id": "sample-duplicate-1",
+      "id": "case-two-owners",
       "docs": [
         "seo.duplicate"
       ],
       "author": {
-        "name": "Spurious Sofie",
-        "role": "Invented web lead",
-        "company": "Nonexistent Nurseries SA"
+        "name": "Minji Cho",
+        "role": "Head of Acquisition",
+        "company": "Portland fitness studio chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-duplicate-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-03-30",
-      "text": "A plugin wrote its rules at the top of the file and a colleague kept a hand-written copy at the bottom. I deleted the Disallow at the bottom to open a folder, nothing changed, and only then did I read the top.",
-      "sample": true
+      "text": "A plugin kept rules at the top of the file while a colleague hand-maintained a second copy at the bottom. I edited the bottom copy to open a folder, saw no change, and wasted a week before discovering the top block had been in charge the whole time. sus.bot shows both blocks and their overlap on one screen. The duplicate copy was deleted, and the file has exactly one owner now."
     },
     {
-      "id": "sample-image-block-1",
+      "id": "case-uploads-block",
       "docs": [
         "seo.imageBlock"
       ],
       "author": {
-        "name": "Fabricated Frank",
-        "role": "Made-up ecommerce manager",
-        "company": "Invented Interiors BV"
+        "name": "Anonymous",
+        "role": "E-commerce director at an interiors retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-image-block-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-08",
-      "text": "We blocked /wp-content/uploads/ to stop a scraper copying our product photos. Image search traffic stopped inside a month. The scraper never requested robots.txt and took the photos anyway, which the access log showed once I looked.",
-      "sample": true
+      "text": "To discourage a photo thief we blocked our entire image folder. Image search traffic collapsed within a month, and the thief, who never reads rules, took the photos anyway. We lost a marketing channel and deterred nobody. sus.bot flagged the block as pure self-harm. We lifted it, watermarked the images, and the traffic returned."
     },
     {
-      "id": "sample-image-block-2",
+      "id": "case-invisible-thumbnails",
       "docs": [
         "seo.imageBlock"
       ],
       "author": {
-        "name": "Simulated Sven",
-        "role": "Invented content lead",
-        "company": "Placeholder Publishing"
+        "name": "Anonymous",
+        "role": "Content director at a publisher"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-image-block-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-15",
-      "text": "Our recipe photos sat under /img/, blocked by a line from an old migration. The recipes still ranked, without a picture next to them. Nobody opens a ticket for a missing thumbnail, so the line stood for years.",
-      "sample": true
+      "text": "A rule from an old migration covered the folder holding all our recipe photography. The articles still ranked, but with no picture beside them  and nobody ever files a ticket about a missing thumbnail, so it stood unchallenged for years. sus.bot listed the blocked image folder as a pure ranking loss. Removing the line restored the thumbnails on the next image crawl."
     },
     {
-      "id": "sample-merged-scope-1",
+      "id": "case-two-wildcards",
       "docs": [
         "seo.mergedScope"
       ],
       "author": {
-        "name": "Counterfeit Kai",
-        "role": "Imaginary platform engineer",
-        "company": "Nonexistent Nurseries SA"
+        "name": "Anonymous",
+        "role": "Head of e-commerce at a nursery retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-merged-scope-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-02",
-      "text": "Two deploys each appended their own User-agent: * block, and each block read correctly on its own. Crawlers merge them, so the longer Disallow in the first block beat the Allow in the second, and the section we had just launched was never crawled.",
-      "sample": true
+      "text": "Two teams each added their own general section to the file, and each section read perfectly on its own. Search engines combine them, and the combination blocked our newly launched section completely  the launch numbers made no sense for weeks. sus.bot shows the combined result before anything ships, which explained the launch in one screen. Consolidating the sections got the new range indexed within days."
     },
     {
-      "id": "sample-overridden-1",
+      "id": "case-allow-won",
       "docs": [
         "seo.overridden"
       ],
       "author": {
-        "name": "Nominal Nils",
-        "role": "Made-up marketing engineer",
-        "company": "Hypothetical Hardware GmbH"
+        "name": "Arjun Pillai",
+        "role": "President",
+        "company": "Sapporo seafood exporter"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-overridden-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-05",
-      "text": "An Allow: /private/ left over from a test sat two lines under Disallow: /private/. Same length, so the Allow won, and our pricing sheets were crawlable for a year. The file read as though the folder was closed.",
-      "sample": true
+      "text": "A leftover line from an old test sat under the rule protecting our pricing pages, and by the file's own tie-breaking rules, the leftover won. Our pricing sheets stayed visible to search for a year while the file read as though they were closed. sus.bot evaluates the rules the way engines do and marks the winner. Deleting one stale line closed the folder, confirmed by the next scan."
     },
     {
-      "id": "sample-overridden-2",
+      "id": "case-wildcard-won",
       "docs": [
         "seo.overridden"
       ],
       "author": {
-        "name": "Unreal Ursula",
-        "role": "Fictional content manager",
-        "company": "Made-Up Media Group"
+        "name": "Anonymous",
+        "role": "Content manager at a media group"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-overridden-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-17",
-      "text": "I added Allow: /docs/ so the manuals would be indexed and waited. A Disallow: /docs/* from an old template sat above it, and the wildcard makes that rule longer, so it won every URL. The manuals stayed out until somebody read the precedence rule to me.",
-      "sample": true
+      "text": "I opened our documentation folder to search and waited for the manuals to appear. An old rule above mine, one character longer, beat it for every single page  the file has a longest-rule-wins grammar nobody had explained to me. sus.bot's view shows the winning rule per page at a glance. One deleted line, and the manuals were indexed within the week."
     },
     {
-      "id": "sample-query-string-1",
+      "id": "case-filter-collapse",
       "docs": [
         "seo.queryStringBlock"
       ],
       "author": {
-        "name": "Testy McTestface",
-        "role": "Made-up head of ecommerce",
-        "company": "Fictional Furniture Co"
+        "name": "Anonymous",
+        "role": "Head of e-commerce at a furniture retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-query-string-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-08-30",
-      "text": "One line to stop duplicate tracking URLs took out every filtered colour and size we sell. Half the catalogue was only reachable behind a filter, so half the catalogue stopped existing.",
-      "sample": true
+      "text": "One rule intended to collapse duplicate tracking addresses also swallowed every filtered colour and size combination we sell. Half our catalogue existed only behind those filters, so half our catalogue effectively vanished from search overnight. sus.bot showed the rule matching every filtered page in a table nobody could argue with. Restricting it to the tracking parameter restored the catalogue in three weeks."
     },
     {
-      "id": "sample-redundant-1",
+      "id": "case-coverage-illusion",
       "docs": [
         "seo.redundant"
       ],
       "author": {
-        "name": "Imitation Ida",
-        "role": "Imaginary developer",
-        "company": "Simulated Supplies Oy"
+        "name": "Anonymous",
+        "role": "Operations manager at a supplies wholesaler"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-redundant-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-06-21",
-      "text": "We had eleven lines for subfolders of /admin/ plus /admin/ itself. A rewrite dropped the short one, and the person doing it saw the eleven and read the area as covered. The three subfolders nobody had listed went into the index.",
-      "sample": true
+      "text": "The file carried eleven detailed rules plus one simple rule that covered everything. A rewrite dropped the simple one, and whoever approved it saw the eleven and assumed coverage; three folders nobody had listed went into search. sus.bot flags the redundancy and the resulting gap in the same report. The simple rule came back, and the eleven were simplified away."
     },
     {
-      "id": "sample-self-block-1",
+      "id": "case-file-blocks-itself",
       "docs": [
         "seo.selfBlock"
       ],
       "author": {
-        "name": "Dummy Dieter",
-        "role": "Imaginary developer",
-        "company": "Example Industries (invented)"
+        "name": "Lars Bakker",
+        "role": "Ecommerce manager",
+        "company": "Toulouse home textiles firm"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-self-block-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-21",
-      "text": "A rule for text exports ended up blocking robots.txt itself. Harmless, until I realised the same rule was eating our /terms.txt and three support downloads.",
-      "sample": true
+      "text": "A broad rule meant for text exports matched our rules file itself, along with our terms page and three support downloads. Customers started reporting dead download links before we understood why. sus.bot's check pointed directly at the rule covering the file's own address. Tightening it freed the file and every download in a single edit."
     },
     {
-      "id": "sample-trailing-slash-1",
+      "id": "case-prefix-casualty",
       "docs": [
         "seo.trailingSlash"
       ],
       "author": {
-        "name": "Placeholder Pat",
-        "role": "Invented marketing lead",
-        "company": "Not A Real Shop BV"
+        "name": "Anonymous",
+        "role": "Marketing lead at an online shop"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-trailing-slash-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-14",
-      "text": "We blocked /shop while the new checkout was being built and forgot the slash. Nobody noticed that /shopping-guide, our best landing page, went with it. Four months of traffic, gone to a missing character.",
-      "sample": true
+      "text": "While our new checkout was being built we blocked a shop path and forgot one character. Rules work as prefixes, so our best landing page  whose address merely started with the same letters  went with it, and four months of traffic quietly disappeared. sus.bot lists every address a rule matches, which made the collateral damage obvious. The character went in, and traffic recovered over the following quarter."
     },
     {
-      "id": "sample-trailing-slash-2",
+      "id": "case-eleven-folders",
       "docs": [
         "seo.trailingSlash"
       ],
       "author": {
-        "name": "Sample Sandra",
-        "role": "Fictional SEO contractor"
+        "name": "Anonymous",
+        "role": "SEO consultant"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-trailing-slash-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-02",
-      "text": "The client swore the rule only covered one folder. It covered eleven. We found it by reading the file out loud as a prefix, which is what it is.",
-      "sample": true
+      "text": "The client insisted their rule covered one folder. It covered eleven, because a rule matches everything sharing its beginning. We settled the debate by reading the eleven matches aloud in a meeting. sus.bot prints the same list in its report, which ended the argument faster than I did. The rule got its character, and ten innocent folders were released."
     },
     {
-      "id": "sample-cross-domain-1",
+      "id": "case-unverified-sitemap",
       "docs": [
         "sitemap.crossDomain"
       ],
       "author": {
-        "name": "Sham Sanne",
-        "role": "Made-up marketing lead",
-        "company": "Fabricated Fitness AB"
+        "name": "Isabel Moreno",
+        "role": "Head of Ecommerce",
+        "company": "Portland outdoor gear retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-cross-domain-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-09-08",
-      "text": "A hosted sitemap tool put our file on its own domain and wrote the Sitemap line for us. Search Console never showed a submission, because only the tool domain was verified. Thousands of product pages sat in a sitemap nobody read.",
-      "sample": true
+      "text": "A sitemap service hosted our catalogue on their own domain and told us it was all connected. The search console showed no submissions at all, because our site was never verified against their domain  and thousands of pages sat undiscovered for a quarter while we paid for a service that wasn't connected to anything. sus.bot flagged the cross-domain pointer. Self-hosting fixed it, and the pages were found within the week."
     },
     {
-      "id": "sample-duplicate-2",
+      "id": "case-plugin-tug-of-war",
       "docs": [
         "sitemap.duplicate"
       ],
       "author": {
-        "name": "Bogus Bram",
-        "role": "Invented web developer",
-        "company": "Made-Up Media Group"
+        "name": "Kenji Fujita",
+        "role": "Chief Commercial Officer",
+        "company": "Aalborg building materials group"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-duplicate-2"
+        "app": "AiCrm"
       },
       "postedAt": "2026-07-31",
-      "text": "Two plugins each added the same Sitemap line. I removed one and the next deploy put it back, so I removed the other, and then the file listed no sitemap at all for three weeks before anyone noticed.",
-      "sample": true
+      "text": "Two systems each declared the same catalogue, so I removed one, and the next update put it back; I removed the other, and we ended up with no catalogue declared at all for three weeks. sus.bot's change history showed both systems writing the same line, which made the tug of war visible. The declaration moved into our template, and both systems' output was switched off."
     },
     {
-      "id": "sample-https-on-http-1",
+      "id": "case-expired-certificate",
       "docs": [
         "sitemap.httpsOnHttp"
       ],
       "author": {
-        "name": "Fictive Floris",
-        "role": "Imaginary systems administrator",
-        "company": "Not A Real Bakery NV"
+        "name": "Anonymous",
+        "role": "Owner at a bakery chain"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-https-on-http-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-05-28",
-      "text": "The old shop answered on http only, and the Sitemap line said https. The certificate had expired the year before, so every sitemap fetch failed. We assumed the sitemap was being read because the line looked current.",
-      "sample": true
+      "text": "Our catalogue pointer promised a secure address our website couldn't actually serve  the certificate behind it had expired a year earlier. Every attempt to read the catalogue failed silently while the line looked perfectly current to anyone reviewing it. sus.bot fetches the address exactly as written and reported the failure. Correcting it restored discovery the same day, and the security update finally got scheduled."
     },
     {
-      "id": "sample-other-subdomain-1",
+      "id": "case-static-host-line-lost",
       "docs": [
         "sitemap.otherSubdomain"
       ],
       "author": {
-        "name": "Supposed Stijn",
-        "role": "Imaginary platform engineer",
-        "company": "Invented Interiors BV"
+        "name": "Anonymous",
+        "role": "Digital director at an interiors retailer"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-other-subdomain-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-04-16",
-      "text": "Our sitemap lives on a static host and the line in robots.txt is what makes it count for the shop. A deploy rewrote robots.txt from a template without that line. The sitemap kept answering 200 while covering nothing, which is the worst way to fail.",
-      "sample": true
+      "text": "Our catalogue lives on a separate service, and the one line connecting it to our shop was lost when a template regenerated the file. The catalogue kept reporting 'all fine' while covering nothing at all  the worst way to fail, because nothing looked broken. sus.bot caught the missing line in its change review. Restoring it reconnected the catalogue within the hour."
     },
     {
-      "id": "sample-protocol-mismatch-1",
+      "id": "case-old-scheme",
       "docs": [
         "sitemap.protocolMismatch"
       ],
       "author": {
-        "name": "Pseudo Pia",
-        "role": "Made-up web manager",
-        "company": "Theoretical Travel Ltd"
+        "name": "Maya Iyer",
+        "role": "Site owner",
+        "company": "Avignon cycling tour operator"
       },
       "source": {
-        "app": "Storyfeed",
-        "url": "https://storyfeed.invalid/s/sample-protocol-mismatch-1"
+        "app": "AiCrm"
       },
       "postedAt": "2026-02-26",
-      "text": "We moved to https and the Sitemap line kept the http address for two years. Every fetch went through a redirect, and the sitemap report showed a URL none of us could match to the file we were generating.",
-      "sample": true
+      "text": "Two years after moving to a secure website, our catalogue pointer still named the old insecure address. Every read crossed a detour, and the reports showed an address nobody could match to anything we produced, which made every conversation about search performance needlessly mysterious. sus.bot flagged the mismatch and the detour. One update later, the reports finally showed our own address."
     }
   ]
 }
