@@ -90,14 +90,20 @@ export interface DocPage {
   stories: Story[];
 }
 
+/**
+ * What a reader would call the group, not what the engine calls the family,
+ * and in the order a reader cares about: what costs money and what is exposed
+ * before the fifty pages of syntax, which are for whoever edits the file.
+ * `byFamily()` builds the index in this order.
+ */
 export const FAMILY_LABEL: Record<string, string> = {
-  parser: 'Syntax and parsing',
-  seo: 'Search traffic',
-  lint: 'Rules that do nothing',
-  sitemap: 'Sitemap lines',
+  seo: 'Lost search traffic',
+  security: 'What the file gives away',
+  recon: 'What it says about your systems',
   fetch: 'How the file is served',
-  security: 'What the file exposes',
-  recon: 'What the file reveals',
+  sitemap: 'Sitemap lines',
+  lint: 'Rules that do nothing',
+  parser: 'Lines crawlers cannot read',
 };
 
 const read = <T>(name: string): T => JSON.parse(readFileSync(new URL(name, DATA), 'utf8')) as T;
